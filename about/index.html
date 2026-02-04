@@ -1,0 +1,369 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>关于我 | 夏令时</title><meta name="author" content="Dystate"><meta name="copyright" content="Dystate"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content=".my-dashboard-container {     display: flex;     flex-wrap: wrap;     gap: 20px;     justify-content: center;     margin-bottom: 40px;   }   .dashboard-item {     flex: 1;     min-width: 280px; &#x2F;*">
+<meta property="og:type" content="website">
+<meta property="og:title" content="关于我">
+<meta property="og:url" content="http://dysyate.github.io/about/index.html">
+<meta property="og:site_name" content="夏令时">
+<meta property="og:description" content=".my-dashboard-container {     display: flex;     flex-wrap: wrap;     gap: 20px;     justify-content: center;     margin-bottom: 40px;   }   .dashboard-item {     flex: 1;     min-width: 280px; &#x2F;*">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://dysyate.github.io/image/avatar.jpg">
+<meta property="article:published_time" content="2026-02-03T12:30:00.000Z">
+<meta property="article:modified_time" content="2026-02-03T12:49:01.792Z">
+<meta property="article:author" content="Dystate">
+<meta property="article:tag" content="谦卑、积极、和平">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://dysyate.github.io/image/avatar.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://dysyate.github.io/about/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '关于我',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/image/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/books/"><i class="fa-fw fas fa-book"></i><span> 书籍</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li><li><a class="site-page child" href="/people/"><i class="fa-fw fas fa-people"></i><span> 人类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/categories/%E6%97%A5%E8%AE%B0/"><i class="fa-fw fas fa-archive"></i><span> 日记</span></a></div><div class="menus_item"><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></div><div class="menus_item"><a class="site-page" href="/words/"><i class="fa-fw fas fa-heart"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/summary/"><i class="fa-fw fas fa-link"></i><span> 年度总结</span></a></div></div></div></div><div class="page type-about" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">夏令时</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/books/"><i class="fa-fw fas fa-book"></i><span> 书籍</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li><li><a class="site-page child" href="/people/"><i class="fa-fw fas fa-people"></i><span> 人类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/categories/%E6%97%A5%E8%AE%B0/"><i class="fa-fw fas fa-archive"></i><span> 日记</span></a></div><div class="menus_item"><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></div><div class="menus_item"><a class="site-page" href="/words/"><i class="fa-fw fas fa-heart"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/summary/"><i class="fa-fw fas fa-link"></i><span> 年度总结</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">关于我</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><style>
+  .my-dashboard-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+  .dashboard-item {
+    flex: 1;
+    min-width: 280px; /* 窄屏自动换行 */
+    max-width: 350px;
+  }
+  .book-shelter {
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 20px; 
+    padding: 20px; 
+    background-color: #f4f1ea; 
+    border-radius: 10px;
+    justify-content: center;
+  }
+  .book-item {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    width: 100px;
+  }
+  /* 修复 Hexo 主题可能强制修改图片样式的问题 */
+  .book-item img {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+</style>
+
+<h1 id="🌍-2026-Dashboard"><a href="#🌍-2026-Dashboard" class="headerlink" title="🌍 2026 Dashboard"></a>🌍 2026 Dashboard</h1><div class="my-dashboard-container">
+  
+  <div class="dashboard-item" id="counter-run-days"></div>
+  
+  <div class="dashboard-item" id="counter-countdown"></div>
+
+</div>
+
+<script>
+  // --- 逻辑 A: 运行天数 ---
+  (function(){
+    const startYear = 2004;
+    const startMonth = 9; // 10月是9
+    const startDay = 6;
+    const start = Date.UTC(startYear, startMonth, startDay);
+    const now = new Date();
+    const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const days = Math.floor((today - start) / msPerDay);
+
+    const gb = {
+        black: '#0f380f', dark: '#306230', light: '#8bac0f',
+        white: '#9bbc0f', shell: '#c4cfa1', bezel: '#495037'
+    };
+
+    const htmlContent = `
+      <div style="
+        width: 260px; margin: 0 auto; background-color: ${gb.shell};
+        border-radius: 10px 10px 40px 10px; padding: 20px 15px 30px 15px;
+        box-shadow: inset 0 -4px 0 #a4af81, 0 5px 15px rgba(0,0,0,0.3);
+        font-family: 'Courier New', Courier, monospace; display: flex;
+        flex-direction: column; align-items: center;">
+        <div style="color: ${gb.bezel}; font-size: 8px; font-weight: bold; text-align: center; margin-bottom: 5px; letter-spacing: 1px; width: 100%;">NEXT STOP THE TOP.</div>
+        <div style="box-sizing: border-box; width: 100%; background-color: ${gb.white}; border: 5px solid ${gb.bezel}; border-radius: 3px 3px 15px 3px; padding: 15px 5px; text-align: center; color: ${gb.black}; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);">
+          <div style="font-size: 10px; margin-bottom: 5px; opacity: 0.8;">▶ PLAYER 1 READY</div>
+          <div style="font-size: 42px; font-weight: 900; line-height: 1.2; letter-spacing: 2px; text-shadow: 2px 2px 0px ${gb.dark}; margin: 5px 0;">${days}</div>
+          <div style="font-size: 10px; font-weight: bold;">DAYS ONLINE</div>
+        </div>
+        <div style="text-align: left; width: 100%; padding-left: 5px; color: #a4af81; font-weight: bold; font-style: italic; font-size: 12px; margin-top: 10px; font-family: Arial, sans-serif;">Dystate</div>
+      </div>`;
+    
+    document.getElementById('counter-run-days').innerHTML = htmlContent;
+  })();
+
+  // --- 逻辑 B: 倒数日 ---
+  (function(){
+    const targetYear = 2025;
+    const targetMonth = 11; // 12月
+    const targetDay = 20;
+    const target = Date.UTC(targetYear, targetMonth, targetDay);
+    const now = new Date();
+    const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const daysLeft = Math.floor((target - today) / msPerDay);
+
+    let mainText = "", subText = "", mainFontSize = "42px";
+    if (daysLeft < 0) { mainText = "无事发生"; subText = "MISSION ARCHIVED"; mainFontSize = "32px"; }
+    else if (daysLeft === 0) { mainText = "TODAY!"; subText = "GOOD LUCK"; mainFontSize = "36px"; }
+    else { mainText = daysLeft; subText = "DAYS LEFT"; }
+
+    const theme = {
+        text: '#020617', shadow: '#3b82f6', screen: '#eff6ff',
+        shell: '#172554', bezel: '#0f172a', deco: '#64748b', bodyShadow: '#0f172a'
+    };
+
+    const htmlContent = `
+      <div style="
+        width: 260px; margin: 0 auto; background-color: ${theme.shell};
+        border-radius: 10px 10px 40px 10px; padding: 20px 15px 30px 15px;
+        box-shadow: inset 0 -4px 0 ${theme.bodyShadow}, 0 5px 15px rgba(0,0,0,0.4);
+        font-family: 'Courier New', Courier, monospace; display: flex;
+        flex-direction: column; align-items: center;">
+        <div style="color: ${theme.deco}; font-size: 8px; font-weight: bold; text-align: center; margin-bottom: 5px; letter-spacing: 1px; width: 100%; opacity: 0.8;">TARGET: ${targetYear}.${targetMonth+1}.${targetDay}</div>
+        <div style="box-sizing: border-box; width: 100%; background-color: ${theme.screen}; border: 5px solid ${theme.bezel}; border-radius: 3px 3px 15px 3px; padding: 15px 5px; text-align: center; color: ${theme.text}; box-shadow: inset 2px 2px 5px rgba(23, 37, 84, 0.15); min-height: 100px; display: flex; flex-direction: column; justify-content: center;">
+          <div style="font-size: 10px; margin-bottom: 5px; opacity: 0.7;">▶ COUNTDOWN</div>
+          <div style="font-size: ${mainFontSize}; font-weight: 900; line-height: 1.2; letter-spacing: 2px; text-shadow: 2px 2px 0px ${theme.shadow}; margin: 5px 0; white-space: nowrap;">${mainText}</div>
+          <div style="font-size: 10px; font-weight: bold; opacity: 0.9;">${subText}</div>
+        </div>
+        <div style="text-align: left; width: 100%; padding-left: 5px; color: ${theme.deco}; font-weight: bold; font-style: italic; font-size: 12px; margin-top: 10px; font-family: Arial, sans-serif;">Dystate</div>
+      </div>`;
+
+    document.getElementById('counter-countdown').innerHTML = htmlContent;
+  })();
+</script>
+
+<hr>
+<h1 id="📃-清单"><a href="#📃-清单" class="headerlink" title="📃 清单"></a>📃 清单</h1><div class="note info flat"><p><strong>想做的事</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> 装修完我的Obsidian主页</li>
+<li><input disabled="" type="checkbox"> 制作一个小网站</li>
+</ul>
+</div>
+
+<div class="note success flat"><p><strong>预料之外的完成</strong></p>
+<ul>
+<li>暂无</li>
+</ul>
+</div>
+
+<div class="note warning flat"><p><strong>引以为戒的错误</strong></p>
+<ul>
+<li>暂无</li>
+</ul>
+</div>
+
+<hr>
+<h1 id="⚠️-注意事项"><a href="#⚠️-注意事项" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h1><blockquote>
+<p>Hexo 无法直接识别 <code>![[Recent Tasks.base]]</code> 这种引用。<br>你需要把那些文件的内容手动复制过来，或者在这个页面里直接写内容。</p>
+</blockquote>
+</div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/image/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Dystate</div><div class="author-info-description">我是一个好人。</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">你好呀！！</div></div><div class="sticky_layout"><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Dystate</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://comment.dstnb.top',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://comment.dstnb.top',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    GLOBAL_CONFIG_SITE.pageType === 'post' && getCount()
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Twikoo' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
