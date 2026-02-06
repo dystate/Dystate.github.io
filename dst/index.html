@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://dysyate.github.io/image/avatar.jpg">
 <meta property="article:published_time" content="2026-02-04T06:12:00.000Z">
-<meta property="article:modified_time" content="2026-02-05T11:13:38.682Z">
+<meta property="article:modified_time" content="2026-02-06T09:24:34.593Z">
 <meta property="article:author" content="Dystate">
 <meta property="article:tag" content="谦卑、积极、和平">
 <meta name="twitter:card" content="summary">
@@ -232,6 +232,124 @@
         container.innerHTML = htmlContent;
     }
 })();
+</script>
+
+
+<div id="dystate-countdown-container"></div>
+
+<script>
+{
+  // 使用大括号包裹，防止变量名污染你网页原有的JS代码
+  
+  // --- 设置目标日期 ---
+  const targetYear = 2025;
+  const targetMonth = 11; // 12月
+  const targetDay = 20;
+
+  // --- 逻辑核心 ---
+  const target = Date.UTC(targetYear, targetMonth, targetDay);
+  const now = new Date();
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const daysLeft = Math.floor((target - today) / msPerDay);
+
+  // --- 状态文案 ---
+  let mainText = "";
+  let subText = "";
+  let mainFontSize = "42px";
+
+  if (daysLeft < 0) {
+    mainText = "无事发生";
+    subText = "MISSION ARCHIVED";
+    mainFontSize = "32px";
+  } else if (daysLeft === 0) {
+    mainText = "TODAY!";
+    subText = "GOOD LUCK";
+    mainFontSize = "36px";
+  } else {
+    mainText = daysLeft;
+    subText = "DAYS LEFT";
+  }
+
+  // --- 配色方案 (保持不变) ---
+  const theme = {
+    text:       '#020617',
+    shadow:     '#3b82f6',
+    screen:     '#eff6ff',
+    shell:      '#172554',
+    bezel:      '#0f172a',
+    deco:       '#64748b',
+    bodyShadow: '#0f172a'
+  };
+
+  // --- 构建 HTML ---
+  const htmlContent = `
+    <div style="
+      width: 260px;
+      margin: 10px auto;
+      background-color: ${theme.shell};
+      border-radius: 10px 10px 40px 10px;
+      padding: 20px 15px 30px 15px;
+      box-shadow: inset 0 -4px 0 ${theme.bodyShadow}, 0 5px 15px rgba(0,0,0,0.4);
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: normal; /* 防止父级网页行高干扰 */
+      box-sizing: content-box; /* 防止框架样式干扰 */
+    ">
+      
+      <div style="
+          color: ${theme.deco}; font-size: 8px; font-weight: bold; 
+          text-align: center; margin-bottom: 5px; letter-spacing: 1px; width: 100%;
+          opacity: 0.8; line-height: 1.2;
+      ">TARGET: ${targetYear}.${targetMonth+1}.${targetDay}</div>
+
+      <div style="
+        box-sizing: border-box;
+        width: 100%;
+        background-color: ${theme.screen};
+        border: 5px solid ${theme.bezel};
+        border-radius: 3px 3px 15px 3px;
+        padding: 15px 5px;
+        text-align: center;
+        color: ${theme.text};
+        box-shadow: inset 2px 2px 5px rgba(23, 37, 84, 0.15);
+        min-height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      ">
+        <div style="font-size: 10px; margin-bottom: 5px; opacity: 0.7; line-height: 1.2;">▶ COUNTDOWN</div>
+        
+        <div style="
+          font-size: ${mainFontSize}; 
+          font-weight: 900; 
+          line-height: 1.2; 
+          letter-spacing: 2px;
+          text-shadow: 2px 2px 0px ${theme.shadow};
+          margin: 5px 0;
+          white-space: nowrap;
+        ">
+          ${mainText}
+        </div>
+        
+        <div style="font-size: 10px; font-weight: bold; opacity: 0.9; line-height: 1.2;">${subText}</div>
+      </div>
+
+      <div style="
+          text-align: left; width: 100%; padding-left: 5px;
+          color: ${theme.deco}; font-weight: bold; font-style: italic;
+          font-size: 12px; margin-top: 10px;
+          font-family: Arial, sans-serif;
+          line-height: 1.2;
+      ">Dystate</div>
+    </div>
+  `;
+
+  // --- 注入页面 ---
+  document.getElementById('dystate-countdown-container').innerHTML = htmlContent;
+}
 </script>
 
 
