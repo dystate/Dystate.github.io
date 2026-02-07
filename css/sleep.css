@@ -1,0 +1,59 @@
+/* 早睡热力图容器 */
+#sleep-calendar-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px 6px rgba(7,17,27,0.06);
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  transition: all 0.3s;
+}
+#sleep-calendar-card:hover {
+  box-shadow: 0 4px 12px 12px rgba(7,17,27,0.15);
+}
+.sleep-title {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  color: #4c4948;
+}
+
+/* 格子布局 */
+.sleep-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 100%;
+}
+.sleep-day {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background-color: #ebedf0; /* 默认灰色 */
+  cursor: pointer;
+  position: relative;
+}
+
+/* 颜色等级 */
+.level-perfect { background-color: #216e39; } /* 完美 (<23:00) */
+.level-good { background-color: #40c463; }    /* 不错 (<00:00) */
+.level-late { background-color: #ffd33d; }    /* 晚睡 (<01:00) */
+.level-bad { background-color: #ff4d4f; }     /* 修仙 (>01:00) */
+
+/* 简单的提示框 (Tooltip) */
+.sleep-day:hover::after {
+  content: attr(data-date) "\A" attr(data-time); /* 显示日期和时间 */
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: pre; /* 允许换行 */
+  z-index: 10;
+  pointer-events: none;
+}
