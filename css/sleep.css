@@ -57,3 +57,10 @@
   z-index: 10;
   pointer-events: none;
 }
+
+/* 强制修复文章内的粗体显示 */
+#article-container strong,
+#article-container b {
+  font-weight: bold !important;
+  color: #000; /* 可选：如果你想让粗体字更黑一点，可以加这行 */
+}
