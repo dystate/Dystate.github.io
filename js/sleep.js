@@ -73,5 +73,5 @@ function generateSleepMap() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', generateSleepMap);
-document.addEventListener('pjax:complete', generateSleepMap);
+// document.addEventListener('DOMContentLoaded', generateSleepMap);
+// document.addEventListener('pjax:complete', generateSleepMap);
