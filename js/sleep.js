@@ -11,7 +11,7 @@ const sleepRecords = {
   // 每天起床后，来这里加一行，然后 hexo d 部署即可
 };
 
-function generateSleepMap() {
+// function generateSleepMap() {
   const target = document.getElementById('recent-posts');
   if (!target) return;
   if (document.getElementById('sleep-calendar-card')) return;
