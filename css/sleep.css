@@ -64,3 +64,39 @@
   font-weight: bold !important;
   color: #000; /* 可选：如果你想让粗体字更黑一点，可以加这行 */
 }
+
+/* ====== 作者卡片按钮：好运渐变发光胶囊 ====== */
+#aside-content .card-info #card-info-btn {
+  /* 1. 核心渐变色：从左边的草绿过渡到右边的明黄 */
+  background: linear-gradient(90deg, #1db54a, #f7d51d) !important;
+  
+  /* 2. 完美的胶囊圆角 */
+  border-radius: 50px !important; 
+  
+  /* 3. 字体样式：纯白、加粗 */
+  color: #ffffff !important; 
+  font-weight: 800 !important; 
+  letter-spacing: 1px !important; /* 字距稍微拉开一点更现代 */
+  
+  /* 4. 去除多余的边框和背景 */
+  border: none !important; 
+  
+  /* 5. 🌟 核心灵魂：同色系的弥散发光阴影 */
+  box-shadow: 0 8px 20px rgba(116, 212, 53, 0.4) !important; 
+  
+  /* 6. 动画过渡时间 */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important; 
+}
+
+/* 鼠标悬停时的互动反馈 */
+#aside-content .card-info #card-info-btn:hover {
+  /* 微微上浮并放大 */
+  transform: translateY(-3px) scale(1.02) !important; 
+  /* 阴影范围扩大，光晕变亮 */
+  box-shadow: 0 12px 25px rgba(116, 212, 53, 0.55) !important; 
+}
+
+/* 如果你的按钮里带了图标，让图标和文字有点间距 */
+#aside-content .card-info #card-info-btn i {
+  margin-right: 6px;
+}
