@@ -1,13 +1,13 @@
-<!DOCTYPE html><html class="hide-aside" lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>weidan | 夏令时</title><meta name="author" content="Dystate"><meta name="copyright" content="Dystate"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="{   &#x2F;&#x2F; --- 1. 逻辑设置 ---   const targetMonth &#x3D; 4; &#x2F;&#x2F; 4月   const targetDay &#x3D; 18;  &#x2F;&#x2F; 18日      &#x2F;&#x2F; 自动计算下一次生日   const now &#x3D; new Date();   let targetYear &#x3D; now.getFullYear();   let targetDate &#x3D; new Date(t">
+<!DOCTYPE html><html class="hide-aside" lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>weidan | 夏令时</title><meta name="author" content="Dystate"><meta name="copyright" content="Dystate"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="&#x2F;* &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 1. 顶部索引导航区域 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; *&#x2F;   .cal-index-container {     display: flex;     flex-wrap: wrap;     gap: 8px;     margin-bottom: 30px;     background: #f8f9fa;     padding: 15px;     border-radius">
 <meta property="og:type" content="website">
 <meta property="og:title" content="weidan">
 <meta property="og:url" content="http://dysyate.github.io/weidan/index.html">
 <meta property="og:site_name" content="夏令时">
-<meta property="og:description" content="{   &#x2F;&#x2F; --- 1. 逻辑设置 ---   const targetMonth &#x3D; 4; &#x2F;&#x2F; 4月   const targetDay &#x3D; 18;  &#x2F;&#x2F; 18日      &#x2F;&#x2F; 自动计算下一次生日   const now &#x3D; new Date();   let targetYear &#x3D; now.getFullYear();   let targetDate &#x3D; new Date(t">
+<meta property="og:description" content="&#x2F;* &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 1. 顶部索引导航区域 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; *&#x2F;   .cal-index-container {     display: flex;     flex-wrap: wrap;     gap: 8px;     margin-bottom: 30px;     background: #f8f9fa;     padding: 15px;     border-radius">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://dysyate.github.io/image/avatar.jpg">
 <meta property="article:published_time" content="2026-02-04T05:50:37.000Z">
-<meta property="article:modified_time" content="2026-03-24T03:15:35.442Z">
+<meta property="article:modified_time" content="2026-04-27T03:28:33.909Z">
 <meta property="article:author" content="Dystate">
 <meta property="article:tag" content="谦卑、积极、和平">
 <meta name="twitter:card" content="summary">
@@ -144,163 +144,242 @@
   isHighlightShrink: false,
   isToc: false,
   pageType: 'page'
-}</script><link rel="stylesheet" href="/css/sleep.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/image/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/books/"><i class="fa-fw fas fa-book"></i><span> 书籍</span></a></li><li><a class="site-page child" href="/people/"><i class="fa-fw fas fa-face-smile"></i><span> 人类</span></a></li><li><a class="site-page child" href="/things/"><i class="fa-fw fas fa-ghost"></i><span> 小玩意</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/categories/%E6%97%A5%E8%AE%B0/"><i class="fa-fw fas fa-archive"></i><span> 日记</span></a></div><div class="menus_item"><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></div><div class="menus_item"><a class="site-page" href="/words/"><i class="fa-fw fas fa-heart"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/summary/"><i class="fa-fw fas fa-link"></i><span> 年度总结</span></a></div><div class="menus_item"><a class="site-page" href="/calendar/"><i class="fa-fw fas fa-calendar"></i><span> 日历</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(https://raw.githubusercontent.com/dystate/image-words/main/83ea73e42c1b210ac2a6f18bf0eacb04.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">夏令时</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/books/"><i class="fa-fw fas fa-book"></i><span> 书籍</span></a></li><li><a class="site-page child" href="/people/"><i class="fa-fw fas fa-face-smile"></i><span> 人类</span></a></li><li><a class="site-page child" href="/things/"><i class="fa-fw fas fa-ghost"></i><span> 小玩意</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/categories/%E6%97%A5%E8%AE%B0/"><i class="fa-fw fas fa-archive"></i><span> 日记</span></a></div><div class="menus_item"><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></div><div class="menus_item"><a class="site-page" href="/words/"><i class="fa-fw fas fa-heart"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/summary/"><i class="fa-fw fas fa-link"></i><span> 年度总结</span></a></div><div class="menus_item"><a class="site-page" href="/calendar/"><i class="fa-fw fas fa-calendar"></i><span> 日历</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">weidan</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><div id="retro-phone-link-container"></div>
-
-<script>
-{
-  // --- 1. 逻辑设置 ---
-  const targetMonth = 4; // 4月
-  const targetDay = 18;  // 18日
+}</script><link rel="stylesheet" href="/css/sleep.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/image/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/books/"><i class="fa-fw fas fa-book"></i><span> 书籍</span></a></li><li><a class="site-page child" href="/people/"><i class="fa-fw fas fa-face-smile"></i><span> 人类</span></a></li><li><a class="site-page child" href="/things/"><i class="fa-fw fas fa-ghost"></i><span> 小玩意</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/categories/%E6%97%A5%E8%AE%B0/"><i class="fa-fw fas fa-archive"></i><span> 日记</span></a></div><div class="menus_item"><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></div><div class="menus_item"><a class="site-page" href="/words/"><i class="fa-fw fas fa-heart"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/summary/"><i class="fa-fw fas fa-link"></i><span> 年度总结</span></a></div><div class="menus_item"><a class="site-page" href="/calendar/"><i class="fa-fw fas fa-calendar"></i><span> 日历</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(https://raw.githubusercontent.com/dystate/image-words/main/83ea73e42c1b210ac2a6f18bf0eacb04.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">夏令时</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/books/"><i class="fa-fw fas fa-book"></i><span> 书籍</span></a></li><li><a class="site-page child" href="/people/"><i class="fa-fw fas fa-face-smile"></i><span> 人类</span></a></li><li><a class="site-page child" href="/things/"><i class="fa-fw fas fa-ghost"></i><span> 小玩意</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/categories/%E6%97%A5%E8%AE%B0/"><i class="fa-fw fas fa-archive"></i><span> 日记</span></a></div><div class="menus_item"><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></div><div class="menus_item"><a class="site-page" href="/words/"><i class="fa-fw fas fa-heart"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/summary/"><i class="fa-fw fas fa-link"></i><span> 年度总结</span></a></div><div class="menus_item"><a class="site-page" href="/calendar/"><i class="fa-fw fas fa-calendar"></i><span> 日历</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">weidan</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><style>
+  /* ====== 1. 顶部索引导航区域 ====== */
+  .cal-index-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 30px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+    max-height: 180px; 
+    overflow-y: auto;
+  }
   
-  // 自动计算下一次生日
-  const now = new Date();
-  let targetYear = now.getFullYear();
-  let targetDate = new Date(targetYear, targetMonth - 1, targetDay);
-  
-  if (now.getTime() > targetDate.getTime()) {
-    targetDate = new Date(targetYear + 1, targetMonth - 1, targetDay);
+  .cal-index-btn {
+    padding: 6px 12px;
+    background: #fff;
+    color: #555;
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none !important;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s;
+    font-weight: bold;
   }
 
-  const msPerDay = 1000 * 60 * 60 * 24;
-  const daysLeft = Math.ceil((targetDate - now) / msPerDay);
-  const dateString = `${targetDate.getFullYear()}/${String(targetMonth).padStart(2, '0')}/${String(targetDay).padStart(2, '0')}`;
+  .cal-index-btn:hover {
+    background: #4caf50;
+    color: #fff;
+    border-color: #4caf50;
+    transform: translateY(-2px);
+  }
 
-  // --- 2. 定义按键样式 (提取出来方便复用) ---
-  const keyStyle = `
-    background: #111;
-    color: #eee;
-    height: 35px;
-    border-radius: 10px;
+  /* ====== 2. 大日历布局：铺满整行 ====== */
+  #super-calendar-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 14px;
-    font-weight: bold;
-    box-shadow: 0 3px 0 #444;
-    border-top: 1px solid #555;
-    text-decoration: none; /* 去掉链接下划线 */
-    cursor: pointer;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .my-cal-month {
+    width: 100%;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    padding: 25px;
     box-sizing: border-box;
-  `;
+    border: 1px solid #f0f0f0;
+    margin-bottom: 40px; 
+    scroll-margin-top: 80px; 
+  }
 
-  // --- 3. 构建 HTML ---
-  const htmlContent = `
-    <div style="
-      position: relative;
-      width: 280px;
-      margin: 20px auto;
-      background: linear-gradient(135deg, #d4d4d4 0%, #f0f0f0 50%, #a8a8a8 100%);
-      border-radius: 30px;
-      padding: 25px 15px 40px 15px;
-      box-shadow: 
-        inset 2px 2px 5px rgba(255,255,255,0.8),
-        inset -2px -2px 5px rgba(0,0,0,0.2),
-        10px 10px 20px rgba(0,0,0,0.15);
-      font-family: 'Courier New', Courier, monospace;
-      box-sizing: border-box;
-      user-select: none;
-    ">
-      
-      <div style="
-        text-align: center; color: #555; font-weight: bold; 
-        font-size: 14px; margin-bottom: 10px; letter-spacing: 1px;
-        text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
-      ">WEI XING ZHEN</div>
+  .my-cal-header {
+    text-align: left; 
+    font-weight: 800;
+    font-size: 1.4em;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    padding-left: 5px;
+    border-left: 5px solid #4caf50; 
+  }
 
-      <div style="
-        background-color: #8cc63f; 
-        border: 4px solid #999;
-        border-radius: 10px 10px 25px 10px;
-        padding: 10px;
-        box-shadow: inset 3px 3px 8px rgba(0,0,0,0.15);
-        color: #1a1a1a;
-        margin-bottom: 20px;
-        position: relative;
-        min-height: 110px;
-        display: flex;
-        flex-direction: column;
-      ">
-        <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; opacity: 0.8;">
-          <span>一起嘻嘻哈哈到70岁</span>
-          <span>🥚</span>
-        </div>
+  /* ====== 3. 网格与单天格子 ====== */
+  .my-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0; 
+    border-top: 1px solid #eaeaea;
+    border-left: 1px solid #eaeaea;
+  }
+
+  .my-cal-weekday {
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+    font-weight: bold;
+    padding: 10px 0;
+    background: #fcfcfc;
+    border-right: 1px solid #eaeaea;
+    border-bottom: 1px solid #eaeaea;
+  }
+
+  .my-cal-day {
+    position: relative;
+    height: 100px; 
+    background-color: #fff;
+    border-right: 1px solid #eaeaea;
+    border-bottom: 1px solid #eaeaea;
+    transition: background-color 0.2s;
+  }
+  
+  .my-cal-day:hover {
+    background-color: #fafbfc; 
+  }
+
+  .my-cal-day.empty {
+    background-color: #fafafa;
+  }
+
+  /* ====== 4. 日期数字：左上角 ====== */
+  .day-num {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    font-size: 15px;
+    color: #777;
+    font-weight: 600;
+  }
+
+  /* ====== 5. 横向长条便签 & 翘边效果 ====== */
+  .my-cal-sticker {
+    position: absolute;
+    bottom: 15px; 
+    left: 6px;
+    right: 6px; 
+    background: #dcedc8; 
+    color: #33691e !important; 
+    padding: 4px 8px;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    z-index: 2;
+    border-bottom-right-radius: 12px 3px; 
+    transition: transform 0.2s;
+    text-decoration: none !important; 
+    display: block; 
+  }
+
+  .my-cal-sticker:hover {
+    transform: translateY(-2px); 
+  }
+
+  .my-cal-sticker::after {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 40%;
+    height: 10px;
+    box-shadow: 4px 5px 6px rgba(0, 0, 0, 0.25);
+    transform: skew(-15deg) rotate(-4deg);
+    z-index: -1; 
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+</style>
+
+<div id="calendar-index" class="cal-index-container"></div>
+<div id="super-calendar-container"></div>
+
+<script>
+  // ==========================================
+  // 📝 贴纸数据仓库 
+  // ==========================================
+  const myStickers = {
+    // 请在这里修改你的文字和链接，如果不想要链接，可以直接把 link 后面的内容留空，或者改成 "javascript:;"
+    "2026-02-09": { text: "打雷日", link: "/weidan/Ourdays/2.9" },
+    "2026-03-20": { text: "第一次告白", link: "/weidan/Ourdays/3.20" },
+    "2026-04-08": { text: "第二次告白", link: "/weidan/Ourdays/4.8"},
+    "2026-04-14": { text: "追泪失败", link: ""},
+    "2026-04-15": { text: "完成第一个任务：去景德镇", link: ""},
+    "2026-04-20": { text: "一起去体检", link: ""},
+    "2026-04-21": { text: "体验商务座", link:""},
+  };
+
+  function buildSuperCalendar() {
+    const container = document.getElementById('super-calendar-container');
+    const indexContainer = document.getElementById('calendar-index');
+    if (!container || !indexContainer) return;
+    
+    container.innerHTML = '';
+    indexContainer.innerHTML = '';
+
+    const startYear = 2026;
+    const startMonth = 1; // 1 代表 2月 (JS中月份从0开始算)
+    const totalMonths = 32; // 顺延32个月
+
+    let indexHtml = '';
+    let calHtml = '';
+
+    for (let i = 0; i < totalMonths; i++) {
+      const year = startYear + Math.floor((startMonth + i) / 12);
+      const month = (startMonth + i) % 12;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const firstDay = new Date(year, month, 1).getDay(); 
+
+      const monthId = `month-${year}-${month + 1}`;
+      const monthTitle = `${year}年 ${month + 1}月`;
+
+      indexHtml += `<a href="#${monthId}" class="cal-index-btn">${monthTitle}</a>`;
+
+      calHtml += `<div class="my-cal-month" id="${monthId}">`;
+      calHtml += `<div class="my-cal-header">${monthTitle}</div>`;
+      calHtml += `<div class="my-cal-grid">
+                <div class="my-cal-weekday">日</div><div class="my-cal-weekday">一</div><div class="my-cal-weekday">二</div>
+                <div class="my-cal-weekday">三</div><div class="my-cal-weekday">四</div><div class="my-cal-weekday">五</div><div class="my-cal-weekday">六</div>`;
+
+      for (let j = 0; j < firstDay; j++) {
+        calHtml += `<div class="my-cal-day empty"></div>`;
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         
-        <div style="font-weight: bold; font-size: 16px; line-height: 1.6; flex-grow: 1;">
-          <div>关于</div>
-          <div>韦蛋的生日倒计时</div>
-          <div style="margin-top: 5px;">
-            还有 <span style="font-size: 22px; background: rgba(0,0,0,0.08); padding: 0 4px;">${daysLeft}</span> 天
-          </div>
-        </div>
+        const stickerData = myStickers[dateStr]; 
+        let stickerHtml = '';
         
-        <div style="font-size: 12px; opacity: 0.8; margin-top: 5px;">${dateString}</div>
-      </div>
+        if (stickerData) {
+          const isObject = typeof stickerData === 'object';
+          const text = isObject ? stickerData.text : stickerData;
+          const link = isObject && stickerData.link ? stickerData.link : 'javascript:;';
+          const cursorStyle = link !== 'javascript:;' ? 'cursor: pointer;' : 'cursor: default;';
 
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 10px;">
-        <div style="width: 50px; height: 30px; background: #222; border-radius: 10px 5px 5px 10px; border-top: 2px solid #555; position: relative;">
-           <div style="width: 20px; height: 2px; background: #00bcd4; position: absolute; top: 8px; left: 15px;"></div>
-        </div>
-        <div style="
-          width: 60px; height: 40px; 
-          border: 3px solid #b0b0b0; 
-          border-radius: 15px;
-          display: flex; justify-content: center; align-items: center;
-          background: rgba(0,0,0,0.05);
-        ">
-          <div style="width: 40px; height: 25px; background: #222; border-radius: 8px; box-shadow: inset 0 1px 2px rgba(255,255,255,0.2);"></div>
-        </div>
-        <div style="width: 50px; height: 30px; background: #222; border-radius: 5px 10px 10px 5px; border-top: 2px solid #555; position: relative;">
-            <div style="width: 20px; height: 2px; background: #ff4444; position: absolute; top: 8px; left: 15px;"></div>
-        </div>
-      </div>
+          stickerHtml = `<a href="${link}" class="my-cal-sticker" title="${text}" style="${cursorStyle}">${text}</a>`;
+        }
 
-      <div style="
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-        padding: 0 5px;
-      ">
-        ${[1, 2, 3, 4, 5, 6, 7, 8, 9, '*', 0, '#'].map(key => {
-            // --- 关键修改：如果是按键1，生成链接 ---
-            if (key === 1) {
-                return `
-                <a href=/weidan/two_of_us " style="${keyStyle}">
-                    ${key}
-                </a>
-                `;
-            }
-            if (key === 2) {
-                return `
-                <a href=/weidan/photos " style="${keyStyle}">
-                    ${key}
-                </a>
-                `;  
-            }
-            if (key === 9) {
-                return `
-                <a href=/weidan/Ourdays " style="${keyStyle}">
-                    ${key}
-                </a>
-                `;
-            }
-            if (key === 3) {
-                return `
-                <a href=/weidan/todos " style="${keyStyle}">
-                    ${key}
-                </a>
-                `;
-            }
-            // 其他按键保持普通 div
-            return `<div style="${keyStyle}">${key}</div>`;
-        }).join('')}
-      </div>
-      
-      <div style="text-align: center; font-size: 8px; color: #888; margin-top: 15px; letter-spacing: 2px;">•••••</div>
-    </div>
-  `;
+        calHtml += `<div class="my-cal-day">
+                  <span class="day-num">${day}</span>
+                  ${stickerHtml}
+                 </div>`;
+      }
+      calHtml += `</div></div>`; 
+    }
 
-  document.getElementById('retro-phone-link-container').innerHTML = htmlContent;
-}
+    indexContainer.innerHTML = indexHtml;
+    container.innerHTML = calHtml;
+  }
+
+  document.addEventListener('DOMContentLoaded', buildSuperCalendar);
+  document.addEventListener('pjax:complete', buildSuperCalendar);
 </script></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget card-archives">
     <div class="item-headline">
       <i class="fas fa-archive"></i>
