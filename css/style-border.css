@@ -1,0 +1,36 @@
+/* 自定义立体感增强样式 */
+:root {
+    --card-radius: 20px; /* 控制圆角大小 */
+    /* 基础投影：多层阴影会让立体感更自然 */
+    --base-shadow: 0 12px 20px -10px rgba(0, 0, 0, 0.15), 0 4px 8px -2px rgba(0, 0, 0, 0.06);
+    /* 悬停投影：更深更远，模拟浮起 */
+    --hover-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.2);
+}
+
+/* 针对文章卡片、侧边栏和搜索框 */
+.l_main .post, 
+.widget, 
+.card,
+#l_main article.post,
+.search-wrapper {
+    border-radius: var(--card-radius) !important;
+    box-shadow: var(--base-shadow) !important;
+    border: 1px solid rgba(0, 0, 0, 0.03) !important; /* 极淡的轮廓线 */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    background: #ffffff !important; 
+    margin-bottom: 24px !important;
+    overflow: hidden; /* 确保内容不超出圆角 */
+}
+
+/* 鼠标悬停时的浮起特效 */
+.l_main .post:hover, 
+.widget:hover,
+#l_main article.post:hover {
+    transform: translateY(-6px); /* 向上抬升 */
+    box-shadow: var(--hover-shadow) !important;
+}
+
+/* 如果有图片，让图片也带一点圆角 */
+.post-wrapper img {
+    border-radius: 8px !important;
+}
