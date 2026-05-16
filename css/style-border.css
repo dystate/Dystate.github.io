@@ -69,3 +69,78 @@
     z-index: 1 !important;
 }
 
+/* =========================================
+   我的专属书架样式
+   ========================================= */
+.my-bookshelf {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+/* 单本书的容器 */
+.book-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+    transition: transform 0.3s ease;
+}
+.book-item:hover {
+    transform: translateY(-5px); /* 鼠标放上去书本微微上浮 */
+}
+
+/* 书本封面 */
+.book-cover {
+    width: 90px !important;
+    height: 130px !important;
+    object-fit: cover !important;
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.3) !important;
+    border-radius: 2px 4px 4px 2px !important;
+    margin: 0 !important;
+}
+
+/* 书架木色底座隔板 */
+.book-shelf-base {
+    width: 120px;
+    height: 12px;
+    background: #8B5A2B;
+    margin-top: -5px;
+    z-index: -1;
+    border-radius: 2px;
+    box-shadow: 0 5px 5px rgba(0,0,0,0.2);
+}
+
+/* 书名 */
+.book-title {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+/* 阅读日期/状态 */
+.book-date {
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+}
+
+/* 读后感便签 */
+.book-review {
+    margin-top: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #f4f4f5;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    color: #555;
+    line-height: 1.5;
+    text-align: justify;
+    min-height: 32px;
+}

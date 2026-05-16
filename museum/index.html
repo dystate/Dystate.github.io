@@ -1,0 +1,1613 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --mu-bg: #f3eadf;
+      --mu-card: #fffaf3;
+      --mu-panel: #efe0cf;
+      --mu-text: #2f2117;
+      --mu-muted: #8f7965;
+      --mu-border: #ddc8b3;
+      --mu-accent: #bd7a3f;
+      --mu-accent-2: #6f472b;
+      --mu-soft: rgba(189, 122, 63, .12);
+      --mu-soft-2: rgba(189, 122, 63, .2);
+      --mu-danger: #bf5b50;
+      --mu-radius: 26px;
+      --mu-shadow: none;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background: var(--mu-bg);
+      color: var(--mu-text);
+      font-family: "Inter", "HarmonyOS Sans SC", "MiSans", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    .mu-sidebar {
+      width: 276px;
+      min-height: 100vh;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      padding: 32px 20px;
+      background: #e6d8c8;
+      border-right: 1px solid #b99b7f;
+      overflow-y: auto;
+      flex: 0 0 276px;
+    }
+    .mu-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      letter-spacing: 1.2px;
+      font-weight: 800;
+      font-size: 20px;
+    }
+    .mu-logo i {
+      width: 40px;
+      height: 40px;
+      border-radius: 0;
+      display: grid;
+      place-items: center;
+      background: var(--mu-text);
+      color: #fff;
+    }
+    .nav-card {
+      margin-bottom: 18px;
+      padding: 14px;
+      border: 1px solid #c7ac92;
+      border-radius: 0;
+      background: rgba(255, 250, 243, .42);
+    }
+    .mu-nav-title {
+      color: var(--mu-muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      margin: 4px 6px 12px;
+    }
+    .mu-nav-list { list-style: none; display: grid; gap: 6px; }
+    .mu-nav-item {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 12px;
+      border-radius: 0;
+      color: var(--mu-text);
+      background: transparent;
+      transition: .22s ease;
+    }
+    .mu-nav-item .nav-left { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+    .mu-nav-item i { width: 18px; color: var(--mu-accent); }
+    .mu-nav-item:hover, .mu-nav-item.active {
+      background: rgba(97, 65, 44, .08);
+      color: var(--mu-accent-2);
+      font-weight: 800;
+    }
+    .mu-nav-item.home-item.active {
+      background: var(--mu-accent-2);
+      color: #fff;
+    }
+    .mu-nav-item.home-item.active i,
+    .mu-nav-item.home-item.active .mu-count { color: #fff; }
+    .mu-nav-item.home-item.active .mu-count { background: rgba(255,255,255,.18); }
+    .mu-count {
+      min-width: 30px;
+      padding: 2px 9px;
+      border-radius: 0;
+      text-align: center;
+      font-size: 12px;
+      background: #dcc9b7;
+      color: var(--mu-muted);
+      font-weight: 700;
+    }
+    .mu-nav-item.active:not(.home-item) .mu-count { background: var(--mu-accent); color: #fff; }
+    .sidebar-tip {
+      margin-top: 4px;
+      padding: 14px;
+      border-radius: 0;
+      background: #3a291d;
+      color: rgba(255,255,255,.78);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .mu-main {
+      flex: 1;
+      min-height: 100vh;
+      overflow: visible;
+      padding: 34px 42px 70px;
+    }
+    .mu-header {
+      display: grid;
+      grid-template-columns: minmax(260px, 420px) 1fr auto;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+    .mu-search {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 18px;
+      background: rgba(251, 247, 240, .78);
+      border: 1px solid var(--mu-border);
+      border-radius: 0;
+    }
+    .mu-search i { color: var(--mu-muted); }
+    .mu-search input { width: 100%; background: transparent; border: 0; outline: 0; color: var(--mu-text); }
+    .museum-heading .eyebrow { font-size: 12px; color: var(--mu-muted); letter-spacing: .16em; font-weight: 800; }
+    .museum-heading h1 { font-size: 28px; margin-top: 4px; }
+    .header-controls {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .view-switch {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(251, 247, 240, .78);
+      border: 1px solid var(--mu-border);
+      border-radius: 0;
+      padding: 4px;
+    }
+    .view-btn {
+      min-width: 92px;
+      padding: 10px 14px;
+      border-radius: 0;
+      background: transparent;
+      color: var(--mu-muted);
+      font-weight: 800;
+      transition: .2s ease;
+    }
+    .view-btn.active {
+      background: var(--mu-text);
+      color: #fff;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 17px;
+      border-radius: 0;
+      font-weight: 800;
+      transition: .22s ease;
+      white-space: nowrap;
+    }
+    .btn-ghost { color: var(--mu-text); background: var(--mu-card); border: 1px solid var(--mu-border); }
+    .btn-primary { background: var(--mu-text); color: #fff; }
+    .btn:hover { background: var(--mu-soft-2); }
+    .btn-primary:hover { background: var(--mu-accent); }
+    .toolbar-note {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
+      color: var(--mu-muted);
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+    .toolbar-note strong { color: var(--mu-text); }
+    .active-filter { color: var(--mu-accent-2); font-weight: 800; }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0 18px;
+      font-size: 21px;
+    }
+    .section-sub { color: var(--mu-muted); font-size: 13px; margin-top: -8px; margin-bottom: 20px; }
+    .mu-grid {
+      display: grid;
+      gap: 20px;
+    }
+    .mu-grid.view-cards {
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      align-items: start;
+    }
+    .exhibit-card {
+      background: rgba(251, 247, 240, .86);
+      border: 1px solid var(--mu-border);
+      border-radius: var(--mu-radius);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: border-color .24s ease, background .24s ease;
+    }
+    .exhibit-card:hover { background: #fffaf3; border-color: var(--mu-accent); }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .card-header h3 { font-size: 20px; line-height: 1.25; }
+    .btn-edit {
+      width: 40px;
+      height: 40px;
+      border-radius: 0;
+      color: var(--mu-muted);
+      background: #eadbc9;
+      flex: 0 0 auto;
+      transition: .2s ease;
+    }
+    .btn-edit:hover { color: #fff; background: var(--mu-accent); }
+    .card-body {
+      display: flex;
+      gap: 18px;
+      min-height: 0;
+      flex: 1;
+      align-items: stretch;
+    }
+    .card-img-wrapper {
+      position: relative;
+      flex: 0 0 44%;
+      min-height: 238px;
+      border-radius: 0;
+      overflow: hidden;
+      background: #35291f;
+      border: 1px solid #efe8de;
+    }
+    .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .empty-img {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      color: var(--mu-muted);
+      font-size: 34px;
+    }
+    .card-no {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 5px 10px;
+      border-radius: 0;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      background: rgba(251, 247, 240, .9);
+    }
+    .card-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      justify-content: center;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .meta-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 0;
+      border: 1px solid var(--mu-border);
+      background: #f3eadf;
+      min-height: 58px;
+    }
+    .meta-pill i {
+      width: 18px;
+      text-align: center;
+      color: var(--mu-accent);
+      font-size: 15px;
+      flex: 0 0 auto;
+    }
+    .meta-content { min-width: 0; }
+    .meta-label {
+      display: block;
+      font-size: 11px;
+      color: var(--mu-muted);
+      letter-spacing: .06em;
+      font-weight: 800;
+      margin-bottom: 3px;
+    }
+    .meta-value {
+      display: block;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--mu-accent-2);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .meta-pill.price-pill .meta-value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: var(--mu-text);
+    }
+    .card-footer {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--mu-border);
+      color: #625b51;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .mu-grid.view-list {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .list-row {
+      display: block;
+      padding: 18px 20px 16px;
+      background: rgba(251, 247, 240, .78);
+      border: 1px solid var(--mu-border);
+      border-left: 5px solid #9a6c49;
+      border-radius: 0;
+      transition: border-color .22s ease, background .22s ease;
+    }
+    .list-row:hover { background: #fffaf3; border-color: var(--mu-accent); }
+    .list-main { min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+    .list-top { display: grid; grid-template-columns: minmax(180px, 1.1fr) auto; align-items: start; gap: 18px; }
+    .list-title-wrap h3 { font-size: 20px; line-height: 1.25; margin-bottom: 6px; color: var(--mu-text); }
+    .list-number-text { color: var(--mu-accent); font-size: 12px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .list-row .meta-grid {
+      grid-template-columns: repeat(5, minmax(110px, 1fr));
+      gap: 0;
+      border-top: 1px solid var(--mu-border);
+      border-left: 1px solid var(--mu-border);
+    }
+    .list-row .meta-pill {
+      min-height: 62px;
+      border-top: 0;
+      border-left: 0;
+      border-right: 1px solid var(--mu-border);
+      border-bottom: 1px solid var(--mu-border);
+      background: rgba(243, 234, 223, .62);
+    }
+    .list-row .meta-pill.price-pill { grid-column: auto !important; }
+    .list-note {
+      font-size: 13px;
+      color: #625b51;
+      line-height: 1.65;
+      padding-top: 10px;
+      border-top: 1px solid var(--mu-border);
+    }
+
+    .img-error-text {
+      display: grid;
+      place-items: center;
+      text-align: center;
+      gap: 8px;
+      padding: 18px;
+      color: var(--mu-muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .img-error-text i { font-size: 28px; color: var(--mu-danger); }
+
+    .empty-state {
+      min-height: 340px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--mu-muted);
+      border: 1px dashed var(--mu-border);
+      border-radius: 0;
+      background: rgba(255,255,255,.35);
+      padding: 20px;
+    }
+    .empty-state i { font-size: 42px; color: var(--mu-accent); margin-bottom: 14px; }
+    .modal-overlay, .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      background: rgba(34,32,29,.38);
+    }
+    .modal-overlay.show, .drawer-overlay.show { display: flex; }
+    .modal-overlay { align-items: center; justify-content: center; padding: 20px; }
+    .modal-box {
+      width: min(760px, 96vw);
+      max-height: 92vh;
+      overflow-y: auto;
+      background: var(--mu-card);
+      border: 1px solid var(--mu-border);
+      border-radius: 0;
+      padding: 28px;
+      animation: pop .22s ease;
+    }
+    @keyframes pop {
+      from { opacity: 0; transform: translateY(14px) scale(.985); }
+      to { opacity: 1; transform: none; }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+    .modal-header h2 { font-size: 22px; display: flex; align-items: center; gap: 10px; }
+    .btn-close {
+      width: 38px;
+      height: 38px;
+      border-radius: 0;
+      background: #f1ece4;
+      color: var(--mu-muted);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 7px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: 12px; color: var(--mu-muted); font-weight: 900; letter-spacing: .05em; }
+    .mu-input, .mu-select, .mu-textarea {
+      width: 100%;
+      border: 1px solid var(--mu-border);
+      border-radius: 0;
+      background: #fbf8f3;
+      padding: 12px 13px;
+      outline: 0;
+      color: var(--mu-text);
+      transition: .2s ease;
+    }
+    .mu-input:focus, .mu-select:focus, .mu-textarea:focus {
+      border-color: var(--mu-accent);
+      background: #fff;
+      outline: 2px solid var(--mu-soft-2);
+      outline-offset: 0;
+    }
+    .mu-textarea { min-height: 90px; resize: vertical; }
+    .upload-box {
+      position: relative;
+      min-height: 170px;
+      display: grid;
+      place-items: center;
+      gap: 6px;
+      border: 2px dashed var(--mu-border);
+      border-radius: 0;
+      background: #f2e2cf;
+      color: var(--mu-muted);
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .upload-box:hover { border-color: var(--mu-accent); color: var(--mu-accent-2); }
+    .upload-box input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-inner { text-align: center; pointer-events: none; }
+    .upload-inner i { font-size: 30px; margin-bottom: 8px; color: var(--mu-accent); }
+    .preview-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .form-actions-right { display: flex; gap: 12px; }
+    .btn-danger { background: #fbefed; color: var(--mu-danger); }
+    #itemModal .btn { border-radius: 0; }
+    .drawer-overlay { justify-content: flex-end; }
+    .drawer {
+      width: min(390px, 92vw);
+      height: 100%;
+      padding: 30px;
+      background: var(--mu-card);
+      border-left: 1px solid var(--mu-border);
+      animation: slide .22s ease;
+      overflow-y: auto;
+    }
+    @keyframes slide { from { transform: translateX(24px); opacity: .2; } to { transform: none; opacity: 1; } }
+    .filter-row { display: grid; gap: 8px; margin-bottom: 16px; }
+    .supabase-help {
+      margin-top: 26px;
+      padding: 16px;
+      border: 1px solid var(--mu-border);
+      border-radius: 0;
+      background: rgba(168,145,114,.08);
+      color: #625b51;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .supabase-help code { background: #fff; padding: 1px 5px; border-radius: 0; }
+
+    .bulk-toolbar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 18px;
+      padding: 13px 16px;
+      border: 1px solid var(--mu-border);
+      border-radius: 0;
+      background: rgba(255,253,249,.92);
+      color: var(--mu-muted);
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+    .bulk-toolbar.show { display: flex; }
+    .bulk-left, .bulk-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .bulk-check {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 5;
+      width: 26px;
+      height: 26px;
+      accent-color: var(--mu-accent);
+      cursor: pointer;
+    }
+    .exhibit-card.bulk-mode, .list-row.bulk-mode { padding-top: 50px; }
+    .list-row .bulk-check { top: 16px; left: 16px; right: auto; }
+    .list-row.bulk-mode { position: relative; padding-left: 62px; }
+    .btn-danger-strong {
+      background: var(--mu-danger);
+      color: #fff;
+    }
+    .btn-danger-strong:hover { background: #7d3933; }
+    .btn[disabled] {
+      opacity: .45;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Light dashboard skin: solid panels, no scenic background, no glass blur. */
+    .mu-sidebar {
+      width: 238px;
+      flex-basis: 238px;
+      padding: 28px 18px;
+      background: #ead9c6;
+      border-right: 1px solid #d3b79d;
+    }
+    .mu-logo {
+      margin-bottom: 24px;
+      font-size: 15px;
+      letter-spacing: .04em;
+      color: var(--mu-text);
+    }
+    .mu-logo i {
+      width: 34px;
+      height: 34px;
+      border-radius: 15px;
+      background: #d2a06f;
+      color: #fffaf3;
+    }
+    .nav-card {
+      padding: 10px 8px;
+      border: 0;
+      border-radius: 20px;
+      background: #f7ecdf;
+      margin-bottom: 14px;
+    }
+    .mu-nav-title {
+      margin: 8px 10px 10px;
+      color: #9c8068;
+      font-size: 10px;
+      letter-spacing: .1em;
+    }
+    .mu-nav-list { gap: 3px; }
+    .mu-nav-item {
+      min-height: 40px;
+      padding: 9px 10px;
+      border-radius: 14px;
+      color: #6d5847;
+      font-size: 12px;
+    }
+    .mu-nav-item .nav-left { gap: 9px; font-weight: 700; }
+    .mu-nav-item i { color: #a66f42; font-size: 13px; }
+    .mu-nav-item:hover,
+    .mu-nav-item.active {
+      background: #ead6c0;
+      color: var(--mu-text);
+      font-weight: 800;
+    }
+    .mu-nav-item.home-item.active {
+      background: var(--mu-accent);
+      color: #fffaf3;
+    }
+    .mu-nav-item.home-item.active i,
+    .mu-nav-item.home-item.active .mu-count { color: #fffaf3; }
+    .mu-count {
+      min-width: 26px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #ead6c0;
+      color: #8b6d55;
+      font-size: 10px;
+    }
+    .mu-nav-item.active:not(.home-item) .mu-count {
+      background: #d2a06f;
+      color: #fffaf3;
+    }
+    .sidebar-tip {
+      border-radius: 18px;
+      background: #dec6ad;
+      color: #6f5845;
+      font-size: 11px;
+    }
+    .mu-main {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 34px 34px 64px;
+    }
+    .mu-header {
+      grid-template-columns: minmax(240px, 360px) minmax(220px, 1fr) auto;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .mu-search,
+    .view-switch,
+    .bulk-toolbar,
+    .empty-state {
+      background: var(--mu-card);
+      border: 1px solid var(--mu-border);
+      border-radius: 22px;
+    }
+    .mu-search {
+      min-height: 48px;
+      padding: 12px 16px;
+    }
+    .mu-search input { color: var(--mu-text); }
+    .mu-search input::placeholder { color: #aa927b; }
+    .museum-heading .eyebrow {
+      color: #a56f43;
+      font-size: 11px;
+      letter-spacing: .12em;
+    }
+    .museum-heading h1 {
+      margin-top: 2px;
+      color: var(--mu-text);
+      font-size: 28px;
+      font-weight: 850;
+      line-height: 1.1;
+    }
+    .view-switch { padding: 4px; }
+    .view-btn {
+      border-radius: 16px;
+      color: #8f7965;
+      font-size: 12px;
+    }
+    .view-btn.active {
+      background: #bd7a3f;
+      color: #fffaf3;
+    }
+    .btn {
+      min-height: 44px;
+      border-radius: 17px;
+      font-size: 13px;
+    }
+    .btn-ghost {
+      background: var(--mu-card);
+      border-color: var(--mu-border);
+      color: var(--mu-text);
+    }
+    .btn-primary {
+      background: var(--mu-accent);
+      color: #fffaf3;
+    }
+    .btn:hover { background: #ead6c0; color: var(--mu-text); }
+    .btn-primary:hover { background: #a86635; color: #fffaf3; }
+    .toolbar-note,
+    .section-sub,
+    .list-note,
+    .card-footer { color: var(--mu-muted); }
+    .toolbar-note strong,
+    .active-filter,
+    .section-title,
+    .section-title i { color: var(--mu-text); }
+    .section-title {
+      margin-top: 18px;
+      font-size: 20px;
+      font-weight: 850;
+    }
+    .mu-grid { gap: 16px; }
+    .exhibit-card,
+    .list-row {
+      background: var(--mu-card);
+      border: 1px solid var(--mu-border);
+      border-radius: 28px;
+    }
+    .exhibit-card {
+      padding: 18px;
+    }
+    .exhibit-card:hover,
+    .list-row:hover {
+      background: #fffdf8;
+      border-color: #c79d78;
+    }
+    .card-header h3,
+    .list-title-wrap h3 {
+      color: var(--mu-text);
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+    .btn-edit {
+      border-radius: 15px;
+      background: #f0dfcc;
+      color: #8d6646;
+    }
+    .btn-edit:hover {
+      background: var(--mu-accent);
+      color: #fffaf3;
+    }
+    .card-img-wrapper {
+      border: 0;
+      border-radius: 20px;
+      background: #ead8c3;
+    }
+    .card-no {
+      border-radius: 999px;
+      background: #bd7a3f;
+      color: #fffaf3;
+    }
+    .meta-grid { gap: 10px; }
+    .meta-pill {
+      border: 0;
+      border-radius: 18px;
+      background: #f2e2cf;
+      min-height: 66px;
+    }
+    .meta-pill:nth-child(1) { background: #f4d76a; color: #231a0f; }
+    .meta-pill:nth-child(2) { background: #f39a5d; color: #25130a; }
+    .meta-pill:nth-child(3) { background: #c983e8; color: #1f1026; }
+    .meta-pill:nth-child(4) { background: #8ddd63; color: #12210d; }
+    .meta-pill:nth-child(5) { background: #7bd4e7; color: #0d1d22; }
+    .meta-pill i,
+    .meta-pill .meta-label,
+    .meta-pill .meta-value,
+    .meta-pill.price-pill .meta-value {
+      color: inherit;
+    }
+    .meta-label {
+      opacity: .72;
+      font-size: 10px;
+      letter-spacing: .04em;
+    }
+    .meta-value {
+      font-size: 17px;
+      font-weight: 900;
+    }
+    .card-footer,
+    .list-note {
+      border-top: 1px solid #e0c9b2;
+    }
+    .list-row {
+      padding: 16px 18px;
+      border-left: 0;
+    }
+    .list-top {
+      grid-template-columns: minmax(180px, 1fr) auto;
+      align-items: center;
+    }
+    .list-number-text {
+      color: var(--mu-accent-2);
+      font-size: 11px;
+    }
+    .list-row .meta-grid {
+      gap: 8px;
+      border: 0;
+    }
+    .list-row .meta-pill {
+      border: 0;
+      min-height: 58px;
+      background: #f5e8d8;
+      color: var(--mu-text);
+    }
+    .list-row .meta-pill:nth-child(1) { border-top: 3px solid #f4d76a; }
+    .list-row .meta-pill:nth-child(2) { border-top: 3px solid #f39a5d; }
+    .list-row .meta-pill:nth-child(3) { border-top: 3px solid #c983e8; }
+    .list-row .meta-pill:nth-child(4) { border-top: 3px solid #8ddd63; }
+    .list-row .meta-pill:nth-child(5) { border-top: 3px solid #7bd4e7; }
+    .empty-state {
+      background: var(--mu-card);
+      color: var(--mu-muted);
+    }
+    .modal-overlay,
+    .drawer-overlay {
+      background: rgba(47, 33, 23, .32);
+    }
+    .modal-box,
+    .drawer {
+      background: #fffaf3;
+      border-color: var(--mu-border);
+      border-radius: 28px;
+      color: var(--mu-text);
+    }
+    .drawer { border-radius: 28px 0 0 28px; }
+    .btn-close,
+    .mu-input,
+    .mu-select,
+    .mu-textarea,
+    .upload-box,
+    .supabase-help {
+      border-radius: 18px;
+      background: #f5e8d8;
+      border-color: var(--mu-border);
+      color: var(--mu-text);
+    }
+    .mu-input:focus,
+    .mu-select:focus,
+    .mu-textarea:focus {
+      background: #fffdf8;
+      outline: 2px solid rgba(189, 122, 63, .24);
+    }
+    .form-group label { color: var(--mu-muted); }
+    .upload-box { background: #f2e2cf; }
+    .btn-danger { background: #f8ded9; color: #9d3f37; }
+    .btn-danger-strong { background: var(--mu-danger); color: #fffaf3; }
+
+    @media (max-width: 1180px) {
+      .mu-header { grid-template-columns: 1fr; }
+      .header-controls { justify-content: flex-start; }
+    }
+    @media (max-width: 980px) {
+      body { overflow-x: hidden; overflow-y: auto; display: block; }
+      .mu-sidebar {
+        width: 100%;
+        min-height: auto;
+        height: auto;
+        position: static;
+        border-right: 0;
+        border-bottom: 1px solid var(--mu-border);
+      }
+      .mu-main { padding: 24px 18px 50px; }
+      .mu-grid.view-cards { grid-template-columns: 1fr; }
+      .card-body { flex-direction: column; }
+      .card-img-wrapper { flex-basis: auto; width: 100%; min-height: 220px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .list-top { grid-template-columns: 1fr auto; }
+      .list-row .meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .meta-grid { grid-template-columns: 1fr; }
+      .list-row { padding: 16px; }
+      .list-row.bulk-mode { padding-left: 52px; }
+      .list-row .meta-grid { grid-template-columns: 1fr; }
+      .list-top { grid-template-columns: 1fr; }
+      .toolbar-note { align-items: flex-start; }
+      .view-switch { width: 100%; }
+      .view-btn { flex: 1; }
+      .form-actions { flex-direction: column; align-items: stretch; }
+      .form-actions-right { width: 100%; }
+      .form-actions-right .btn, .form-actions .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="mu-sidebar">
+    <div class="mu-logo"><i class="fa-solid fa-building-columns"></i><span>LIFE MUSEUM</span></div>
+    <div class="nav-card">
+      <div class="mu-nav-title">主页 Home</div>
+      <ul class="mu-nav-list" id="homeNav"></ul>
+    </div>
+    <div class="nav-card">
+      <div class="mu-nav-title">类别 Category</div>
+      <ul class="mu-nav-list" id="categoryNav"></ul>
+    </div>
+    <div class="nav-card">
+      <div class="mu-nav-title">状态 Status</div>
+      <ul class="mu-nav-list" id="statusNav"></ul>
+    </div>
+  </aside>
+
+  <main class="mu-main">
+    <header class="mu-header">
+      <div class="mu-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="searchInput" type="search" placeholder="检索馆藏：名称 / 编号 / 备注" />
+      </div>
+      <div class="header-controls">
+        <div class="view-switch" aria-label="视图切换">
+          <button class="view-btn active" id="cardViewBtn" type="button"><i class="fa-solid fa-table-cells-large"></i> 卡片</button>
+          <button class="view-btn" id="listViewBtn" type="button"><i class="fa-solid fa-list"></i> 清单</button>
+        </div>
+        <button class="btn btn-ghost" id="openFilterBtn"><i class="fa-solid fa-sliders"></i> 筛选</button>
+        <button class="btn btn-ghost" id="bulkModeBtn"><i class="fa-solid fa-list-check"></i> 批量管理</button>
+        <button class="btn btn-primary" id="openAddBtn"><i class="fa-solid fa-circle-plus"></i> 新增入馆</button>
+      </div>
+    </header>
+    <div class="toolbar-note">
+      <div>当前视图：<span class="active-filter" id="activeFilterText">全部藏品</span></div>
+      <div>共 <strong id="totalCount">0</strong> 件，当前显示 <strong id="shownCount">0</strong> 件</div>
+    </div>
+    <h2 class="section-title"><i class="fa-solid fa-box-archive" id="sectionTitleIcon"></i><span id="sectionTitleText">全部藏品</span></h2>
+    <div class="section-sub" id="sectionSubtitle">按入馆时间倒序展示，你的每一件物品都值得被认真归档。</div>
+    <div class="bulk-toolbar" id="bulkToolbar">
+      <div class="bulk-left">
+        <strong>批量管理</strong>
+        <span>已选择 <strong id="selectedCount">0</strong> 件藏品</span>
+      </div>
+      <div class="bulk-actions">
+        <button class="btn btn-ghost" type="button" id="selectAllVisibleBtn"><i class="fa-solid fa-check-double"></i> 全选当前显示</button>
+        <button class="btn btn-ghost" type="button" id="clearSelectedBtn"><i class="fa-solid fa-xmark"></i> 清空选择</button>
+        <button class="btn btn-danger-strong" type="button" id="deleteSelectedBtn" disabled><i class="fa-solid fa-trash-can"></i> 删除所选</button>
+      </div>
+    </div>
+    <section class="mu-grid view-cards" id="exhibitGrid"></section>
+  </main>
+
+  <div class="modal-overlay" id="itemModal" aria-hidden="true">
+    <section class="modal-box" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2 id="modalTitle"><i class="fa-solid fa-box-open" style="color:var(--mu-accent)"></i> 藏品入馆登记</h2>
+        <button class="btn-close" type="button" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="itemForm">
+        <input type="hidden" id="editingId" />
+        <div class="form-grid">
+          <label class="upload-box form-group full">
+            <input id="photoInput" type="file" accept="image/*" />
+            <img id="photoPreview" class="preview-img" alt="图片预览" style="display:none" />
+            <span class="upload-inner" id="uploadInner">
+              <i class="fa-solid fa-cloud-arrow-up"></i><br>
+              点击上传藏品照片，选择后会立即预览
+            </span>
+          </label>
+          <div class="form-group">
+            <label for="nameInput">名称</label>
+            <input class="mu-input" id="nameInput" list="nameOptions" placeholder="例如：卡坦岛 / 骨瓷茶杯" required />
+            <datalist id="nameOptions"></datalist>
+          </div>
+          <div class="form-group">
+            <label for="numberInput">编号</label>
+            <input class="mu-input" id="numberInput" list="numberOptions" placeholder="No.1" required />
+            <datalist id="numberOptions"></datalist>
+          </div>
+          <div class="form-group">
+            <label for="categoryInput">类别</label>
+            <select class="mu-select" id="categoryInput" required></select>
+          </div>
+          <div class="form-group">
+            <label for="statusInput">状态</label>
+            <select class="mu-select" id="statusInput" required></select>
+          </div>
+          <div class="form-group">
+            <label for="dateInput">入馆日期</label>
+            <input class="mu-input" id="dateInput" type="date" required />
+          </div>
+          <div class="form-group">
+            <label for="priceInput">价格</label>
+            <input class="mu-input" id="priceInput" type="number" min="0" step="0.01" list="priceOptions" placeholder="0.00" required />
+            <datalist id="priceOptions">
+              <option value="0"></option><option value="9.9"></option><option value="29.9"></option><option value="99"></option><option value="199"></option><option value="999"></option>
+            </datalist>
+          </div>
+          <div class="form-group full">
+            <label for="noteInput">备注</label>
+            <textarea class="mu-textarea" id="noteInput" placeholder="记录购买原因、使用感受、故事，或未来是否还值得保留……"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-danger" type="button" id="deleteBtn" style="visibility:hidden"><i class="fa-solid fa-trash-can"></i> 删除</button>
+          <div class="form-actions-right">
+            <button class="btn btn-ghost" type="button" id="cancelBtn">取消</button>
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> 保存入馆</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div class="drawer-overlay" id="filterDrawer" aria-hidden="true">
+    <aside class="drawer">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-filter" style="color:var(--mu-accent)"></i> 高级筛选</h2>
+        <button class="btn-close" type="button" id="closeFilterBtn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="filter-row">
+        <label>类别</label>
+        <select class="mu-select" id="filterCategory"></select>
+      </div>
+      <div class="filter-row">
+        <label>状态</label>
+        <select class="mu-select" id="filterStatus"></select>
+      </div>
+      <div class="filter-row">
+        <label>入馆日期从</label>
+        <input class="mu-input" type="date" id="filterFrom" />
+      </div>
+      <div class="filter-row">
+        <label>入馆日期到</label>
+        <input class="mu-input" type="date" id="filterTo" />
+      </div>
+      <div class="filter-row">
+        <label>最低价格</label>
+        <input class="mu-input" type="number" min="0" id="filterMinPrice" placeholder="不限" />
+      </div>
+      <div class="filter-row">
+        <label>最高价格</label>
+        <input class="mu-input" type="number" min="0" id="filterMaxPrice" placeholder="不限" />
+      </div>
+      <div class="form-actions-right" style="margin-top:20px">
+        <button class="btn btn-ghost" id="resetFilterBtn"><i class="fa-solid fa-rotate-left"></i> 重置</button>
+        <button class="btn btn-primary" id="applyFilterBtn"><i class="fa-solid fa-check"></i> 应用筛选</button>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    // ==============================
+    // 0. Supabase 双端同步预留区
+    // ==============================
+    const USE_SUPABASE = true;
+    const SUPABASE_URL = "https://mqlctakdtjanshgsdwal.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_mLz7oSFvfPZDFxJgApI1JA_0oE4gla1";
+    const supabaseClient = USE_SUPABASE && window.supabase
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
+
+    async function fetchFromSupabase() {
+      if (!supabaseClient) return null;
+      const { data, error } = await supabaseClient
+        .from("museum_items")
+        .select("id,name,category,status,number,entry_date,price,note,photo_url")
+        .order("entry_date", { ascending: false });
+      if (error) {
+        console.warn("Supabase 读取失败：", error.message);
+        return null;
+      }
+      return (data || []).map(item => ({
+        id: item.id,
+        name: item.name,
+        category: item.category,
+        status: item.status,
+        number: item.number,
+        entryDate: item.entry_date,
+        price: item.price,
+        note: item.note,
+        photo: normalizePhotoUrl(item.photo_url)
+      }));
+    }
+
+    async function uploadPhotoToSupabase(file, itemId, existingUrl = "") {
+    if (!file) return existingUrl || photoBuffer || "";
+    if (!supabaseClient) return existingUrl || photoBuffer || "";
+
+    const fileExt = file.name.split(".").pop();
+    const filePath = `${itemId}/${Date.now()}.${fileExt}`;
+
+    const { error } = await supabaseClient.storage
+        .from("museum-photos")
+        .upload(filePath, file, {
+        cacheControl: "3600",
+        upsert: true
+        });
+
+    if (error) {
+        console.error("图片上传失败：", error.message);
+        alert("图片上传失败：" + error.message + "\n\n通常原因：Storage 的 museum-photos bucket 没有给 anon 角色开放 insert/select 权限，或 bucket 名称不一致。");
+        return existingUrl || photoBuffer || "";
+    }
+
+    const { data } = supabaseClient.storage
+        .from("museum-photos")
+        .getPublicUrl(filePath);
+
+    return data.publicUrl;
+    }
+
+
+    async function saveToSupabase(item) {
+      if (!supabaseClient) return false;
+      const payload = {
+        id: item.id,
+        name: item.name,
+        category: item.category,
+        status: item.status,
+        number: item.number,
+        entry_date: item.entryDate,
+        price: item.price,
+        note: item.note,
+        photo_url: item.photo
+      };
+      const { error } = await supabaseClient.from("museum_items").upsert(payload);
+      if (error) {
+        console.error("Supabase 保存失败：", error.message);
+        alert("Supabase 保存失败：" + error.message);
+        return false;
+      }
+      return true;
+    }
+
+    async function deleteFromSupabase(id) {
+      if (!supabaseClient) return true;
+      const { error } = await supabaseClient.from("museum_items").delete().eq("id", id);
+      if (error) {
+        console.error("Supabase 删除失败：", error.message);
+        alert("Supabase 删除失败：" + error.message);
+        return false;
+      }
+      return true;
+    }
+
+    async function deleteManyFromSupabase(ids) {
+      if (!supabaseClient || !ids.length) return true;
+      const { error } = await supabaseClient.from("museum_items").delete().in("id", ids);
+      if (error) {
+        console.error("Supabase 批量删除失败：", error.message);
+        alert("Supabase 批量删除失败：" + error.message);
+        return false;
+      }
+      return true;
+    }
+
+    // ==============================
+    // 1. 基础数据与状态
+    // ==============================
+    const CATEGORIES = [
+      ["桌游", "fa-dice"], ["餐具", "fa-utensils"], ["寝具", "fa-bed"],
+      ["摆件", "fa-gem"], ["穿戴", "fa-shirt"], ["电子", "fa-laptop"]
+    ];
+    const STATUSES = [["在用", "fa-play"], ["闲置", "fa-pause"], ["已用", "fa-check-double"], ["丢弃", "fa-trash-can"]];
+    const STORAGE_KEY = "life_museum_items_v2";
+    const VIEW_KEY = "life_museum_view_mode";
+    const today = new Date().toISOString().slice(0, 10);
+    let museumItems = [];
+    let photoBuffer = "";
+    let selectedPhotoFile = null;
+    let bulkMode = false;
+    let selectedIds = new Set();
+    let currentView = localStorage.getItem(VIEW_KEY) || "cards";
+    let filters = { category: "全部", status: "全部", from: "", to: "", minPrice: "", maxPrice: "", navType: "all", navValue: "全部" };
+
+    const seedItems = [
+      { id: crypto.randomUUID(), name: "任天堂 Switch OLED", category: "电子", status: "在用", number: "No.1", entryDate: today, price: 2299, note: "用来玩《塞尔达传说》的设备。长期主义视角下，它可以提供稳定的娱乐体验，暂不更换。", photo: "https://images.unsplash.com/photo-1578308422634-1c50e1811a43?auto=format&fit=crop&q=80&w=900" },
+      { id: crypto.randomUUID(), name: "卡坦岛 Catan", category: "桌游", status: "闲置", number: "No.2", entryDate: today, price: 198, note: "经典桌游，需要聚会才能开局。", photo: "https://images.unsplash.com/photo-1611891487122-207579d67d98?auto=format&fit=crop&q=80&w=900" },
+      { id: crypto.randomUUID(), name: "骨瓷茶杯", category: "餐具", status: "在用", number: "No.3", entryDate: today, price: 45, note: "每天喝水用，手感轻，清洗方便。", photo: "https://images.unsplash.com/photo-1576408221840-02c3bbcbddff?auto=format&fit=crop&q=80&w=900" }
+    ];
+
+    // ==============================
+    // 2. DOM 工具
+    // ==============================
+    const $ = (id) => document.getElementById(id);
+    const homeNav = $("homeNav");
+    const categoryNav = $("categoryNav");
+    const statusNav = $("statusNav");
+    const exhibitGrid = $("exhibitGrid");
+    const searchInput = $("searchInput");
+    const itemModal = $("itemModal");
+    const filterDrawer = $("filterDrawer");
+
+
+    function normalizePhotoUrl(url) {
+      if (!url) return "";
+      let fixed = String(url).trim();
+
+      // 修复之前把 SUPABASE_URL 写成 /rest/v1/ 后生成的错误图片链接
+      fixed = fixed.replace(".supabase.co/rest/v1/storage/v1/", ".supabase.co/storage/v1/");
+      fixed = fixed.replace(".supabase.co/rest/v1//storage/v1/", ".supabase.co/storage/v1/");
+
+      // 如果数据库里只存了文件路径，则自动拼成 public URL
+      if (!fixed.startsWith("http") && fixed.includes("museum-photos")) {
+        fixed = `${SUPABASE_URL}/storage/v1/object/public/${fixed.replace(/^\/+/, "")}`;
+      }
+
+      return fixed;
+    }
+
+    function formatMoney(value) {
+      return `¥ ${Number(value || 0).toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    function getNextNumber() {
+      const nums = museumItems.map(item => Number(String(item.number).replace(/[^0-9]/g, ""))).filter(Boolean);
+      return `No.${(Math.max(0, ...nums) + 1)}`;
+    }
+    function saveLocal() { localStorage.setItem(STORAGE_KEY, JSON.stringify(museumItems)); }
+    function saveViewMode() { localStorage.setItem(VIEW_KEY, currentView); }
+
+    function getCategoryIcon(name) {
+      return (CATEGORIES.find(([label]) => label === name) || [null, "fa-layer-group"])[1];
+    }
+    function getStatusIcon(name) {
+      return (STATUSES.find(([label]) => label === name) || [null, "fa-circle"])[1];
+    }
+
+    async function loadItems() {
+      const cloudData = await fetchFromSupabase();
+      const localData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      museumItems = (cloudData || localData || seedItems).map(item => ({ ...item, photo: normalizePhotoUrl(item.photo) }));
+      if (!localData && !cloudData) saveLocal();
+      renderAll();
+    }
+
+    // ==============================
+    // 3. 渲染导航、选项、展品
+    // ==============================
+    function renderOptions() {
+      $("categoryInput").innerHTML = CATEGORIES.map(([name]) => `<option value="${name}">${name}</option>`).join("");
+      $("statusInput").innerHTML = STATUSES.map(([name]) => `<option value="${name}">${name}</option>`).join("");
+      $("filterCategory").innerHTML = `<option>全部</option>` + CATEGORIES.map(([name]) => `<option>${name}</option>`).join("");
+      $("filterStatus").innerHTML = `<option>全部</option>` + STATUSES.map(([name]) => `<option>${name}</option>`).join("");
+      $("nameOptions").innerHTML = [...new Set(museumItems.map(i => i.name))].map(name => `<option value="${name}"></option>`).join("");
+      $("numberOptions").innerHTML = Array.from({ length: Math.max(20, museumItems.length + 8) }, (_, i) => `<option value="No.${i + 1}"></option>`).join("");
+    }
+
+    function countBy(key, value) { return museumItems.filter(item => item[key] === value).length; }
+
+    function renderNav() {
+      const navClass = (type, value) => filters.navType === type && filters.navValue === value ? "active" : "";
+
+      homeNav.innerHTML = `
+        <li><button class="mu-nav-item home-item ${navClass("all", "全部")}" data-nav-type="all" data-nav-value="全部">
+          <span class="nav-left"><i class="fa-solid fa-house"></i> 全部藏品</span><span class="mu-count">${museumItems.length}</span>
+        </button></li>
+      `;
+
+      categoryNav.innerHTML = CATEGORIES.map(([name, icon]) => `
+        <li><button class="mu-nav-item ${navClass("category", name)}" data-nav-type="category" data-nav-value="${name}">
+          <span class="nav-left"><i class="fa-solid ${icon}"></i>${name}</span><span class="mu-count">${countBy("category", name)}</span>
+        </button></li>
+      `).join("");
+
+      statusNav.innerHTML = STATUSES.map(([name, icon]) => `
+        <li><button class="mu-nav-item ${navClass("status", name)}" data-nav-type="status" data-nav-value="${name}">
+          <span class="nav-left"><i class="fa-solid ${icon}"></i>${name}</span><span class="mu-count">${countBy("status", name)}</span>
+        </button></li>
+      `).join("");
+
+      document.querySelectorAll(".mu-nav-item").forEach(btn => btn.addEventListener("click", () => {
+        const type = btn.dataset.navType;
+        const value = btn.dataset.navValue;
+        const same = filters.navType === type && filters.navValue === value;
+        filters.navType = same || type === "all" ? "all" : type;
+        filters.navValue = same || type === "all" ? "全部" : value;
+        renderAll();
+      }));
+    }
+
+    function renderViewSwitch() {
+      exhibitGrid.className = `mu-grid ${currentView === "cards" ? "view-cards" : "view-list"}`;
+      $("cardViewBtn").classList.toggle("active", currentView === "cards");
+      $("listViewBtn").classList.toggle("active", currentView === "list");
+    }
+
+    function getFilteredItems() {
+      const q = searchInput.value.trim().toLowerCase();
+      return museumItems.filter(item => {
+        const hitSearch = !q || [item.name, item.number, item.note, item.category, item.status].some(v => String(v || "").toLowerCase().includes(q));
+        const hitNav = filters.navType === "all" || item[filters.navType] === filters.navValue;
+        const hitCategory = filters.category === "全部" || item.category === filters.category;
+        const hitStatus = filters.status === "全部" || item.status === filters.status;
+        const hitFrom = !filters.from || item.entryDate >= filters.from;
+        const hitTo = !filters.to || item.entryDate <= filters.to;
+        const hitMin = filters.minPrice === "" || Number(item.price) >= Number(filters.minPrice);
+        const hitMax = filters.maxPrice === "" || Number(item.price) <= Number(filters.maxPrice);
+        return hitSearch && hitNav && hitCategory && hitStatus && hitFrom && hitTo && hitMin && hitMax;
+      }).sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate));
+    }
+
+
+    function getVisibleItems() {
+      return getFilteredItems();
+    }
+
+    function updateBulkToolbar() {
+      const count = selectedIds.size;
+      $("bulkToolbar").classList.toggle("show", bulkMode);
+      $("selectedCount").textContent = count;
+      $("deleteSelectedBtn").disabled = count === 0;
+      $("bulkModeBtn").innerHTML = bulkMode
+        ? '<i class="fa-solid fa-xmark"></i> 退出批量'
+        : '<i class="fa-solid fa-list-check"></i> 批量管理';
+    }
+
+    function renderCollectionHeader() {
+      let title = "全部藏品";
+      let subtitle = "按入馆时间倒序展示，你的每一件物品都值得被认真归档。";
+      let icon = "fa-box-archive";
+
+      if (filters.navType === "category") {
+        title = `${filters.navValue} 藏品`;
+        subtitle = `当前按类别查看：${filters.navValue}`;
+        icon = getCategoryIcon(filters.navValue);
+      } else if (filters.navType === "status") {
+        title = `${filters.navValue} 藏品`;
+        subtitle = `当前按状态查看：${filters.navValue}`;
+        icon = getStatusIcon(filters.navValue);
+      }
+
+      $("sectionTitleText").textContent = title;
+      $("sectionSubtitle").textContent = subtitle;
+      $("sectionTitleIcon").className = `fa-solid ${icon}`;
+      $("activeFilterText").textContent = filters.navType === "all" ? "全部藏品" : `${filters.navType === "category" ? "类别" : "状态"}：${filters.navValue}`;
+    }
+
+    function renderCollection() {
+      const items = getFilteredItems();
+      $("totalCount").textContent = museumItems.length;
+      $("shownCount").textContent = items.length;
+      renderCollectionHeader();
+      renderViewSwitch();
+      selectedIds = new Set([...selectedIds].filter(id => items.some(item => item.id === id)));
+      updateBulkToolbar();
+
+      if (!items.length) {
+        exhibitGrid.innerHTML = `<div class="empty-state"><div><i class="fa-solid fa-box-open"></i><h3>还没有符合条件的展品</h3><p>点击右上角“新增入馆”，把第一件物品放进你的个人博物馆。</p></div></div>`;
+        return;
+      }
+
+      exhibitGrid.innerHTML = currentView === "cards"
+        ? items.map(item => createCard(item)).join("")
+        : items.map(item => createListRow(item)).join("");
+
+      document.querySelectorAll("[data-edit]").forEach(btn => btn.addEventListener("click", () => openEditModal(btn.dataset.edit)));
+      document.querySelectorAll("[data-select-id]").forEach(input => {
+        input.addEventListener("change", () => {
+          if (input.checked) selectedIds.add(input.dataset.selectId);
+          else selectedIds.delete(input.dataset.selectId);
+          updateBulkToolbar();
+        });
+      });
+    }
+
+    function renderAll() {
+      renderOptions();
+      renderNav();
+      renderCollection();
+    }
+
+    function createMetaPills(item) {
+      return `
+        <div class="meta-grid">
+          <div class="meta-pill"><i class="fa-solid fa-layer-group"></i><div class="meta-content"><span class="meta-label">类别</span><span class="meta-value">${item.category}</span></div></div>
+          <div class="meta-pill"><i class="fa-solid fa-toggle-on"></i><div class="meta-content"><span class="meta-label">状态</span><span class="meta-value">${item.status}</span></div></div>
+          <div class="meta-pill"><i class="fa-solid fa-hashtag"></i><div class="meta-content"><span class="meta-label">编号</span><span class="meta-value">${item.number}</span></div></div>
+          <div class="meta-pill"><i class="fa-solid fa-calendar-day"></i><div class="meta-content"><span class="meta-label">入馆日期</span><span class="meta-value">${item.entryDate}</span></div></div>
+          <div class="meta-pill price-pill" style="grid-column: 1 / -1;"><i class="fa-solid fa-yen-sign"></i><div class="meta-content"><span class="meta-label">价格</span><span class="meta-value">${formatMoney(item.price)}</span></div></div>
+        </div>
+      `;
+    }
+
+    function imageHtml(item) {
+      const photo = normalizePhotoUrl(item.photo);
+      if (!photo) return `<div class="empty-img"><i class="fa-solid fa-image"></i></div>`;
+      return `
+        <img src="${photo}" alt="${item.name}" referrerpolicy="no-referrer"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';">
+        <div class="empty-img img-error-text" style="display:none">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>图片链接无法访问<br>请检查 photo_url</span>
+        </div>
+      `;
+    }
+
+    function createCard(item) {
+      return `
+        <article class="exhibit-card ${bulkMode ? 'bulk-mode' : ''}">
+          ${bulkMode ? `<input class="bulk-check" type="checkbox" data-select-id="${item.id}" ${selectedIds.has(item.id) ? "checked" : ""}>` : ""}
+          <div class="card-header">
+            <h3>${item.name}</h3>
+            <button class="btn-edit" data-edit="${item.id}" title="编辑"><i class="fa-solid fa-pen-to-square"></i></button>
+          </div>
+          <div class="card-body">
+            <div class="card-img-wrapper"><span class="card-no">${item.number}</span>${imageHtml(item)}</div>
+            <div class="card-info">${createMetaPills(item)}</div>
+          </div>
+          <div class="card-footer"><strong>备注：</strong>${item.note || "暂无备注。"}</div>
+        </article>
+      `;
+    }
+
+    function createListRow(item) {
+      return `
+        <article class="list-row ${bulkMode ? 'bulk-mode' : ''}">
+          ${bulkMode ? `<input class="bulk-check" type="checkbox" data-select-id="${item.id}" ${selectedIds.has(item.id) ? "checked" : ""}>` : ""}
+          <div class="list-main">
+            <div class="list-top">
+              <div class="list-title-wrap">
+                <h3>${item.name}</h3>
+                <div class="list-number-text">馆藏档案 · ${item.number}</div>
+              </div>
+              <button class="btn-edit" data-edit="${item.id}" title="编辑"><i class="fa-solid fa-pen-to-square"></i></button>
+            </div>
+            ${createMetaPills(item)}
+            <div class="list-note"><strong>备注：</strong>${item.note || "暂无备注。"}</div>
+          </div>
+        </article>
+      `;
+    }
+
+    // ==============================
+    // 4. 新增 / 编辑 / 删除
+    // ==============================
+    function openAddModal() {
+      photoBuffer = "";
+      selectedPhotoFile = null;
+      $("itemForm").reset();
+      $("photoInput").value = "";
+      $("editingId").value = "";
+      $("numberInput").value = getNextNumber();
+      $("dateInput").value = today;
+      $("photoPreview").style.display = "none";
+      $("uploadInner").style.display = "block";
+      $("modalTitle").innerHTML = `<i class="fa-solid fa-box-open" style="color:var(--mu-accent)"></i> 藏品入馆登记`;
+      $("deleteBtn").style.visibility = "hidden";
+      itemModal.classList.add("show");
+    }
+
+    function openEditModal(id) {
+      const item = museumItems.find(i => i.id === id);
+      if (!item) return;
+      photoBuffer = item.photo || "";
+      selectedPhotoFile = null;
+      $("photoInput").value = "";
+      $("editingId").value = item.id;
+      $("nameInput").value = item.name;
+      $("numberInput").value = item.number;
+      $("categoryInput").value = item.category;
+      $("statusInput").value = item.status;
+      $("dateInput").value = item.entryDate;
+      $("priceInput").value = item.price;
+      $("noteInput").value = item.note || "";
+      $("modalTitle").innerHTML = `<i class="fa-solid fa-pen-to-square" style="color:var(--mu-accent)"></i> 编辑展品档案`;
+      $("deleteBtn").style.visibility = "visible";
+      if (photoBuffer) {
+        $("photoPreview").src = photoBuffer;
+        $("photoPreview").style.display = "block";
+        $("uploadInner").style.display = "none";
+      } else {
+        $("photoPreview").style.display = "none";
+        $("uploadInner").style.display = "block";
+      }
+      itemModal.classList.add("show");
+    }
+
+    function closeModal() { itemModal.classList.remove("show"); }
+
+
+    $("photoInput").addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    selectedPhotoFile = file;
+
+    const localPreviewUrl = URL.createObjectURL(file);
+    $("photoPreview").src = localPreviewUrl;
+    $("photoPreview").style.display = "block";
+    $("uploadInner").style.display = "none";
+    });
+
+    $("itemForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const id = $("editingId").value || crypto.randomUUID();
+      const oldItem = museumItems.find(i => i.id === id);
+      const photoUrl = await uploadPhotoToSupabase(selectedPhotoFile, id, oldItem?.photo || "");
+      const item = {
+        id,
+        name: $("nameInput").value.trim(),
+        number: $("numberInput").value.trim(),
+        category: $("categoryInput").value,
+        status: $("statusInput").value,
+        entryDate: $("dateInput").value,
+        price: Number($("priceInput").value || 0),
+        note: $("noteInput").value.trim(),
+        photo: normalizePhotoUrl(photoUrl)
+      };
+      const index = museumItems.findIndex(i => i.id === id);
+      if (index >= 0) museumItems[index] = item; else museumItems.unshift(item);
+      saveLocal();
+      const ok = await saveToSupabase(item);
+      if (USE_SUPABASE && !ok) return;
+      selectedPhotoFile = null;
+      closeModal();
+      renderAll();
+    });
+
+    $("deleteBtn").addEventListener("click", async () => {
+      const id = $("editingId").value;
+      if (!id) return;
+      if (!confirm("确认将这件藏品从博物馆移除吗？")) return;
+      const ok = await deleteFromSupabase(id);
+      if (USE_SUPABASE && !ok) return;
+      museumItems = museumItems.filter(item => item.id !== id);
+      saveLocal();
+      closeModal();
+      renderAll();
+    });
+
+    // ==============================
+    // 5. 搜索、筛选与视图切换
+    // ==============================
+    searchInput.addEventListener("input", renderCollection);
+    $("openAddBtn").addEventListener("click", openAddModal);
+    $("closeModalBtn").addEventListener("click", closeModal);
+    $("cancelBtn").addEventListener("click", closeModal);
+    itemModal.addEventListener("click", (e) => { if (e.target === itemModal) closeModal(); });
+
+    $("cardViewBtn").addEventListener("click", () => {
+      currentView = "cards";
+      saveViewMode();
+      renderCollection();
+    });
+    $("listViewBtn").addEventListener("click", () => {
+      currentView = "list";
+      saveViewMode();
+      renderCollection();
+    });
+
+    $("openFilterBtn").addEventListener("click", () => {
+      $("filterCategory").value = filters.category;
+      $("filterStatus").value = filters.status;
+      $("filterFrom").value = filters.from;
+      $("filterTo").value = filters.to;
+      $("filterMinPrice").value = filters.minPrice;
+      $("filterMaxPrice").value = filters.maxPrice;
+      filterDrawer.classList.add("show");
+    });
+    $("closeFilterBtn").addEventListener("click", () => filterDrawer.classList.remove("show"));
+    filterDrawer.addEventListener("click", (e) => { if (e.target === filterDrawer) filterDrawer.classList.remove("show"); });
+    $("applyFilterBtn").addEventListener("click", () => {
+      filters.category = $("filterCategory").value;
+      filters.status = $("filterStatus").value;
+      filters.from = $("filterFrom").value;
+      filters.to = $("filterTo").value;
+      filters.minPrice = $("filterMinPrice").value;
+      filters.maxPrice = $("filterMaxPrice").value;
+      filterDrawer.classList.remove("show");
+      renderCollection();
+    });
+    $("resetFilterBtn").addEventListener("click", () => {
+      filters = { category: "全部", status: "全部", from: "", to: "", minPrice: "", maxPrice: "", navType: "all", navValue: "全部" };
+      filterDrawer.classList.remove("show");
+      renderAll();
+    });
+
+
+    $("bulkModeBtn").addEventListener("click", () => {
+      bulkMode = !bulkMode;
+      if (!bulkMode) selectedIds.clear();
+      renderCollection();
+    });
+
+    $("selectAllVisibleBtn").addEventListener("click", () => {
+      getVisibleItems().forEach(item => selectedIds.add(item.id));
+      renderCollection();
+    });
+
+    $("clearSelectedBtn").addEventListener("click", () => {
+      selectedIds.clear();
+      renderCollection();
+    });
+
+    $("deleteSelectedBtn").addEventListener("click", async () => {
+      const ids = [...selectedIds];
+      if (!ids.length) return;
+      if (!confirm(`确认批量删除选中的 ${ids.length} 件藏品吗？此操作不可撤销。`)) return;
+      const ok = await deleteManyFromSupabase(ids);
+      if (USE_SUPABASE && !ok) return;
+      museumItems = museumItems.filter(item => !selectedIds.has(item.id));
+      selectedIds.clear();
+      saveLocal();
+      renderAll();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeModal();
+        filterDrawer.classList.remove("show");
+      }
+    });
+
+    console.info("Life Museum 图片检查命令：document.querySelector('.card-img-wrapper img')?.src");
+    loadItems();
+  </script>
+</body>
+</html>
+
+
