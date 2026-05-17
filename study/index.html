@@ -5,38 +5,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Study Archive · Bauhaus Edition</title>
+  <title>Study Archive · Minimalist Modern</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Calistoga&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
   <script src="https://unpkg.com/lucide@latest"></script>
-  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
   <script src="https://cdn.tailwindcss.com"></script>
+  
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Outfit', 'sans-serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Calistoga', 'Georgia', 'serif'],
+            mono: ['JetBrains Mono', 'monospace'],
           },
           colors: {
-            bauhaus: {
-              bg: '#F0F0F0',
-              fg: '#121212',
-              red: '#D02020',
-              blue: '#1040C0',
-              yellow: '#F0C020',
-              muted: '#E0E0E0'
-            }
+            background: '#FAFAFA',
+            foreground: '#0F172A',
+            muted: '#F1F5F9',
+            'muted-foreground': '#64748B',
+            accent: '#0052FF',
+            'accent-secondary': '#4D7CFF',
+            border: '#E2E8F0',
+            card: '#FFFFFF',
           },
           boxShadow: {
-            'solid-sm': '4px 4px 0px 0px #121212',
-            'solid-md': '6px 6px 0px 0px #121212',
-            'solid-lg': '8px 8px 0px 0px #121212',
+            sm: '0 1px 3px rgba(0,0,0,0.06)',
+            md: '0 4px 6px rgba(0,0,0,0.07)',
+            lg: '0 10px 15px rgba(0,0,0,0.08)',
+            xl: '0 20px 25px rgba(0,0,0,0.1)',
+            accent: '0 4px 14px rgba(0,82,255,0.25)',
+            'accent-lg': '0 8px 24px rgba(0,82,255,0.35)',
           }
         }
       }
@@ -44,226 +48,204 @@
   </script>
 
   <style>
-    /* Custom Scrollbar for Bauhaus style */
-    ::-webkit-scrollbar { width: 12px; height: 12px; }
-    ::-webkit-scrollbar-track { background: #F0F0F0; border-left: 2px solid #121212; }
-    ::-webkit-scrollbar-thumb { background: #121212; border: 2px solid #F0F0F0; }
-    ::-webkit-scrollbar-thumb:hover { background: #D02020; }
+    /* Custom Minimalist Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #CBD5E1; }
     
-    /* Geometric Patterns */
-    .bg-dot-pattern {
-      background-image: radial-gradient(#121212 2px, transparent 2px);
-      background-size: 20px 20px;
-      background-color: #F0F0F0;
+    /* Text Gradient Utility */
+    .gradient-text {
+      background: linear-gradient(to right, #0052FF, #4D7CFF);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
-    
-    /* CSS Triangle utility */
-    .shape-triangle {
-      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+
+    /* Ambient Textures */
+    .bg-dot-pattern {
+      background-image: radial-gradient(#0F172A 1px, transparent 1px);
+      background-size: 32px 32px;
+      opacity: 0.03;
     }
   </style>
 </head>
-<body class="bg-bauhaus-bg text-bauhaus-fg font-sans min-h-screen selection:bg-bauhaus-yellow selection:text-bauhaus-fg">
+<body class="bg-background text-foreground font-sans min-h-screen selection:bg-accent/20 selection:text-accent relative overflow-x-hidden">
   
-  <div class="min-h-screen">
-<main class="p-5 md:p-10 lg:p-14 xl:p-16 max-w-[1600px] mx-auto w-full" id="top">
-      
-      <section class="flex flex-col xl:flex-row justify-between items-start gap-8 mb-10 relative">
-        <div class="hidden md:block absolute top-0 right-0 -z-10 opacity-10">
-          <div class="w-64 h-64 bg-bauhaus-red rounded-full absolute -right-10 -top-20 mix-blend-multiply"></div>
-          <div class="w-48 h-48 bg-bauhaus-blue absolute right-20 top-10 rotate-45 mix-blend-multiply"></div>
-        </div>
+  <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-accent blur-[150px] opacity-[0.04] pointer-events-none -z-10"></div>
+  <div class="fixed bottom-[-10%] right-[-10%] w-[30%] h-[30%] rounded-full bg-accent-secondary blur-[120px] opacity-[0.04] pointer-events-none -z-10"></div>
 
-        <div class="max-w-3xl">
-          <div class="text-sm font-bold text-bauhaus-red tracking-[0.2em] mb-4 border-l-4 border-bauhaus-red pl-3 uppercase">Private Study System</div>
-          <h1 class="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-[0.9] mb-6">
-            学习<span class="text-bauhaus-blue">板块</span>
+  <div class="min-h-screen">
+    <main class="py-10 md:py-28 px-6 md:px-12 max-w-7xl mx-auto w-full" id="top">
+      
+      <section class="flex flex-col xl:flex-row justify-between items-start gap-6 md:gap-12 mb-8 md:mb-20 relative">
+        <div class="max-w-3xl z-10">
+          <h1 class="font-display text-4xl md:text-7xl lg:text-[5.25rem] leading-[1.05] tracking-[-0.02em] mb-2 md:mb-6 relative inline-block">
+            学习<span class="gradient-text">板块</span>
+            <div class="absolute -bottom-1 md:-bottom-2 left-0 h-2 md:h-3 w-full rounded-sm bg-gradient-to-r from-accent/15 to-accent-secondary/10 -z-10"></div>
           </h1>
-          <p class="text-lg md:text-xl font-medium leading-relaxed max-w-2xl">
-            好好学习，天天向上。
+          
+          <p class="hidden md:block text-lg md:text-xl font-sans text-muted-foreground leading-relaxed max-w-xl mt-4">
+            Clarity through structure, character through bold detail. 专注于高效的学业管理与任务追踪。
           </p>
         </div>
 
-        <div class="flex flex-col gap-4 w-full xl:w-[360px] shrink-0 mt-2">
-          <div class="grid grid-cols-2 border-4 border-bauhaus-fg bg-white shadow-solid-md w-full">
-            <button id="boardViewBtn" class="w-full px-7 py-4 font-bold uppercase tracking-wider border-r-4 border-bauhaus-fg hover:bg-bauhaus-yellow transition-colors flex items-center justify-center gap-2">
-              <i data-lucide="layout-grid" class="w-5 h-5"></i> 看板
+        <div class="flex flex-col gap-4 w-full xl:w-[320px] shrink-0 mt-2 xl:mt-0 z-10">
+          <div class="hidden md:flex p-1 bg-muted rounded-xl border border-border shadow-sm w-full">
+            <button id="boardViewBtn" class="flex-1 py-2.5 text-sm font-semibold rounded-lg bg-white text-foreground shadow-sm transition-all flex items-center justify-center gap-2">
+              <i data-lucide="layout-grid" class="w-4 h-4"></i> 看板
             </button>
-            <button id="listViewBtn" class="w-full px-7 py-4 font-bold uppercase tracking-wider hover:bg-bauhaus-blue hover:text-white transition-colors flex items-center justify-center gap-2">
-              <i data-lucide="list" class="w-5 h-5"></i> 清单
+            <button id="listViewBtn" class="flex-1 py-2.5 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2">
+              <i data-lucide="list" class="w-4 h-4"></i> 清单
             </button>
           </div>
-          <div class="grid grid-cols-2 gap-4 w-full">
-            <button id="openCalendarBtn" class="w-full flex items-center justify-center gap-2 bg-white border-4 border-bauhaus-fg px-4 py-4 font-bold uppercase tracking-wider shadow-solid-md active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all hover:bg-bauhaus-bg">
-              <i data-lucide="calendar" class="w-5 h-5 stroke-[2.5px]"></i> 日历设置
+          
+          <div class="flex gap-3 w-full">
+            <button id="openCalendarBtn" class="hidden md:flex flex-1 items-center justify-center gap-2 bg-white border border-border rounded-xl px-4 py-3.5 text-sm font-semibold shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 text-foreground group">
+              <i data-lucide="calendar" class="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors"></i> 设置
             </button>
-            <button id="openAddBtn" class="w-full flex items-center justify-center gap-2 bg-bauhaus-red text-white border-4 border-bauhaus-fg px-4 py-4 font-bold uppercase tracking-wider shadow-solid-md active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all hover:bg-opacity-90">
-              <i data-lucide="plus" class="w-5 h-5 stroke-[2.5px]"></i> 新增
+            <button id="openAddBtn" class="w-full md:flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-accent to-accent-secondary text-white rounded-xl px-4 py-3.5 text-sm font-semibold shadow-accent hover:shadow-accent-lg hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 group">
+              <i data-lucide="plus" class="w-4 h-4"></i> 新增任务
             </button>
           </div>
         </div>
       </section>
 
-      <section id="boardView" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-8 items-start auto-rows-min">
-      <section class="order-1 md:col-span-2 lg:col-span-2 xl:col-span-4 bg-white border-4 border-bauhaus-fg shadow-solid-lg flex flex-col relative overflow-hidden self-start">
-        <div class="absolute top-0 right-0 w-12 h-12 bg-bauhaus-blue rounded-bl-full border-b-4 border-l-4 border-bauhaus-fg"></div>
-        <div class="p-6 border-b-4 border-bauhaus-fg bg-dot-pattern flex justify-between items-start gap-6">
-          <div>
-            <h2 class="text-3xl md:text-4xl font-black uppercase tracking-tighter flex items-center gap-3">
-              <i data-lucide="calendar-check" class="w-8 h-8 stroke-[3px]"></i> 固定日历 · 近期任务
-            </h2>
-            <p class="font-medium mt-3 max-w-3xl border-l-4 border-bauhaus-blue pl-3 bg-white p-2">
-              课程、考试、DDL、部署日期与复习提醒。
-            </p>
-          </div>
-          <button id="openCalendarBtn2" class="w-12 h-12 bg-white border-4 border-bauhaus-fg flex items-center justify-center hover:bg-bauhaus-yellow shadow-solid-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all z-10 shrink-0">
-            <i data-lucide="settings" class="w-6 h-6 stroke-[2.5px]"></i>
-          </button>
-        </div>
-        <div class="p-4 md:p-5 aspect-[3/2]" id="calendarWrap"></div>
-      </section>
-<article class="order-3 md:col-span-2 lg:col-span-1 xl:col-span-3 bg-bauhaus-yellow border-4 border-bauhaus-fg shadow-solid-lg flex flex-col relative self-start">
-          <div class="absolute top-0 right-0 w-8 h-8 bg-white border-b-4 border-l-4 border-bauhaus-fg"></div>
-          <div class="p-5 border-b-4 border-bauhaus-fg bg-white flex justify-between items-center">
-            <h3 class="text-2xl font-black uppercase tracking-tighter flex items-center gap-2">
-              <i data-lucide="rocket" class="w-6 h-6 stroke-[3px] text-bauhaus-red"></i> 待部署
-            </h3>
-            <button class="w-10 h-10 border-4 border-bauhaus-fg hover:bg-bauhaus-red hover:text-white transition-colors flex items-center justify-center" data-add-section="deploy">
-              <i data-lucide="plus" class="w-5 h-5 stroke-[3px]"></i>
+      <section id="boardView" class="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start auto-rows-min">
+        
+        <section class="md:col-span-2 lg:col-span-3 bg-card rounded-2xl border border-border shadow-lg flex flex-col relative overflow-hidden self-start group">
+          <div class="absolute inset-0 bg-gradient-to-br from-accent/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+          <div class="p-8 border-b border-border flex justify-between items-start gap-6 bg-white relative z-10">
+            <div>
+              <div class="inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-1 mb-4">
+                <i data-lucide="calendar-check" class="w-3.5 h-3.5 text-accent"></i>
+                <span class="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">Fixed Schedule</span>
+              </div>
+              <h2 class="font-display text-3xl md:text-4xl tracking-tight text-foreground">
+                近期<span class="text-accent">日历</span>
+              </h2>
+            </div>
+            <button id="openCalendarBtn2" class="w-10 h-10 rounded-full border border-border bg-white text-muted-foreground flex items-center justify-center hover:bg-muted hover:text-foreground shadow-sm hover:shadow-md transition-all shrink-0">
+              <i data-lucide="settings" class="w-4 h-4"></i>
             </button>
           </div>
-          <div class="p-5 flex-1 grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4" id="deployList"></div>
+          <div class="p-6 md:p-8 aspect-[21/9] bg-muted/20 relative z-10" id="calendarWrap"></div>
+        </section>
+
+        <article class="flex flex-col gap-5 self-start">
+          <div class="flex items-center justify-between">
+            <div class="inline-flex items-center gap-2 rounded-full border border-border bg-white px-3 py-1 shadow-sm">
+              <span class="h-2 w-2 rounded-full bg-[#10b981]"></span>
+              <span class="font-mono text-[11px] uppercase tracking-wider text-foreground font-semibold">待部署</span>
+            </div>
+            <button class="text-muted-foreground hover:text-accent transition-colors p-1" data-add-section="deploy">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <div class="flex flex-col gap-4" id="deployList"></div>
         </article>
 
-        <article class="order-2 lg:col-span-1 xl:col-span-2 bg-bauhaus-red text-white border-4 border-bauhaus-fg shadow-solid-lg flex flex-col relative self-start">
-          <div class="absolute top-0 right-0 w-8 h-8 shape-triangle bg-bauhaus-yellow transform rotate-90"></div>
-          <div class="p-5 border-b-4 border-bauhaus-fg bg-bauhaus-fg flex justify-between items-center">
-            <h3 class="text-2xl font-black uppercase tracking-tighter flex items-center gap-2">
-              <i data-lucide="target" class="w-6 h-6 stroke-[3px] text-bauhaus-yellow"></i> 本周重点
-            </h3>
-            <button class="w-10 h-10 border-4 border-bauhaus-bg hover:bg-bauhaus-yellow hover:text-bauhaus-fg hover:border-bauhaus-fg transition-colors flex items-center justify-center" data-add-section="focus">
-              <i data-lucide="plus" class="w-5 h-5 stroke-[3px]"></i>
+        <article class="flex flex-col gap-5 self-start">
+          <div class="flex items-center justify-between">
+            <div class="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/5 px-3 py-1 shadow-sm">
+              <span class="h-2 w-2 rounded-full bg-accent"></span>
+              <span class="font-mono text-[11px] uppercase tracking-wider text-accent font-semibold">本周重点</span>
+            </div>
+            <button class="text-muted-foreground hover:text-accent transition-colors p-1" data-add-section="focus">
+              <i data-lucide="plus" class="w-4 h-4"></i>
             </button>
           </div>
-          <div class="p-5 flex-1 flex flex-col gap-4" id="focusList"></div>
+          <div class="flex flex-col gap-4" id="focusList"></div>
         </article>
 
-        <article class="order-4 col-span-1 md:col-span-2 lg:col-span-2 xl:col-span-3 bg-bauhaus-blue text-white border-4 border-bauhaus-fg shadow-solid-lg flex flex-col relative self-start">
-          <div class="absolute top-0 right-0 w-10 h-10 bg-bauhaus-red rounded-full border-b-4 border-l-4 border-bauhaus-fg"></div>
-          <div class="p-5 border-b-4 border-bauhaus-fg bg-white text-bauhaus-fg flex justify-between items-center">
-            <h3 class="text-2xl font-black uppercase tracking-tighter flex items-center gap-2">
-              <i data-lucide="book-open" class="w-6 h-6 stroke-[3px] text-bauhaus-blue"></i> 复习清单
-            </h3>
-            <button class="w-10 h-10 border-4 border-bauhaus-fg hover:bg-bauhaus-blue hover:text-white transition-colors flex items-center justify-center" data-add-section="review">
-              <i data-lucide="plus" class="w-5 h-5 stroke-[3px]"></i>
+        <article class="flex flex-col gap-5 self-start">
+          <div class="flex items-center justify-between">
+            <div class="inline-flex items-center gap-2 rounded-full border border-border bg-white px-3 py-1 shadow-sm">
+              <span class="h-2 w-2 rounded-full bg-[#8b5cf6]"></span>
+              <span class="font-mono text-[11px] uppercase tracking-wider text-foreground font-semibold">复习清单</span>
+            </div>
+            <button class="text-muted-foreground hover:text-accent transition-colors p-1" data-add-section="review">
+              <i data-lucide="plus" class="w-4 h-4"></i>
             </button>
           </div>
-          <div class="p-5 flex-1 grid md:grid-cols-2 gap-4" id="reviewList"></div>
-        </article>
-
-        <article class="order-5 md:col-span-1 lg:col-span-2 xl:col-span-4 bg-white border-4 border-bauhaus-fg shadow-solid-lg flex flex-col relative self-start">
-          <div class="absolute top-0 right-0 w-8 h-8 bg-bauhaus-yellow border-b-4 border-l-4 border-bauhaus-fg"></div>
-          <div class="p-5 border-b-4 border-bauhaus-fg flex justify-between items-center">
-            <h3 class="text-2xl font-black uppercase tracking-tighter flex items-center gap-2">
-              <i data-lucide="link" class="w-6 h-6 stroke-[3px]"></i> 资源收藏
-            </h3>
-            <button class="w-10 h-10 border-4 border-bauhaus-fg hover:bg-bauhaus-fg hover:text-white transition-colors flex items-center justify-center" data-add-section="resource">
-              <i data-lucide="plus" class="w-5 h-5 stroke-[3px]"></i>
-            </button>
-          </div>
-          <div class="p-5 flex-1 grid md:grid-cols-2 gap-4 bg-dot-pattern" id="resourceList"></div>
-        </article>
-
-        <article class="order-6 md:col-span-1 lg:col-span-1 xl:col-span-2 bg-white border-4 border-bauhaus-fg shadow-solid-lg flex flex-col relative self-start">
-          <div class="absolute top-0 right-0 w-8 h-8 bg-bauhaus-blue border-b-4 border-l-4 border-bauhaus-fg rounded-bl-full"></div>
-          <div class="p-5 border-b-4 border-bauhaus-fg flex justify-between items-center">
-            <h3 class="text-2xl font-black uppercase tracking-tighter flex items-center gap-2">
-              <i data-lucide="sticky-note" class="w-6 h-6 stroke-[3px]"></i> 灵感速记
-            </h3>
-            <button class="w-10 h-10 border-4 border-bauhaus-fg hover:bg-bauhaus-fg hover:text-white transition-colors flex items-center justify-center" data-add-section="note">
-              <i data-lucide="plus" class="w-5 h-5 stroke-[3px]"></i>
-            </button>
-          </div>
-          <div class="p-5 flex-1 flex flex-col gap-4" id="noteList"></div>
+          <div class="flex flex-col gap-4" id="reviewList"></div>
         </article>
 
       </section>
 
-      <section id="listView" class="hidden flex-col gap-6"></section>
+      <section id="listView" class="flex flex-col gap-3"></section>
 
     </main>
   </div>
 
-  <div id="entryModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-bauhaus-fg/80 backdrop-blur-sm" aria-hidden="true">
-    <div class="bg-white border-4 border-bauhaus-fg shadow-solid-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto relative animate-[pop_0.2s_ease-out]">
-      <div class="absolute top-0 right-0 w-16 h-16 bg-bauhaus-red border-l-4 border-b-4 border-bauhaus-fg"></div>
+  <div id="entryModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity" aria-hidden="true">
+    <div class="bg-card rounded-2xl border border-border shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative transform transition-all">
+      <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent to-accent-secondary"></div>
       
-      <div class="p-6 md:p-8 border-b-4 border-bauhaus-fg flex justify-between items-center sticky top-0 bg-white z-10">
-        <h2 id="entryModalTitle" class="text-3xl font-black uppercase tracking-tighter flex items-center gap-3">
-          <i data-lucide="graduation-cap" class="text-bauhaus-red w-8 h-8 stroke-[3px]"></i> 新增条目
+      <div class="px-6 md:px-8 py-5 md:py-6 border-b border-border flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-10">
+        <h2 id="entryModalTitle" class="font-display text-xl md:text-2xl tracking-tight flex items-center gap-2 text-foreground">
+          新增条目
         </h2>
-        <button id="closeEntryBtn" class="w-12 h-12 bg-white border-4 border-bauhaus-fg flex items-center justify-center hover:bg-bauhaus-yellow shadow-solid-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all mr-12">
-          <i data-lucide="x" class="w-6 h-6 stroke-[3px]"></i>
+        <button id="closeEntryBtn" class="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md hover:bg-muted">
+          <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <form id="entryForm" class="p-6 md:p-8 bg-dot-pattern">
+      <form id="entryForm" class="p-6 md:p-8">
         <input type="hidden" id="editingId" />
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 border-4 border-bauhaus-fg shadow-solid-sm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
           
           <div class="flex flex-col gap-2">
-            <label for="sectionInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">所属板块</label>
-            <select id="sectionInput" required class="border-4 border-bauhaus-fg p-3 font-bold bg-white focus:outline-none focus:ring-0 focus:border-bauhaus-blue focus:shadow-solid-sm transition-all appearance-none rounded-none cursor-pointer">
+            <label for="sectionInput" class="font-mono text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground font-medium">所属板块</label>
+            <select id="sectionInput" required class="h-12 px-4 rounded-xl border border-border bg-transparent focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all text-sm font-medium text-foreground appearance-none cursor-pointer">
               <option value="deploy">🚀 网站待部署</option>
               <option value="focus">🎯 本周重点</option>
               <option value="review">📖 复习清单</option>
-              <option value="resource">🔗 资源收藏</option>
-              <option value="note">📝 灵感速记</option>
             </select>
           </div>
           
           <div class="flex flex-col gap-2">
-            <label for="tagInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">标签 / 状态</label>
-            <input id="tagInput" class="border-4 border-bauhaus-fg p-3 font-medium bg-white focus:outline-none focus:ring-0 focus:border-bauhaus-blue focus:shadow-solid-sm transition-all rounded-none" placeholder="例如：待部署 / 本周" />
+            <label for="tagInput" class="font-mono text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground font-medium">自定义标签</label>
+            <input id="tagInput" class="h-12 px-4 rounded-xl border border-border bg-transparent focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all text-sm placeholder:text-muted-foreground/50" placeholder="如：优先级高 / 待定" />
           </div>
           
           <div class="flex flex-col gap-2 md:col-span-2">
-            <label for="titleInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">标题</label>
-            <input id="titleInput" required class="border-4 border-bauhaus-fg p-4 text-xl font-bold bg-white focus:outline-none focus:ring-0 focus:border-bauhaus-red focus:shadow-solid-sm transition-all rounded-none" placeholder="输入条目标题" />
+            <label for="titleInput" class="font-mono text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground font-medium">任务标题</label>
+            <input id="titleInput" required class="h-12 md:h-14 px-4 rounded-xl border border-border bg-transparent focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all text-base md:text-lg font-semibold text-foreground placeholder:text-muted-foreground/40 placeholder:font-normal" placeholder="一句话描述核心任务" />
           </div>
           
           <div class="flex flex-col gap-2 md:col-span-2">
-            <label for="subtitleInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">副标题 / 简述</label>
-            <input id="subtitleInput" class="border-4 border-bauhaus-fg p-3 font-medium bg-white focus:outline-none focus:ring-0 focus:border-bauhaus-blue focus:shadow-solid-sm transition-all rounded-none" placeholder="可写一句简短说明" />
+            <label for="subtitleInput" class="font-mono text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground font-medium">简短副标题</label>
+            <input id="subtitleInput" class="h-12 px-4 rounded-xl border border-border bg-transparent focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all text-sm placeholder:text-muted-foreground/50" placeholder="补充说明或细节" />
           </div>
           
           <div class="flex flex-col gap-2">
-            <label for="dateInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">日期</label>
-            <input id="dateInput" type="date" class="border-4 border-bauhaus-fg p-3 font-bold bg-white focus:outline-none focus:ring-0 focus:border-bauhaus-blue focus:shadow-solid-sm transition-all rounded-none" />
+            <label for="dateInput" class="font-mono text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground font-medium">截止日期</label>
+            <input id="dateInput" type="date" class="h-12 px-4 rounded-xl border border-border bg-transparent focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all text-sm font-medium" />
           </div>
           
           <div class="flex flex-col gap-2">
-            <label for="linkInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">链接</label>
-            <input id="linkInput" type="url" class="border-4 border-bauhaus-fg p-3 font-medium bg-white focus:outline-none focus:ring-0 focus:border-bauhaus-blue focus:shadow-solid-sm transition-all rounded-none" placeholder="https://..." />
+            <label for="linkInput" class="font-mono text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground font-medium">相关链接</label>
+            <input id="linkInput" type="url" class="h-12 px-4 rounded-xl border border-border bg-transparent focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all text-sm placeholder:text-muted-foreground/50" placeholder="https://..." />
           </div>
           
           <div class="flex flex-col gap-2 md:col-span-2">
-            <label for="noteInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">备注</label>
-            <textarea id="noteInput" class="border-4 border-bauhaus-fg p-3 font-medium bg-white focus:outline-none focus:ring-0 focus:border-bauhaus-yellow focus:shadow-solid-sm transition-all rounded-none min-h-[120px] resize-y" placeholder="记录任务说明、学习要点、待处理事项……"></textarea>
+            <label for="noteInput" class="font-mono text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground font-medium">详细备注</label>
+            <textarea id="noteInput" class="p-4 rounded-xl border border-border bg-transparent focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all text-sm min-h-[100px] md:min-h-[120px] resize-y placeholder:text-muted-foreground/50" placeholder="记录任务上下文、要点或阻碍因素……"></textarea>
           </div>
         </div>
 
-        <div class="mt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <button id="deleteEntryBtn" type="button" class="w-full md:w-auto invisible flex items-center justify-center gap-2 bg-bauhaus-fg text-white border-4 border-bauhaus-fg px-6 py-4 font-bold uppercase tracking-wider shadow-solid-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all hover:bg-bauhaus-red">
-            <i data-lucide="trash-2" class="w-5 h-5"></i> 删除
+        <div class="mt-6 md:mt-8 pt-5 md:pt-6 border-t border-border flex justify-between items-center">
+          <button id="deleteEntryBtn" type="button" class="invisible flex items-center gap-1.5 text-xs md:text-sm font-medium text-red-500 hover:text-red-600 transition-colors px-2 py-1 rounded-md hover:bg-red-50">
+            <i data-lucide="trash-2" class="w-4 h-4"></i> 删除
           </button>
           
-          <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-            <button id="cancelEntryBtn" type="button" class="flex-1 sm:flex-none flex items-center justify-center bg-white border-4 border-bauhaus-fg px-8 py-4 font-bold uppercase tracking-wider shadow-solid-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all hover:bg-bauhaus-bg">
+          <div class="flex gap-2 md:gap-3">
+            <button id="cancelEntryBtn" type="button" class="px-4 md:px-6 py-2.5 rounded-xl border border-border bg-white text-xs md:text-sm font-medium text-foreground hover:bg-muted transition-colors">
               取消
             </button>
-            <button type="submit" class="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-bauhaus-blue text-white border-4 border-bauhaus-fg px-8 py-4 font-bold uppercase tracking-wider shadow-solid-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all hover:bg-opacity-90">
-              <i data-lucide="save" class="w-5 h-5"></i> 保存
+            <button type="submit" class="px-4 md:px-6 py-2.5 rounded-xl bg-gradient-to-r from-accent to-accent-secondary text-white text-xs md:text-sm font-semibold shadow-sm hover:shadow-accent hover:-translate-y-0.5 transition-all duration-200">
+              保存设置
             </button>
           </div>
         </div>
@@ -271,38 +253,34 @@
     </div>
   </div>
 
-  <div id="calendarModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-bauhaus-fg/80 backdrop-blur-sm" aria-hidden="true">
-    <div class="bg-white border-4 border-bauhaus-fg shadow-solid-lg w-full max-w-2xl relative animate-[pop_0.2s_ease-out]">
-      <div class="absolute top-0 right-0 w-12 h-12 bg-bauhaus-yellow border-l-4 border-b-4 border-bauhaus-fg rounded-bl-full"></div>
-      
-      <div class="p-6 md:p-8 border-b-4 border-bauhaus-fg flex justify-between items-center bg-white">
-        <h2 class="text-3xl font-black uppercase tracking-tighter flex items-center gap-3">
-          <i data-lucide="calendar-days" class="text-bauhaus-blue w-8 h-8 stroke-[3px]"></i> 日历设置
+  <div id="calendarModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity" aria-hidden="true">
+    <div class="bg-card rounded-2xl border border-border shadow-xl w-full max-w-xl relative transform transition-all">
+      <div class="px-8 py-6 border-b border-border flex justify-between items-center bg-white rounded-t-2xl">
+        <h2 class="font-display text-2xl tracking-tight flex items-center gap-2 text-foreground">
+          日历集成设置
         </h2>
-        <button id="closeCalendarBtn" class="w-12 h-12 bg-white border-4 border-bauhaus-fg flex items-center justify-center hover:bg-bauhaus-red hover:text-white shadow-solid-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all mr-8">
-          <i data-lucide="x" class="w-6 h-6 stroke-[3px]"></i>
+        <button id="closeCalendarBtn" class="text-muted-foreground hover:text-foreground transition-colors p-1 rounded-md hover:bg-muted">
+          <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <form id="calendarForm" class="p-6 md:p-8">
+      <form id="calendarForm" class="p-8">
         <div class="flex flex-col gap-2 mb-6">
-          <label for="calendarInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">Google Calendar 嵌入链接</label>
-          <textarea id="calendarInput" class="border-4 border-bauhaus-fg p-4 font-medium bg-bauhaus-bg focus:outline-none focus:ring-0 focus:border-bauhaus-blue focus:bg-white focus:shadow-solid-sm transition-all rounded-none min-h-[120px]" placeholder="https://calendar.google.com/calendar/embed?src=..."></textarea>
+          <label for="calendarInput" class="font-mono text-xs uppercase tracking-wider text-muted-foreground font-medium">Google Calendar 嵌入链接 (iframe src)</label>
+          <textarea id="calendarInput" class="p-4 rounded-xl border border-border bg-transparent focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all text-sm min-h-[100px] font-mono" placeholder="https://calendar.google.com/calendar/embed?src=..."></textarea>
         </div>
 
-        <div class="bg-bauhaus-fg text-white p-5 border-4 border-bauhaus-fg mb-8">
-          <strong class="text-bauhaus-yellow uppercase tracking-widest text-sm mb-2 block">获取方法</strong>
-          <p class="text-sm font-medium mb-4">Google Calendar → 设置 → 选择日历 → 整合日历 → 复制嵌入代码中的 <code>src</code> 链接。</p>
-          <strong class="text-bauhaus-yellow uppercase tracking-widest text-sm mb-2 block">多端互通</strong>
-          <p class="text-sm font-medium">本页面已预留 Supabase，同步学习条目和日历链接。需要在 Supabase 中建立 <code>study_entries</code> 和 <code>app_settings</code> 两张表。</p>
+        <div class="bg-muted/50 rounded-xl p-5 border border-border mb-8 text-sm">
+          <p class="font-medium text-foreground mb-1"><i data-lucide="info" class="w-4 h-4 inline-block mr-1 text-accent relative -top-[1px]"></i>获取方式：</p>
+          <p class="text-muted-foreground leading-relaxed">进入 Google Calendar 设置，选择目标日历，找到「集成日历」部分，复制嵌入代码中的 <code>src</code> 链接并粘贴至上方。</p>
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-4 justify-end">
-          <button id="cancelCalendarBtn" type="button" class="bg-white border-4 border-bauhaus-fg px-8 py-4 font-bold uppercase tracking-wider shadow-solid-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all hover:bg-bauhaus-bg">
+        <div class="flex justify-end gap-3">
+          <button id="cancelCalendarBtn" type="button" class="px-6 py-2.5 rounded-xl border border-border bg-white text-sm font-medium text-foreground hover:bg-muted transition-colors">
             取消
           </button>
-          <button type="submit" class="flex items-center justify-center gap-2 bg-bauhaus-fg text-white border-4 border-bauhaus-fg px-8 py-4 font-bold uppercase tracking-wider shadow-solid-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all hover:bg-bauhaus-blue">
-            <i data-lucide="save" class="w-5 h-5"></i> 保存日历
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-foreground text-white text-sm font-semibold shadow-sm hover:bg-foreground/90 hover:-translate-y-0.5 transition-all duration-200">
+            确认保存
           </button>
         </div>
       </form>
@@ -311,7 +289,7 @@
 
   <script>
     // ==============================
-    // Supabase 多端互通设置
+    // Supabase 联机配置
     // ==============================
     const USE_SUPABASE = true;
     const SUPABASE_URL = "https://mqlctakdtjanshgsdwal.supabase.co";
@@ -320,37 +298,31 @@
       ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
       : null;
 
-    const ENTRY_KEY = "study_archive_entries_v1";
-    const SETTINGS_KEY = "study_archive_settings_v1";
-    const VIEW_KEY = "study_archive_view_v1";
+    const ENTRY_KEY = "study_archive_entries_v2";
+    const SETTINGS_KEY = "study_archive_settings_v2";
+    const VIEW_KEY = "study_archive_view_v2";
     const today = new Date().toISOString().slice(0, 10);
 
     const SECTIONS = {
-      deploy: { label: "网站待部署", icon: "rocket", target: "deployList", color: "text-bauhaus-red" },
-      focus: { label: "本周重点", icon: "target", target: "focusList", color: "text-bauhaus-yellow" },
-      review: { label: "复习清单", icon: "book-open", target: "reviewList", color: "text-bauhaus-blue" },
-      resource: { label: "资源收藏", icon: "link", target: "resourceList", color: "text-bauhaus-fg" },
-      note: { label: "灵感速记", icon: "sticky-note", target: "noteList", color: "text-bauhaus-fg" }
+      deploy: { label: "待部署", icon: "rocket" },
+      focus: { label: "本周重点", icon: "target" },
+      review: { label: "复习清单", icon: "book-open" }
     };
 
     const seedEntries = [
-      { id: crypto.randomUUID(), section: "deploy", title: "学习板块独立部署", subtitle: "从个人博物馆中拆分成独立页面", tag: "待部署", dueDate: today, link: "", note: "检查路由、日历嵌入、Supabase 表权限。" },
-      { id: crypto.randomUUID(), section: "focus", title: "本周论文和网站并行整理", subtitle: "把最重要的任务放到日历中", tag: "本周", dueDate: today, link: "", note: "不做进度条，只保留清晰的任务卡片。" },
-      { id: crypto.randomUUID(), section: "review", title: "复盘 Supabase 权限", subtitle: "RLS、Storage、表字段、URL 格式", tag: "复习", dueDate: "", link: "", note: "把之前遇到的问题整理成排查清单。" },
-      { id: crypto.randomUUID(), section: "resource", title: "Supabase Docs", subtitle: "后续同步与权限配置入口", tag: "文档", dueDate: "", link: "https://supabase.com/docs", note: "需要时查看 JavaScript API 和 Row Level Security。" },
-      { id: crypto.randomUUID(), section: "note", title: "灵感：做学习周报", subtitle: "自动从条目中汇总本周内容", tag: "想法", dueDate: "", link: "", note: "以后可以扩展成周报导出功能。" }
+      { id: crypto.randomUUID(), section: "deploy", title: "学习板块独立部署", subtitle: "更新极简现代 UI 系统", tag: "前端", dueDate: today, link: "", note: "测试过渡动画和 Supabase 同步情况。" },
+      { id: crypto.randomUUID(), section: "focus", title: "毕业论文与核心架构并行", subtitle: "将高优先级任务具象化", tag: "高优", dueDate: today, link: "", note: "不在系统里做复杂的甘特图，只保留直观任务流。" },
+      { id: crypto.randomUUID(), section: "review", title: "复盘 Supabase RLS", subtitle: "行级安全策略配置", tag: "后端", dueDate: "", link: "https://supabase.com/docs", note: "检查表权限和 API 请求的安全边界。" }
     ];
 
     let entries = [];
     let settings = { calendarEmbedUrl: "" };
     let currentView = localStorage.getItem(VIEW_KEY) || "board";
-    let activeSection = "all";
 
     const $ = (id) => document.getElementById(id);
 
     function saveLocal() { localStorage.setItem(ENTRY_KEY, JSON.stringify(entries)); }
     function saveSettingsLocal() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
-    function sectionInfo(section) { return SECTIONS[section] || { label: "未分类", icon: "layout-grid", target: "", color: "text-bauhaus-fg" }; }
 
     async function fetchEntriesFromSupabase() {
       if (!supabaseClient) return null;
@@ -358,9 +330,7 @@
         .from("study_entries")
         .select("id,section,title,subtitle,tag,due_date,link,note,created_at")
         .order("created_at", { ascending: false });
-
       if (error) return null;
-
       return (data || []).map(item => ({
         id: item.id, section: item.section, title: item.title, subtitle: item.subtitle,
         tag: item.tag, dueDate: item.due_date, link: item.link, note: item.note, createdAt: item.created_at
@@ -404,7 +374,10 @@
     async function init() {
       const cloudEntries = await fetchEntriesFromSupabase();
       const localEntries = JSON.parse(localStorage.getItem(ENTRY_KEY) || "null");
-      entries = cloudEntries || localEntries || seedEntries;
+      
+      let rawEntries = cloudEntries || localEntries || seedEntries;
+      entries = rawEntries.filter(e => SECTIONS[e.section]); 
+      
       if (!cloudEntries && !localEntries) saveLocal();
 
       const cloudSettings = await fetchSettingsFromSupabase();
@@ -416,113 +389,111 @@
     }
 
     function getFilteredEntries() {
-      return entries.filter(item => {
-        const hitSection = activeSection === "all" || item.section === activeSection;
-        return hitSection;
-      }).sort((a, b) => {
+      return entries.sort((a, b) => {
         const at = a.dueDate ? new Date(a.dueDate).getTime() : 0;
         const bt = b.dueDate ? new Date(b.dueDate).getTime() : 0;
         return (bt || 0) - (at || 0);
       });
     }
 
-    function renderNav() {
-      // Sidebar removed: keep this no-op so data rendering remains stable.
-    }
-
     function renderCalendar() {
       const src = (settings.calendarEmbedUrl || "").trim();
       $("calendarWrap").innerHTML = src
-        ? `<iframe src="${src}" loading="lazy" class="w-full h-full border-4 border-bauhaus-fg bg-white"></iframe>`
-        : `<div class="w-full h-full min-h-0 flex flex-col items-center justify-center text-center p-6 border-4 border-bauhaus-fg border-dashed bg-white">
-            <div class="w-16 h-16 bg-bauhaus-yellow rounded-full border-4 border-bauhaus-fg flex items-center justify-center mb-4"><i data-lucide="calendar-plus" class="w-8 h-8 stroke-[2px]"></i></div>
-            <strong class="text-xl font-black uppercase mb-2">未设置日历</strong>
-            <p class="font-medium max-w-sm">点击右上角齿轮图标，粘贴 Google Calendar iframe 链接。</p>
+        ? `<iframe src="${src}" loading="lazy" class="w-full h-full rounded-xl shadow-inner border border-border/50"></iframe>`
+        : `<div class="w-full h-full min-h-[200px] flex flex-col items-center justify-center text-center p-6 border border-dashed border-border rounded-xl bg-white">
+            <div class="w-12 h-12 bg-muted rounded-full flex items-center justify-center mb-4 text-muted-foreground"><i data-lucide="calendar-off" class="w-5 h-5"></i></div>
+            <strong class="text-sm font-semibold text-foreground mb-1">未绑定日历</strong>
+            <p class="text-xs text-muted-foreground">点击右上角设置图标嵌入外部日历视图</p>
            </div>`;
     }
 
     function renderBoard() {
-      Object.entries(SECTIONS).forEach(([key, info]) => {
-        const target = $(info.target);
+      Object.keys(SECTIONS).forEach(key => {
+        const target = $(`${key}List`);
         const items = getFilteredEntries().filter(item => item.section === key);
         
-        // Define specific styling per panel section to maintain text readability
-        let cardBg = "bg-white";
-        let cardText = "text-bauhaus-fg";
-        if(key === "focus") { cardBg = "bg-white"; cardText = "text-bauhaus-fg"; } // Inside red panel
-        if(key === "review") { cardBg = "bg-white"; cardText = "text-bauhaus-fg"; } // Inside blue panel
-
         target.innerHTML = items.length
-          ? items.map(item => createItemCard(item, cardBg, cardText)).join("")
-          : `<div class="p-6 border-4 border-dashed border-bauhaus-fg text-center font-bold uppercase tracking-wider bg-white text-bauhaus-fg bg-opacity-50">暂无条目</div>`;
+          ? items.map(item => createBoardCard(item)).join("")
+          : `<div class="p-6 border border-dashed border-border rounded-xl text-center text-sm text-muted-foreground bg-transparent">暂无任务</div>`;
       });
-
-      bindItemActions();
     }
 
-    function createItemCard(item, bgClass = "bg-white", textClass = "text-bauhaus-fg") {
-      const sInfo = sectionInfo(item.section);
-      const completeButton = item.section === "resource"
-        ? ""
-        : `<button class="w-8 h-8 shrink-0 border-2 border-bauhaus-fg flex items-center justify-center hover:bg-bauhaus-blue hover:text-white transition-colors" data-complete="${item.id}" title="完成">
-              <i data-lucide="check" class="w-4 h-4 stroke-[3px]"></i>
-            </button>`;
+    function createBoardCard(item) {
+      const isFocus = item.section === 'focus';
       return `
-        <article class="${bgClass} ${textClass} border-4 border-bauhaus-fg shadow-solid-sm p-4 relative group hover:-translate-y-1 transition-transform cursor-default">
-          <div class="flex justify-between items-start gap-4 mb-3">
-            <div class="min-w-0">
-              <h4 class="font-black text-lg leading-tight mb-1">${item.title || "未命名"}</h4>
-              ${item.subtitle ? `<div class="font-medium text-sm opacity-80">${item.subtitle}</div>` : ""}
+        <div class="bg-card rounded-xl border ${isFocus ? 'border-accent/20' : 'border-border'} shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-5 group relative overflow-hidden">
+          ${isFocus ? '<div class="absolute top-0 right-0 w-16 h-16 bg-accent opacity-[0.03] rounded-bl-full pointer-events-none"></div>' : ''}
+          <div class="flex justify-between items-start gap-4 mb-3 relative z-10">
+            <div class="min-w-0 flex-1">
+              <h4 class="font-semibold text-base text-foreground leading-snug mb-1 truncate">${item.title || "未命名任务"}</h4>
+              ${item.subtitle ? `<div class="text-xs text-muted-foreground truncate">${item.subtitle}</div>` : ""}
             </div>
-            <div class="shrink-0 flex items-center gap-2">
-              ${completeButton}
-              <button class="w-8 h-8 shrink-0 border-2 border-bauhaus-fg flex items-center justify-center hover:bg-bauhaus-yellow hover:text-bauhaus-fg transition-colors" data-edit="${item.id}" title="编辑">
-                <i data-lucide="edit" class="w-4 h-4 stroke-[3px]"></i>
+            <div class="shrink-0 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button class="w-7 h-7 rounded-md bg-muted text-muted-foreground hover:bg-accent hover:text-white flex items-center justify-center transition-colors" data-complete="${item.id}" title="完成">
+                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+              </button>
+              <button class="w-7 h-7 rounded-md bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors" data-edit="${item.id}" title="编辑">
+                <i data-lucide="edit-2" class="w-3 h-3"></i>
               </button>
             </div>
           </div>
           
-          <div class="flex flex-wrap gap-2 mb-3">
-            <span class="inline-flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold uppercase tracking-wider border-2 border-bauhaus-fg bg-bauhaus-bg text-bauhaus-fg">
-              <i data-lucide="${sInfo.icon}" class="w-3 h-3 stroke-[3px] ${sInfo.color}"></i> ${sInfo.label}
-            </span>
-            ${item.tag ? `<span class="inline-flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold uppercase tracking-wider border-2 border-bauhaus-fg bg-bauhaus-fg text-white"><i data-lucide="tag" class="w-3 h-3"></i> ${item.tag}</span>` : ""}
-            ${item.dueDate ? `<span class="inline-flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold uppercase tracking-wider border-2 border-bauhaus-fg bg-bauhaus-yellow text-bauhaus-fg"><i data-lucide="calendar" class="w-3 h-3"></i> ${item.dueDate}</span>` : ""}
+          <div class="flex flex-wrap gap-2 mb-3 relative z-10">
+            ${item.tag ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-muted text-muted-foreground">${item.tag}</span>` : ""}
+            ${item.dueDate ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider border border-accent/20 text-accent bg-accent/5">${item.dueDate}</span>` : ""}
           </div>
-          
-          ${item.note ? `<div class="text-sm font-medium border-l-4 border-bauhaus-fg pl-3 py-1 opacity-90">${item.note}</div>` : ""}
-          ${item.link ? `<a href="${item.link}" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest border-b-2 border-bauhaus-fg pb-0.5 hover:text-bauhaus-red hover:border-bauhaus-red transition-colors"><i data-lucide="external-link" class="w-3 h-3 stroke-[3px]"></i> 打开链接</a>` : ""}
-        </article>
+        </div>
       `;
     }
 
     function renderList() {
       const items = getFilteredEntries();
+      
       $("listView").innerHTML = items.length
         ? items.map(item => `
-          <div class="flex flex-col md:flex-row gap-4 p-4 border-4 border-bauhaus-fg bg-white shadow-solid-sm">
-            <div class="w-full md:w-40 shrink-0 bg-bauhaus-fg text-white flex flex-col items-center justify-center p-4 border-4 border-bauhaus-fg relative overflow-hidden">
-               <i data-lucide="${sectionInfo(item.section).icon}" class="w-8 h-8 stroke-[2px] mb-2 z-10 ${sectionInfo(item.section).color}"></i>
-               <span class="font-bold uppercase tracking-wider text-xs z-10 text-center">${sectionInfo(item.section).label}</span>
+          <div class="bg-card rounded-xl border border-border shadow-sm hover:shadow-md transition-all p-3 md:p-4 flex flex-row items-center gap-3 md:gap-4 group">
+            
+            <button class="shrink-0 w-5 h-5 rounded border border-muted-foreground/40 flex items-center justify-center hover:border-accent hover:bg-accent/10 transition-colors group/cb" data-complete="${item.id}" title="完成任务">
+              <i data-lucide="check" class="w-3 h-3 text-transparent group-hover/cb:text-accent transition-colors"></i>
+            </button>
+
+            <div class="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-1 md:gap-4">
+               <div class="flex-1 min-w-0">
+                  <h4 class="font-semibold text-foreground text-[13px] md:text-sm truncate">${item.title}</h4>
+                  ${item.subtitle ? `<p class="text-xs text-muted-foreground truncate mt-0.5">${item.subtitle}</p>` : ''}
+               </div>
+               
+               <div class="flex items-center gap-2 shrink-0">
+                  ${item.tag ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-muted text-muted-foreground">${item.tag}</span>` : ""}
+                  ${item.dueDate ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono text-accent bg-accent/5 border border-accent/10">${item.dueDate}</span>` : ''}
+               </div>
             </div>
-            <div class="flex-1 w-full min-w-0">
-              ${createItemCard(item, "bg-transparent", "text-bauhaus-fg").replace('shadow-solid-sm p-4 relative group hover:-translate-y-1', 'p-2 border-none shadow-none')}
+
+            <div class="shrink-0 flex items-center md:opacity-0 group-hover:opacity-100 transition-opacity">
+              <button class="p-1.5 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors" data-edit="${item.id}">
+                <i data-lucide="edit-2" class="w-4 h-4 md:w-3.5 md:h-3.5"></i>
+              </button>
             </div>
           </div>
         `).join("")
-        : `<div class="p-12 border-4 border-dashed border-bauhaus-fg text-center font-black uppercase text-xl bg-white shadow-solid-sm">暂无符合条件的条目</div>`;
-
-      bindItemActions();
+        : `<div class="p-10 border border-dashed border-border rounded-xl text-center text-sm text-muted-foreground bg-transparent">暂无符合条件的条目</div>`;
     }
 
-    function bindItemActions() {
+    function bindAllActions() {
+      // Re-bind click events for dynamic elements
+      document.querySelectorAll("[data-edit]").forEach(btn => {
+        btn.replaceWith(btn.cloneNode(true)); // prevent duplicate listeners
+      });
+      document.querySelectorAll("[data-complete]").forEach(btn => {
+        btn.replaceWith(btn.cloneNode(true));
+      });
+
       document.querySelectorAll("[data-edit]").forEach(btn => btn.addEventListener("click", () => openEntryModal(null, btn.dataset.edit)));
       document.querySelectorAll("[data-complete]").forEach(btn => btn.addEventListener("click", () => completeEntry(btn.dataset.complete)));
     }
 
     async function completeEntry(id) {
       if (!id) return;
-      if (!confirm("确认完成并移除这条学习记录吗？")) return;
 
       const ok = await deleteEntryFromSupabase(id);
       if (USE_SUPABASE && !ok) return;
@@ -535,28 +506,33 @@
     function renderView() {
       const isBoard = currentView === "board";
 
-      $("boardView").classList.toggle("hidden", !isBoard);
-      $("boardView").classList.toggle("grid", isBoard);
+      // 手机端强制显示清单 (flex)，隐藏看板。电脑端遵循 isBoard 判断。
+      $("boardView").className = isBoard 
+        ? "hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start auto-rows-min" 
+        : "hidden";
 
-      $("listView").classList.toggle("hidden", isBoard);
-      $("listView").classList.toggle("flex", !isBoard);
+      $("listView").className = isBoard 
+        ? "flex md:hidden flex-col gap-3" 
+        : "flex flex-col gap-3";
 
-      $("boardViewBtn").classList.toggle("bg-bauhaus-yellow", isBoard);
-      $("boardViewBtn").classList.toggle("text-bauhaus-fg", isBoard);
-      $("listViewBtn").classList.toggle("bg-bauhaus-blue", !isBoard);
-      $("listViewBtn").classList.toggle("text-white", !isBoard);
+      // 电脑端切换按钮状态
+      if (isBoard) {
+        $("boardViewBtn").className = "flex-1 py-2.5 text-sm font-semibold rounded-lg bg-white text-foreground shadow-sm transition-all flex items-center justify-center gap-2";
+        $("listViewBtn").className = "flex-1 py-2.5 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2";
+      } else {
+        $("listViewBtn").className = "flex-1 py-2.5 text-sm font-semibold rounded-lg bg-white text-foreground shadow-sm transition-all flex items-center justify-center gap-2";
+        $("boardViewBtn").className = "flex-1 py-2.5 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2";
+      }
 
       renderCalendar();
       if (isBoard) renderBoard();
-      else renderList();
-
+      renderList(); // 清单视图在手机端总是需要渲染的
+      
+      bindAllActions();
       lucide.createIcons();
     }
 
-    function renderAll() {
-      renderNav();
-      renderView();
-    }
+    function renderAll() { renderView(); }
 
     function openEntryModal(section = "deploy", id = "") {
       const item = id ? entries.find(entry => entry.id === id) : null;
@@ -570,33 +546,46 @@
       $("linkInput").value = item?.link || "";
       $("noteInput").value = item?.note || "";
       
-      $("entryModalTitle").innerHTML = item
-        ? `<i data-lucide="edit" class="text-bauhaus-blue w-8 h-8 stroke-[3px]"></i> 编辑条目`
-        : `<i data-lucide="graduation-cap" class="text-bauhaus-red w-8 h-8 stroke-[3px]"></i> 新增条目`;
-      
+      $("entryModalTitle").innerHTML = item ? "编辑条目" : "新增条目";
       $("deleteEntryBtn").classList.toggle("invisible", !item);
+      
       $("entryModal").classList.remove("hidden");
       $("entryModal").classList.add("flex");
+      setTimeout(() => { $("entryModal").firstElementChild.classList.add("scale-100", "opacity-100"); $("entryModal").firstElementChild.classList.remove("scale-95", "opacity-0"); }, 10);
       lucide.createIcons();
     }
 
     function closeEntryModal() { 
-      $("entryModal").classList.add("hidden"); 
-      $("entryModal").classList.remove("flex"); 
+      $("entryModal").firstElementChild.classList.remove("scale-100", "opacity-100"); 
+      $("entryModal").firstElementChild.classList.add("scale-95", "opacity-0");
+      setTimeout(() => {
+        $("entryModal").classList.add("hidden"); 
+        $("entryModal").classList.remove("flex"); 
+      }, 200);
     }
     
     function openCalendarModal() {
       $("calendarInput").value = settings.calendarEmbedUrl || "";
       $("calendarModal").classList.remove("hidden");
       $("calendarModal").classList.add("flex");
-      lucide.createIcons();
+      setTimeout(() => { $("calendarModal").firstElementChild.classList.add("scale-100", "opacity-100"); $("calendarModal").firstElementChild.classList.remove("scale-95", "opacity-0"); }, 10);
     }
     
     function closeCalendarModal() { 
-      $("calendarModal").classList.add("hidden"); 
-      $("calendarModal").classList.remove("flex"); 
+      $("calendarModal").firstElementChild.classList.remove("scale-100", "opacity-100"); 
+      $("calendarModal").firstElementChild.classList.add("scale-95", "opacity-0");
+      setTimeout(() => {
+        $("calendarModal").classList.add("hidden"); 
+        $("calendarModal").classList.remove("flex"); 
+      }, 200);
     }
 
+    // Modal Initial states
+    document.querySelectorAll('#entryModal > div, #calendarModal > div').forEach(el => {
+      el.classList.add('scale-95', 'opacity-0');
+    });
+
+    // Event Listeners for UI
     document.querySelectorAll("[data-add-section]").forEach(btn => {
       btn.addEventListener("click", () => openEntryModal(btn.dataset.addSection));
     });
@@ -604,7 +593,7 @@
     $("openAddBtn").addEventListener("click", () => openEntryModal("deploy"));
     $("closeEntryBtn").addEventListener("click", closeEntryModal);
     $("cancelEntryBtn").addEventListener("click", closeEntryModal);
-    $("entryModal").addEventListener("click", (e) => { if (e.target === $("entryModal")) closeEntryModal(); });
+    $("entryModal").addEventListener("mousedown", (e) => { if (e.target === $("entryModal")) closeEntryModal(); });
 
     $("entryForm").addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -635,8 +624,6 @@
     $("deleteEntryBtn").addEventListener("click", async () => {
       const id = $("editingId").value;
       if (!id) return;
-      if (!confirm("确认删除这条学习记录吗？")) return;
-
       const ok = await deleteEntryFromSupabase(id);
       if (USE_SUPABASE && !ok) return;
 
@@ -647,10 +634,16 @@
     });
 
     $("openCalendarBtn").addEventListener("click", openCalendarModal);
-    $("openCalendarBtn2").addEventListener("click", openCalendarModal);
+    
+    // Bind to dynamically created button
+    document.addEventListener("click", (e) => {
+      const calBtn = e.target.closest("#openCalendarBtn2");
+      if(calBtn) openCalendarModal();
+    });
+
     $("closeCalendarBtn").addEventListener("click", closeCalendarModal);
     $("cancelCalendarBtn").addEventListener("click", closeCalendarModal);
-    $("calendarModal").addEventListener("click", (e) => { if (e.target === $("calendarModal")) closeCalendarModal(); });
+    $("calendarModal").addEventListener("mousedown", (e) => { if (e.target === $("calendarModal")) closeCalendarModal(); });
 
     $("calendarForm").addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -682,10 +675,9 @@
       }
     });
 
-    // Initialize application
+    // Run
     init();
   </script>
 </body>
 </html>
-
 

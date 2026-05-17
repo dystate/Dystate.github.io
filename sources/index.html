@@ -1,0 +1,469 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resource Library · Bauhaus Edition</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            bauhaus: {
+              bg: '#F0F0F0',
+              fg: '#121212',
+              red: '#D02020',
+              blue: '#1040C0',
+              yellow: '#F0C020',
+              muted: '#E0E0E0'
+            }
+          },
+          boxShadow: {
+            'solid-sm': '4px 4px 0px 0px #121212',
+            'solid-md': '6px 6px 0px 0px #121212',
+            'solid-lg': '8px 8px 0px 0px #121212',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 12px; height: 12px; }
+    ::-webkit-scrollbar-track { background: #F0F0F0; border-left: 2px solid #121212; }
+    ::-webkit-scrollbar-thumb { background: #121212; border: 2px solid #F0F0F0; }
+    ::-webkit-scrollbar-thumb:hover { background: #D02020; }
+    
+    .bg-dot-pattern {
+      background-image: radial-gradient(#121212 2px, transparent 2px);
+      background-size: 20px 20px;
+      background-color: #F0F0F0;
+    }
+    
+    .shape-triangle {
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
+  </style>
+</head>
+<body class="bg-bauhaus-bg text-bauhaus-fg font-sans min-h-screen selection:bg-bauhaus-yellow selection:text-bauhaus-fg">
+  
+  <div class="min-h-screen">
+    <main class="p-5 md:p-10 lg:p-14 xl:p-16 max-w-[1600px] mx-auto w-full" id="top">
+      
+      <section class="flex flex-col xl:flex-row justify-between items-start gap-8 mb-10 relative">
+        <div class="hidden md:block absolute top-0 right-0 -z-10 opacity-10">
+          <div class="w-64 h-64 bg-bauhaus-yellow rounded-full absolute -right-10 -top-20 mix-blend-multiply"></div>
+          <div class="w-48 h-48 bg-bauhaus-red absolute right-20 top-10 rotate-45 mix-blend-multiply"></div>
+        </div>
+
+        <div class="max-w-3xl">
+          <div class="text-sm font-bold text-bauhaus-red tracking-[0.2em] mb-4 border-l-4 border-bauhaus-red pl-3 uppercase">Private Resource Archive</div>
+          <h1 class="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-[0.9] mb-6">
+            资源<span class="text-bauhaus-blue">仓库</span>
+          </h1>
+          <p class="text-lg md:text-xl font-medium leading-relaxed max-w-2xl border-l-4 border-bauhaus-fg pl-4">
+            收集、分类并检索所有高价值的技术与设计资产。
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4 w-full xl:w-[360px] shrink-0 mt-2">
+          <div class="grid grid-cols-2 border-4 border-bauhaus-fg bg-white shadow-solid-md w-full">
+            <button id="boardViewBtn" class="w-full px-7 py-4 font-bold uppercase tracking-wider border-r-4 border-bauhaus-fg hover:bg-bauhaus-yellow transition-colors flex items-center justify-center gap-2 bg-bauhaus-yellow">
+              <i data-lucide="layout-grid" class="w-5 h-5"></i> 画廊
+            </button>
+            <button id="listViewBtn" class="w-full px-7 py-4 font-bold uppercase tracking-wider hover:bg-bauhaus-blue hover:text-white transition-colors flex items-center justify-center gap-2">
+              <i data-lucide="list" class="w-5 h-5"></i> 列表
+            </button>
+          </div>
+          <button id="openAddBtn" class="w-full flex items-center justify-center gap-2 bg-bauhaus-fg text-white border-4 border-bauhaus-fg px-4 py-4 text-lg font-black uppercase tracking-wider shadow-solid-md active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all hover:bg-bauhaus-red">
+            <i data-lucide="bookmark-plus" class="w-6 h-6 stroke-[2.5px]"></i> 收藏新资源
+          </button>
+        </div>
+      </section>
+
+      <section id="boardView" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8 items-start auto-rows-min"></section>
+
+      <section id="listView" class="hidden flex-col"></section>
+
+    </main>
+  </div>
+
+  <div id="entryModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-bauhaus-fg/80 backdrop-blur-sm" aria-hidden="true">
+    <div class="bg-white border-4 border-bauhaus-fg shadow-solid-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto relative animate-[pop_0.2s_ease-out]">
+      <div class="absolute top-0 right-0 w-16 h-16 bg-bauhaus-blue border-l-4 border-b-4 border-bauhaus-fg"></div>
+      
+      <div class="p-6 md:p-8 border-b-4 border-bauhaus-fg flex justify-between items-center sticky top-0 bg-white z-10">
+        <h2 id="entryModalTitle" class="text-3xl font-black uppercase tracking-tighter flex items-center gap-3">
+          <i data-lucide="bookmark-plus" class="text-bauhaus-red w-8 h-8 stroke-[3px]"></i> 收藏资源
+        </h2>
+        <button id="closeEntryBtn" class="w-12 h-12 bg-white border-4 border-bauhaus-fg flex items-center justify-center hover:bg-bauhaus-yellow shadow-solid-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all mr-12">
+          <i data-lucide="x" class="w-6 h-6 stroke-[3px]"></i>
+        </button>
+      </div>
+
+      <form id="entryForm" class="p-6 md:p-8 bg-dot-pattern">
+        <input type="hidden" id="editingId" />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 border-4 border-bauhaus-fg shadow-solid-sm">
+          
+          <div class="flex flex-col gap-2">
+            <label for="categoryInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">归属模块 (可自行输入新模块)</label>
+            <input id="categoryInput" list="categoryOptions" required class="border-4 border-bauhaus-fg p-3 font-bold bg-white focus:outline-none focus:ring-0 focus:border-bauhaus-blue focus:shadow-solid-sm transition-all rounded-none" placeholder="例如: Linux / 算法 / 阅读" />
+            <datalist id="categoryOptions"></datalist>
+          </div>
+          
+          <div class="flex flex-col gap-2">
+            <label for="tagInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">自定义标签</label>
+            <input id="tagInput" class="border-4 border-bauhaus-fg p-3 font-medium bg-white focus:outline-none focus:ring-0 focus:border-bauhaus-blue focus:shadow-solid-sm transition-all rounded-none" placeholder="例如：文档 / 工具 / 教程" />
+          </div>
+          
+          <div class="flex flex-col gap-2 md:col-span-2">
+            <label for="titleInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">资源标题</label>
+            <input id="titleInput" required class="border-4 border-bauhaus-fg p-4 text-xl font-bold bg-white focus:outline-none focus:ring-0 focus:border-bauhaus-red focus:shadow-solid-sm transition-all rounded-none" placeholder="输入资源名称" />
+          </div>
+          
+          <div class="flex flex-col gap-2 md:col-span-2">
+            <label for="linkInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">直达链接 (URL)</label>
+            <input id="linkInput" type="url" required class="border-4 border-bauhaus-fg p-3 font-medium bg-white focus:outline-none focus:ring-0 focus:border-bauhaus-blue focus:shadow-solid-sm transition-all rounded-none" placeholder="https://..." />
+          </div>
+
+          <div class="flex flex-col gap-2 md:col-span-2">
+            <label for="subtitleInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">简短描述</label>
+            <input id="subtitleInput" class="border-4 border-bauhaus-fg p-3 font-medium bg-white focus:outline-none focus:ring-0 focus:border-bauhaus-blue focus:shadow-solid-sm transition-all rounded-none" placeholder="一句话概括这是什么" />
+          </div>
+          
+          <div class="flex flex-col gap-2 md:col-span-2">
+            <label for="noteInput" class="font-bold uppercase tracking-widest text-xs border-b-2 border-bauhaus-fg pb-1">详细备注 / 摘要</label>
+            <textarea id="noteInput" class="border-4 border-bauhaus-fg p-3 font-medium bg-white focus:outline-none focus:ring-0 focus:border-bauhaus-yellow focus:shadow-solid-sm transition-all rounded-none min-h-[120px] resize-y" placeholder="记录使用心得、提取码或重要提示……"></textarea>
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <button id="deleteEntryBtn" type="button" class="w-full md:w-auto invisible flex items-center justify-center gap-2 bg-bauhaus-fg text-white border-4 border-bauhaus-fg px-6 py-4 font-bold uppercase tracking-wider shadow-solid-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all hover:bg-bauhaus-red">
+            <i data-lucide="trash-2" class="w-5 h-5"></i> 删除
+          </button>
+          
+          <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            <button id="cancelEntryBtn" type="button" class="flex-1 sm:flex-none flex items-center justify-center bg-white border-4 border-bauhaus-fg px-8 py-4 font-bold uppercase tracking-wider shadow-solid-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all hover:bg-bauhaus-bg">
+              取消
+            </button>
+            <button type="submit" class="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-bauhaus-blue text-white border-4 border-bauhaus-fg px-8 py-4 font-bold uppercase tracking-wider shadow-solid-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all hover:bg-opacity-90">
+              <i data-lucide="save" class="w-5 h-5"></i> 保存
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ==============================
+    // Supabase 数据库设置 (需自行建表 resource_entries)
+    // ==============================
+    const USE_SUPABASE = false; 
+    const SUPABASE_URL = "YOUR_URL";
+    const SUPABASE_ANON_KEY = "YOUR_KEY";
+    const supabaseClient = USE_SUPABASE && window.supabase
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
+
+    const ENTRY_KEY = "resource_library_entries_v2";
+    const VIEW_KEY = "resource_library_view_v2";
+
+    // 预设一些示例数据
+    const seedEntries = [
+      { id: crypto.randomUUID(), category: "Linux", title: "Linux Command Line Cheat Sheet", subtitle: "常用命令速查", tag: "手册", link: "https://tldr.sh/", note: "替代传统 man 的好用工具。" },
+      { id: crypto.randomUUID(), category: "Video Coding", title: "FFmpeg 官方文档", subtitle: "编解码底层库", tag: "文档", link: "https://ffmpeg.org/documentation.html", note: "日常转码、压制必备的参数参考。" },
+      { id: crypto.randomUUID(), category: "UI Design", title: "Obsidian CSS 样式指南", subtitle: "日记模板与照片墙排版参考", tag: "CSS/排版", link: "https://docs.obsidian.md/Reference/CSS+variables", note: "用于完善时间轴和图文排版的底层渲染效果。" },
+      { id: crypto.randomUUID(), category: "前端开发", title: "Lucide Icons", subtitle: "当前页面使用的图标库", tag: "前端资产", link: "https://lucide.dev/", note: "完全开源，包豪斯风格极佳的搭配。" }
+    ];
+
+    let entries = [];
+    let currentView = localStorage.getItem(VIEW_KEY) || "board";
+
+    const $ = (id) => document.getElementById(id);
+
+    function saveLocal() { localStorage.setItem(ENTRY_KEY, JSON.stringify(entries)); }
+
+    async function fetchEntriesFromSupabase() {
+      if (!supabaseClient) return null;
+      const { data, error } = await supabaseClient.from("resource_entries").select("*").order("created_at", { ascending: false });
+      if (error) return null;
+      return data;
+    }
+
+    async function saveEntryToSupabase(entry) {
+      if (!supabaseClient) return true;
+      const { error } = await supabaseClient.from("resource_entries").upsert(entry);
+      if (error) { alert("保存失败：" + error.message); return false; }
+      return true;
+    }
+
+    async function deleteEntryFromSupabase(id) {
+      if (!supabaseClient) return true;
+      const { error } = await supabaseClient.from("resource_entries").delete().eq("id", id);
+      if (error) { alert("删除失败：" + error.message); return false; }
+      return true;
+    }
+
+    async function init() {
+      const cloudEntries = await fetchEntriesFromSupabase();
+      const localEntries = JSON.parse(localStorage.getItem(ENTRY_KEY) || "null");
+      entries = cloudEntries || localEntries || seedEntries;
+      if (!cloudEntries && !localEntries) saveLocal();
+      renderAll();
+    }
+
+    // 动态配色表，为自动生成的模块提供包豪斯色彩
+    const modulePalettes = [
+      { bg: "bg-bauhaus-blue", text: "text-white", accent: "text-bauhaus-yellow", shape: "bg-white" },
+      { bg: "bg-bauhaus-red", text: "text-white", accent: "text-white", shape: "bg-bauhaus-yellow" },
+      { bg: "bg-bauhaus-yellow", text: "text-bauhaus-fg", accent: "text-bauhaus-red", shape: "bg-bauhaus-blue" },
+      { bg: "bg-white", text: "text-bauhaus-fg", accent: "text-bauhaus-blue", shape: "bg-bauhaus-fg" }
+    ];
+
+    function renderBoard() {
+      // 提取所有不重复的模块名称
+      const uniqueCategories = [...new Set(entries.map(e => e.category))];
+      if (uniqueCategories.length === 0) uniqueCategories.push('默认模块');
+
+      // 更新 datalist 供用户输入时自动补全
+      $("categoryOptions").innerHTML = uniqueCategories.map(cat => `<option value="${cat}">`).join("");
+
+      $("boardView").innerHTML = uniqueCategories.map((cat, index) => {
+        const p = modulePalettes[index % modulePalettes.length];
+        const items = entries.filter(item => item.category === cat);
+        
+        return `
+          <article class="${p.bg} ${p.text} border-4 border-bauhaus-fg shadow-solid-lg flex flex-col relative self-start">
+            <div class="absolute top-0 right-0 w-12 h-12 ${p.shape} border-b-4 border-l-4 border-bauhaus-fg"></div>
+            <div class="p-5 border-b-4 border-bauhaus-fg ${p.bg} flex justify-between items-center z-10">
+              <h3 class="text-3xl font-black uppercase tracking-tighter flex items-center gap-3 truncate max-w-[70%]">
+                <i data-lucide="folder" class="w-8 h-8 stroke-[3px] shrink-0 ${p.accent}"></i> 
+                <span class="truncate" title="${cat}">${cat}</span>
+              </h3>
+              <button class="w-12 h-12 shrink-0 border-4 border-bauhaus-fg bg-white text-bauhaus-fg hover:bg-bauhaus-fg hover:text-white transition-colors flex items-center justify-center" data-add-category="${cat}">
+                <i data-lucide="plus" class="w-6 h-6 stroke-[3px]"></i>
+              </button>
+            </div>
+            <div class="p-5 flex-1 flex flex-col gap-4">
+              ${items.map(item => createItemCard(item)).join("")}
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      bindBoardActions();
+    }
+
+    function createItemCard(item) {
+      return `
+        <div class="bg-white text-bauhaus-fg border-4 border-bauhaus-fg shadow-solid-sm p-5 relative group hover:-translate-y-1 transition-transform cursor-default">
+          <div class="flex justify-between items-start gap-4 mb-4">
+            <div class="min-w-0">
+              <h4 class="font-black text-xl leading-tight mb-1 truncate" title="${item.title}">${item.title || "未命名资源"}</h4>
+              ${item.subtitle ? `<div class="font-medium text-sm opacity-80">${item.subtitle}</div>` : ""}
+            </div>
+            <div class="shrink-0 flex items-center gap-2">
+              <button class="w-8 h-8 shrink-0 border-2 border-bauhaus-fg flex items-center justify-center bg-white text-bauhaus-fg hover:bg-bauhaus-yellow transition-colors" data-edit="${item.id}" title="编辑">
+                <i data-lucide="edit-2" class="w-4 h-4 stroke-[3px]"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="flex flex-wrap gap-2 mb-4">
+            ${item.tag ? `<span class="inline-flex items-center gap-1.5 px-2 py-1 text-[11px] font-bold uppercase tracking-wider border-2 border-bauhaus-fg bg-bauhaus-fg text-white"><i data-lucide="tag" class="w-3 h-3"></i> ${item.tag}</span>` : ""}
+          </div>
+          
+          ${item.note ? `<div class="text-sm font-medium border-l-4 border-bauhaus-fg pl-3 py-1 opacity-90 bg-white/20">${item.note}</div>` : ""}
+          
+          ${item.link ? `
+          <div class="mt-4 pt-4 border-t-2 border-bauhaus-fg border-dashed">
+            <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest border-b-2 border-bauhaus-fg pb-0.5 hover:text-bauhaus-blue transition-colors">
+              <i data-lucide="external-link" class="w-4 h-4 stroke-[3px]"></i> 直达资源
+            </a>
+          </div>` : ""}
+        </div>
+      `;
+    }
+
+    function renderList() {
+      // entries 数组本身就是按照 unshift 添加的，天然是由近及远（最新在最前）
+      $("listView").innerHTML = `
+        <div class="border-4 border-bauhaus-fg bg-white shadow-solid-md overflow-x-auto">
+          <div class="flex items-center border-b-4 border-bauhaus-fg bg-bauhaus-fg text-white font-black uppercase tracking-wider min-w-[600px]">
+            <div class="flex-[2] p-4 border-r-4 border-bauhaus-fg">资源标题</div>
+            <div class="flex-[3] p-4 border-r-4 border-bauhaus-fg">直达链接</div>
+            <div class="w-36 p-4 text-center shrink-0">操作</div>
+          </div>
+          <div class="flex flex-col min-w-[600px]">
+            ${entries.length ? entries.map(item => `
+              <div class="flex items-stretch border-b-4 last:border-b-0 border-bauhaus-fg hover:bg-bauhaus-yellow/30 transition-colors group bg-white">
+                <div class="flex-[2] p-4 border-r-4 border-bauhaus-fg font-bold flex items-center min-w-0">
+                  <span class="truncate pr-2" title="${item.title}">${item.title || '未命名资源'}</span>
+                </div>
+                <div class="flex-[3] p-4 border-r-4 border-bauhaus-fg font-medium flex items-center min-w-0">
+                  ${item.link ? `<a href="${item.link}" target="_blank" class="truncate hover:text-bauhaus-red underline decoration-2 underline-offset-4" title="${item.link}">${item.link}</a>` : `<span class="opacity-50">无链接</span>`}
+                </div>
+                <div class="w-36 p-2 shrink-0 flex items-center justify-center gap-2 bg-bauhaus-bg group-hover:bg-transparent transition-colors">
+                   <button class="w-10 h-10 border-4 border-bauhaus-fg bg-white flex items-center justify-center hover:bg-bauhaus-blue hover:text-white transition-colors" data-edit="${item.id}" title="编辑">
+                     <i data-lucide="edit-2" class="w-4 h-4 stroke-[3px]"></i>
+                   </button>
+                   <button class="w-10 h-10 border-4 border-bauhaus-fg bg-white flex items-center justify-center hover:bg-bauhaus-red hover:text-white transition-colors" data-delete-id="${item.id}" title="删除">
+                     <i data-lucide="trash-2" class="w-4 h-4 stroke-[3px]"></i>
+                   </button>
+                </div>
+              </div>
+            `).join('') : `
+              <div class="p-12 text-center font-black uppercase text-xl text-bauhaus-fg/50">暂无收藏条目</div>
+            `}
+          </div>
+        </div>
+      `;
+
+      bindListActions();
+    }
+
+    function bindBoardActions() {
+      document.querySelectorAll("[data-edit]").forEach(btn => btn.addEventListener("click", () => openEntryModal(null, btn.dataset.edit)));
+      document.querySelectorAll("[data-add-category]").forEach(btn => {
+        btn.addEventListener("click", () => openEntryModal(btn.dataset.addCategory));
+      });
+    }
+
+    function bindListActions() {
+      document.querySelectorAll("[data-edit]").forEach(btn => btn.addEventListener("click", () => openEntryModal(null, btn.dataset.edit)));
+      document.querySelectorAll("[data-delete-id]").forEach(btn => btn.addEventListener("click", () => deleteEntryDirectly(btn.dataset.deleteId)));
+    }
+
+    function renderView() {
+      const isBoard = currentView === "board";
+      $("boardView").classList.toggle("hidden", !isBoard);
+      $("boardView").classList.toggle("grid", isBoard);
+      $("listView").classList.toggle("hidden", isBoard);
+      $("listView").classList.toggle("flex", !isBoard);
+
+      $("boardViewBtn").classList.toggle("bg-bauhaus-yellow", isBoard);
+      $("boardViewBtn").classList.toggle("text-bauhaus-fg", isBoard);
+      $("listViewBtn").classList.toggle("bg-bauhaus-blue", !isBoard);
+      $("listViewBtn").classList.toggle("text-white", !isBoard);
+
+      if (isBoard) renderBoard();
+      else renderList();
+
+      lucide.createIcons();
+    }
+
+    function renderAll() { 
+      // 更新 datalist 供表单自动补全
+      const uniqueCategories = [...new Set(entries.map(e => e.category))];
+      $("categoryOptions").innerHTML = uniqueCategories.map(cat => `<option value="${cat}">`).join("");
+      renderView(); 
+    }
+
+    function openEntryModal(category = "", id = "") {
+      const item = id ? entries.find(entry => entry.id === id) : null;
+      $("entryForm").reset();
+      $("editingId").value = item?.id || "";
+      $("categoryInput").value = item?.category || category || "";
+      $("tagInput").value = item?.tag || "";
+      $("titleInput").value = item?.title || "";
+      $("subtitleInput").value = item?.subtitle || "";
+      $("linkInput").value = item?.link || "";
+      $("noteInput").value = item?.note || "";
+      
+      $("entryModalTitle").innerHTML = item
+        ? `<i data-lucide="edit" class="text-bauhaus-blue w-8 h-8 stroke-[3px]"></i> 编辑资源`
+        : `<i data-lucide="bookmark-plus" class="text-bauhaus-red w-8 h-8 stroke-[3px]"></i> 收藏资源`;
+      
+      $("deleteEntryBtn").classList.toggle("invisible", !item);
+      $("entryModal").classList.remove("hidden");
+      $("entryModal").classList.add("flex");
+      lucide.createIcons();
+    }
+
+    function closeEntryModal() { 
+      $("entryModal").classList.add("hidden"); 
+      $("entryModal").classList.remove("flex"); 
+    }
+
+    async function deleteEntryDirectly(id) {
+      if (!id) return;
+      if (!confirm("确认彻底删除这条资源收藏吗？")) return;
+
+      const ok = await deleteEntryFromSupabase(id);
+      if (USE_SUPABASE && !ok) return;
+
+      entries = entries.filter(item => item.id !== id);
+      saveLocal();
+      renderAll();
+    }
+
+    $("openAddBtn").addEventListener("click", () => openEntryModal());
+    $("closeEntryBtn").addEventListener("click", closeEntryModal);
+    $("cancelEntryBtn").addEventListener("click", closeEntryModal);
+    $("entryModal").addEventListener("click", (e) => { if (e.target === $("entryModal")) closeEntryModal(); });
+
+    $("entryForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const id = $("editingId").value || crypto.randomUUID();
+      const entry = {
+        id,
+        category: $("categoryInput").value.trim() || "默认模块", // 获取用户输入的模块名
+        tag: $("tagInput").value.trim(),
+        title: $("titleInput").value.trim(),
+        subtitle: $("subtitleInput").value.trim(),
+        link: $("linkInput").value.trim(),
+        note: $("noteInput").value.trim()
+      };
+
+      const index = entries.findIndex(item => item.id === id);
+      if (index >= 0) entries[index] = entry;
+      else entries.unshift(entry); // unshift 保证最新的永远在数组最前面
+
+      saveLocal();
+      const ok = await saveEntryToSupabase(entry);
+      if (USE_SUPABASE && !ok) return;
+
+      closeEntryModal();
+      renderAll();
+    });
+
+    $("deleteEntryBtn").addEventListener("click", () => {
+      deleteEntryDirectly($("editingId").value);
+      closeEntryModal();
+    });
+
+    $("boardViewBtn").addEventListener("click", () => {
+      currentView = "board";
+      localStorage.setItem(VIEW_KEY, currentView);
+      renderView();
+    });
+    $("listViewBtn").addEventListener("click", () => {
+      currentView = "list";
+      localStorage.setItem(VIEW_KEY, currentView);
+      renderView();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeEntryModal();
+    });
+
+    init();
+  </script>
+</body>
+</html>
+
