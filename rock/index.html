@@ -14,7 +14,7 @@
         .card:active { transform: scale(0.95); }
         .pool-btn { transition: all 0.15s; cursor: pointer; user-select: none; }
         .pool-btn:active { transform: scale(0.95); }
-        
+        /* 强制解除 Volantis 的各种特效和限制 */
         #l_main { 
             background: transparent !important; 
             box-shadow: none !important; 
@@ -32,7 +32,6 @@
 <body>
     <div id="roco-tracker-app" class="max-w-5xl mx-auto p-4 pb-20 mt-8">
         <h1 class="text-3xl font-black text-center text-gray-800 mb-8 tracking-wider">洛克王国异色记录 <span class="text-blue-500">S2赛季</span></h1>
-        
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-8">
             <h2 class="text-lg font-bold text-gray-700 mb-3 flex items-center gap-2">
                 <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
@@ -52,7 +51,46 @@
                 </button>
             </div>
         </div>
-        
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-8">
+            <h2 class="text-xl font-bold text-gray-800 border-l-4 border-amber-500 pl-3 mb-5">异色出货历史登记</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1">获得精灵</label>
+                    <select v-model="logForm.petName" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-400 text-sm font-medium text-gray-700">
+                        <option value="">-- 请选择精灵 --</option>
+                        <option v-for="pet in pets" :value="pet.name">{{ pet.name }}</option>
+                        <option value="其他异色">其他异色精灵</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1">出货时的保底抽数</label>
+                    <input v-model.number="logForm.count" type="number" min="0" placeholder="例如: 45" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-400 text-sm font-semibold">
+                </div>
+                <div class="flex items-end">
+                    <button @click="addShinyLog" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 text-white font-bold py-2.5 rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all text-sm">
+                        ➕ 登记出货历史
+                    </button>
+                </div>
+            </div>
+            <div v-if="shinyLogs.length > 0" class="mt-5 border-t border-gray-100 pt-4">
+                <div class="text-xs font-bold text-gray-400 mb-3 tracking-wider uppercase">欧气/非酋历史长廊</div>
+                <div class="max-h-60 overflow-y-auto space-y-2 pr-1">
+                    <div v-for="(log, idx) in shinyLogs" :key="log.id" class="flex justify-between items-center bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-100 text-sm animate-fade-in">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-xs font-mono text-gray-400 bg-gray-200/60 px-1.5 py-0.5 rounded">{{ log.date }}</span>
+                            <span class="font-bold text-gray-800">获得了 <span class="text-blue-600">{{ log.petName }}</span></span>
+                            <span class="text-xs font-black text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100">保底计数: {{ log.count }} 抽</span>
+                        </div>
+                        <button @click="deleteShinyLog(idx)" class="text-red-400 hover:text-red-600 text-xs font-bold px-2 py-1 rounded hover:bg-red-50 transition-colors">
+                            删除
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="text-center text-sm text-gray-400 py-4 italic">
+                暂无登记记录，点击上方按钮为你的异色奇遇留下印记吧！✨
+            </div>
+        </div>
         <div class="mb-10">
             <h2 class="text-xl font-bold text-gray-800 border-l-4 border-blue-500 pl-3 mb-5">异色精灵图鉴 (独立计数)</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -73,17 +111,14 @@
                 </div>
             </div>
         </div>
-        
         <div>
             <h2 class="text-xl font-bold text-gray-800 border-l-4 border-purple-500 pl-3 mb-5">保底池监控 (点击手动 +1)</h2>
-            
             <div class="mb-5">
                 <div @click="pools.normal++" class="pool-btn bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl p-6 text-white text-center shadow-lg relative overflow-hidden hover:shadow-xl hover:from-purple-400 hover:to-indigo-500">
                     <div class="text-sm opacity-90 font-bold mb-1 tracking-widest">🔮 普通池计数 (点击+1)</div>
                     <div class="text-5xl font-black mt-2">{{ pools.normal }}</div>
                 </div>
             </div>
-            
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
                 <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
                     <div v-for="type in elementTypes" :key="type" 
@@ -95,22 +130,18 @@
                 </div>
             </div>
         </div>
-        
         <div class="text-center mt-12">
             <button @click="resetData" class="text-red-400 text-sm font-medium hover:text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 transition-colors">
                 ⚠️ 清空所有本地记录
             </button>
         </div>
     </div>
-    
     <script>
         {
             const SUPABASE_URL = 'https://ebcdgnfpwmtnlgfjzspw.supabase.co';
             const SUPABASE_KEY = 'sb_publishable_81HGJMUvA2GnwR6u3KMPCw__HEytflU';
-            
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             const { createApp, ref, watch, onMounted } = Vue;
-            
             createApp({
                 setup() {
                     const elementTypes = ['普通','草','火','水','光','地','冰','龙','电','毒','虫','武','翼','萌','幽','恶','机械','幻'];
@@ -134,47 +165,69 @@
                         { name: '爆炎喷喷', types: ['火', '龙'], count: 0 },
                         { name: '雪怪', types: ['冰'], count: 0 },
                     ];
-                    
-                    // 彻底移除 family，只保留 normal 和 elements
                     const defaultPools = {
                         normal: 0,
                         elements: elementTypes.reduce((acc, curr) => { acc[curr] = 0; return acc; }, {})
                     };
-                    
                     const pets = ref(JSON.parse(JSON.stringify(defaultPets)));
                     const pools = ref(JSON.parse(JSON.stringify(defaultPools)));
+                    const shinyLogs = ref([]); // 🌟 新增：存放出货历史记录的数组
                     const syncId = ref(''); 
                     const isLoading = ref(false);
-                    
+                    // 登记表单的响应式状态
+                    const logForm = ref({
+                        petName: '',
+                        count: null
+                    });
                     const safeSetStorage = (key, val) => {
                         try { localStorage.setItem(key, val); } catch (e) { console.warn("浏览器拦截了存储", e); }
                     };
-                    
-                    // 修改点：只增加精灵计数，不再联动修改保底池
                     const addPetCount = (index) => {
                         pets.value[index].count++;
                     };
-                    
+                    // 🌟 新增：添加出货记录逻辑
+                    const addShinyLog = () => {
+                        if (!logForm.value.petName) return alert('⚠️ 请选择获得的精灵！');
+                        if (logForm.value.count === null || logForm.value.count === '') return alert('⚠️ 请填写出货时的保底抽数！');
+                        const now = new Date();
+                        const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+                        shinyLogs.value.unshift({
+                            id: Date.now(),
+                            date: dateStr,
+                            petName: logForm.value.petName,
+                            count: logForm.value.count
+                        });
+                        // 登记完成后自动将表单复位
+                        logForm.value.petName = '';
+                        logForm.value.count = null;
+                    };
+                    // 🌟 新增：删除单条记录
+                    const deleteShinyLog = (index) => {
+                        if (confirm('确定要删除这条出货记录吗？')) {
+                            shinyLogs.value.splice(index, 1);
+                        }
+                    };
                     watch(pets, (newVal) => safeSetStorage('roco_pets_s2', JSON.stringify(newVal)), { deep: true });
                     watch(pools, (newVal) => safeSetStorage('roco_pools_s2', JSON.stringify(newVal)), { deep: true });
+                    watch(shinyLogs, (newVal) => safeSetStorage('roco_logs_s2', JSON.stringify(newVal)), { deep: true }); // 监听历史记录
                     watch(syncId, (newVal) => safeSetStorage('roco_sync_id', newVal));
-                    
                     onMounted(() => {
                         try {
                             const savedPets = localStorage.getItem('roco_pets_s2');
                             const savedPools = localStorage.getItem('roco_pools_s2');
+                            const savedLogs = localStorage.getItem('roco_logs_s2'); // 读取历史记录
                             const savedSyncId = localStorage.getItem('roco_sync_id');
                             if (savedPets) pets.value = JSON.parse(savedPets);
                             if (savedPools) {
                                 const parsedPools = JSON.parse(savedPools);
-                                // 兼容老数据：如果本地存了老版本的 family 字段，忽略它，确保最新格式
                                 pools.value.normal = parsedPools.normal || 0;
                                 pools.value.elements = parsedPools.elements || defaultPools.elements;
                             }
+                            if (savedLogs) shinyLogs.value = JSON.parse(savedLogs);
                             if (savedSyncId) syncId.value = savedSyncId;
                         } catch (e) { console.warn("读取存储被拦截", e); }
                     });
-                    
+                    // ☁️ 上传数据（包含新版历史记录列）
                     const uploadToCloud = async () => {
                         if (!syncId.value.trim()) return alert('⚠️ 请先设置一个同步暗号！');
                         isLoading.value = true;
@@ -185,17 +238,18 @@
                                     sync_id: syncId.value.trim(), 
                                     pets: pets.value, 
                                     pools: pools.value,
+                                    logs: shinyLogs.value, // 🌟 同步到云端
                                     updated_at: new Date()
                                 });
                             if (error) throw error;
-                            alert('✅ 成功备份到云端数据库！');
+                            alert('✅ 成功备份到云端数据库（包含出货记录）！');
                         } catch (error) {
                             alert('❌ 上传失败: ' + error.message);
                         } finally {
                             isLoading.value = false;
                         }
                     };
-                    
+                    // ☁️ 下载数据（同步拉取历史记录）
                     const downloadFromCloud = async () => {
                         if (!syncId.value.trim()) return alert('⚠️ 请输入你要恢复的同步暗号！');
                         isLoading.value = true;
@@ -208,10 +262,10 @@
                             if (error) throw error;
                             if (data) {
                                 pets.value = data.pets;
-                                // 拉取云端数据时，只赋值需要的数据，忽略旧版的 family
                                 pools.value.normal = data.pools.normal || 0;
                                 pools.value.elements = data.pools.elements || defaultPools.elements;
-                                alert('🎉 成功从云端拉取数据并覆盖本地！');
+                                shinyLogs.value = data.logs || []; // 🌟 从云端获取历史记录
+                                alert('🎉 成功从云端拉取全量数据并覆盖本地！');
                             }
                         } catch (error) {
                             if (error.code === 'PGRST116') {
@@ -223,19 +277,19 @@
                             isLoading.value = false;
                         }
                     };
-                    
                     const resetData = () => {
-                        if (confirm('🚨 确定清空这台设备上的记录？云端数据不受影响。')) {
+                        if (confirm('🚨 确定清空这台设备上的所有本地记录（包含出货历史）？')) {
                             pets.value = JSON.parse(JSON.stringify(defaultPets));
                             pools.value = JSON.parse(JSON.stringify(defaultPools));
+                            shinyLogs.value = [];
                             try {
                                 localStorage.removeItem('roco_pets_s2');
                                 localStorage.removeItem('roco_pools_s2');
+                                localStorage.removeItem('roco_logs_s2');
                             } catch (e) {}
                         }
                     };
-                    
-                    return { pets, pools, elementTypes, syncId, isLoading, addPetCount, uploadToCloud, downloadFromCloud, resetData };
+                    return { pets, pools, elementTypes, shinyLogs, logForm, syncId, isLoading, addPetCount, addShinyLog, deleteShinyLog, uploadToCloud, downloadFromCloud, resetData };
                 }
             }).mount('#roco-tracker-app');
         } 
