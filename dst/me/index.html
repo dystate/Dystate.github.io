@@ -17,8 +17,55 @@
         
         .char-span {
             display: inline-block;
-            transition: transform 0.15s cubic-bezier(0.2, 0, 0.2, 1);
+            transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.55s ease,
+                        filter 0.55s ease,
+                        color 0.35s ease;
             position: relative;
+            will-change: transform, opacity, filter;
+        }
+
+        .char-span.vanished {
+            opacity: 0;
+            filter: blur(4px);
+            color: #93c5fd;
+        }
+
+        .char-span.dispersing {
+            opacity: 0;
+            filter: blur(5px);
+            color: #93c5fd;
+        }
+
+        .bubble-dot {
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            border: 1.4px solid rgba(96, 165, 250, 0.72);
+            background: rgba(255, 255, 255, 0.22);
+            pointer-events: none;
+            z-index: 6;
+            transform: translate(-50%, -50%) scale(0.35);
+            animation: bubblePop 0.95s ease-out forwards;
+        }
+
+        @keyframes bubblePop {
+            0% {
+                opacity: 0.95;
+                transform: translate(-50%, -50%) scale(0.35);
+                filter: blur(0px);
+            }
+            65% {
+                opacity: 0.62;
+                transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.18);
+                filter: blur(0.2px);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy) - 18px)) scale(1.65);
+                filter: blur(2px);
+            }
         }
 
         #pretext-stage {
@@ -55,12 +102,18 @@
             position: absolute;
             width: 82px;
             height: 82px;
-            z-index: 2;
-            pointer-events: none;
+            z-index: 8;
+            pointer-events: auto;
+            cursor: pointer;
             transform-origin: center center;
-            opacity: 0.94;
+            opacity: 0.96;
             filter: drop-shadow(0 2px 3px rgba(30, 58, 138, 0.08));
             will-change: transform, opacity;
+        }
+
+        #butterfly:hover {
+            opacity: 1;
+            filter: drop-shadow(0 4px 7px rgba(30, 58, 138, 0.16));
         }
 
         .butterfly-svg {
@@ -201,9 +254,18 @@
             const flightPath = document.getElementById('flight-path');
 
             const pathLength = flightPath.getTotalLength(); 
+            const targetUrl = 'https://www.example.com'; // 点击蝴蝶跳转的网址：把这里改成你自己的目标网页
+            butterfly.setAttribute('title', '点击跳转');
+            butterfly.addEventListener('click', () => {
+                window.open(targetUrl, '_blank');
+            });
 
             // 文本内容微调
-            const myText = `这是一段完全由原生 JavaScript 驱动的文字避让特效。你现在看到的，是你亲手绘制的一条蜿蜒起伏的全新轨迹。仔细观察这只翩翩起舞的蝴蝶，它正精准地沿着这个隐形的路径在信纸上起落穿梭。这里的每一个汉字、每一个标点，都在底层被独立包裹并监听着。这种技术彻底抛弃了外部库的臃肿，通过浏览器原生的排版引擎结合硬件加速的 CSS 变换来实现。当蝴蝶靠近时，文字就像水波一样感知到了物理碰撞，优雅地向四周退散；当蝴蝶飞离后，它们又会迅速恢复原本的秩序。不论你的轨迹是直线、折线还是像这样回旋跌宕的丝带形状，代码都能毫秒不差地捕获坐标，并演算出排斥的力场。你可以在这里写下一篇长长的日记，或者一段优美的散文。文字铺得越满，当蝴蝶在这重重叠叠的字里行间穿梭时，那种“摩西分海”般的视觉震撼感就越强。无需任何复杂的配置，这段代码在你博客的任何角落都能完美运行。红色的信笺边缘划分出思绪的边界，而蓝色的横线如同海浪，承载着每一个带有温度的手写字迹。蝴蝶在无形中飞跃梦境与现实的重重迷雾，文字随它泛起涟漪，这便是专属于代码世界里的极致浪漫。当你静静看着它在这张长信笺中回旋、降落，时间仿佛也随之慢了下来，在纸面上留下一道道诗意的痕迹，直到完成它的舞蹈，悄然淡出......`;
+            const myText = `他不仅记得每座山的每一道山脊的每一片林木，他还记得他在某一天早晨看到的云朵的轮廓，并拿它和他在那一天晚上看到的带有斑点的云朵相比，或者拿它和他在南方的天空，在那天黎明时分看到的一片像丝绸一样的云朵相比。事实上，他是在重构这些云朵。他能把那天的火红的云、那种极度混乱的颜色重现出来。他能把神话小说中描写的高速奔驰的马，把每一次奔跑，把每一处肌肉的紧绷，把每一次呼吸，都记录在脑海里。
+
+            他不是一个思想家，因为思想要求我们忽略差异，把相似的事物归类，并在这个归类的过程中去概括。富内斯不仅记得每一片叶子，他甚至记得叶子在某个特定时刻被阳光照射后的每一个细节。他那令人恐惧的记忆力，其实也是一种对他人的诅咒。他告诉我，他那非凡的直觉，其实是一种对现实的淤积。
+
+            在他的脑子里，每一秒钟都在累积，每一瞬间都是一种独一无二的永恒，而这永恒是如此沉重，以至于他无法进行任何抽象的思考。我怀疑他在那一瞬间，能否像我们普通人一样，能够理解“狗”这个词，因为在他眼里，每一只狗都不仅仅是那一时刻的实体，它是他记忆中所有形态、所有动作、所有光影下的狗的集合。对于他来说，世界就像是一座堆满了无数细节的坟墓，没有任何东西是可以被遗忘的，因为没有任何东西是可以被概括的。每一个刹那都是一个无穷的宇宙，这种过度的清晰，反倒让他陷入了永恒的沉默之中。`;
 
             const chars = myText.split('');
             textLayer.innerHTML = '';
@@ -222,16 +284,83 @@
                         el: span,
                         x: span.offsetLeft + span.offsetWidth / 2,
                         y: span.offsetTop + span.offsetHeight / 2,
-                        wobble: Math.sin(index * 1.73)
+                        wobble: Math.sin(index * 1.73),
+                        vanished: false,
+                        bubbleSeed: index * 37
                     };
                 });
                 requestAnimationFrame(renderLoop);
             }, 250); 
 
             let progress = 0; 
+            let allDispersed = false;
             const speed = 0.0035; // 保持轻快滑行速度
-            const repelRadius = 96; // 大于蝴蝶本体，避免蝴蝶压住文字
-            const maxPush = 58; // 文字为蝴蝶让出的最大位移 
+            const dissolveRadius = 82; // 蝴蝶靠近时，文字开始像泡沫一样消失
+            const rippleRadius = 120; // 外圈文字产生轻微水波变形
+            const maxPush = 42;
+
+            function createBubble(x, y, seed) {
+                for (let i = 0; i < 3; i++) {
+                    const bubble = document.createElement('span');
+                    bubble.className = 'bubble-dot';
+                    const dx = Math.sin(seed + i * 2.1) * (12 + i * 7);
+                    const dy = -10 - Math.cos(seed + i * 1.7) * (10 + i * 5);
+                    const size = 4 + ((seed + i) % 4);
+                    bubble.style.left = `${x}px`;
+                    bubble.style.top = `${y}px`;
+                    bubble.style.width = `${size}px`;
+                    bubble.style.height = `${size}px`;
+                    bubble.style.setProperty('--dx', `${dx}px`);
+                    bubble.style.setProperty('--dy', `${dy}px`);
+                    bubble.style.animationDelay = `${i * 0.045}s`;
+                    bubble.style.borderColor = i % 2 === 0 ? 'rgba(96, 165, 250, 0.72)' : 'rgba(223, 75, 75, 0.55)';
+                    stage.appendChild(bubble);
+                    setTimeout(() => bubble.remove(), 1100);
+                }
+            }
+
+            function disperseRemainingText() {
+                if (allDispersed) return;
+                allDispersed = true;
+
+                const centerX = stage.clientWidth / 2;
+                const centerY = stage.clientHeight / 2;
+
+                charData.forEach((char, index) => {
+                    if (char.vanished) return;
+
+                    const dx0 = char.x - centerX;
+                    const dy0 = char.y - centerY;
+                    const base = Math.sqrt(dx0 * dx0 + dy0 * dy0) || 1;
+                    const seed = index * 0.73;
+                    const drift = 95 + (index % 9) * 13;
+                    const floatUp = 45 + (index % 7) * 10;
+                    const scatterX = (dx0 / base) * drift + Math.sin(seed) * 62;
+                    const scatterY = (dy0 / base) * drift - floatUp + Math.cos(seed * 1.4) * 36;
+                    const rotate = Math.sin(seed * 2.1) * 85;
+                    const skew = Math.cos(seed * 1.7) * 28;
+                    const delay = Math.min(0.75, index * 0.003);
+
+                    char.vanished = true;
+                    char.el.style.transition = `transform 1.75s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, opacity 1.65s ease ${delay}s, filter 1.65s ease ${delay}s`;
+                    char.el.classList.add('dispersing');
+                    char.el.style.transform = `translate(${scatterX}px, ${scatterY}px) rotate(${rotate}deg) skew(${skew}deg) scale(${1.18 + (index % 5) * 0.08})`;
+
+                    if (index % 4 === 0) {
+                        setTimeout(() => createBubble(char.x, char.y, char.bubbleSeed + 99), delay * 1000);
+                    }
+                });
+            }
+
+            function settleButterflyAtBottom() {
+                // 蝴蝶完成飞行后停在纸张底部中间，仍然可以点击跳转。
+                const finalX = stage.clientWidth / 2 - 41;
+                const finalY = stage.clientHeight - 118;
+                butterfly.style.transition = 'transform 1.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease, filter 0.7s ease';
+                butterfly.style.transform = `translate(${finalX}px, ${finalY}px) rotate(-8deg)`;
+                butterfly.style.opacity = '1';
+                butterfly.style.pointerEvents = 'auto';
+            }
 
             function renderLoop() {
                 progress += speed;
@@ -255,18 +384,30 @@
                     const dy = char.y - by;
                     const distance = Math.sqrt(dx * dx + dy * dy);
 
-                    if (distance < repelRadius && distance > 0) {
-                        const force = Math.pow((repelRadius - distance) / repelRadius, 1.35); 
-                        const pushX = (dx / distance) * force * maxPush; 
-                        const pushY = (dy / distance) * force * maxPush;
-                        const twist = char.wobble * force * 16;
-                        const squeezeX = 1 + force * 0.18;
-                        const squeezeY = 1 - force * 0.10;
+                    if (char.vanished) return;
+
+                    if (distance < dissolveRadius && distance > 0) {
+                        const force = Math.pow((dissolveRadius - distance) / dissolveRadius, 0.72);
+                        const awayX = (dx / distance) * force * maxPush;
+                        const awayY = (dy / distance) * force * maxPush - force * 22;
+                        const twist = char.wobble * force * 34;
+                        const skew = char.wobble * force * 20;
+
+                        // 经过蝴蝶附近的文字不再恢复，而是像泡沫一样被吹散、变淡、消失
+                        char.vanished = true;
+                        char.el.classList.add('vanished');
+                        char.el.style.transform = `translate(${awayX}px, ${awayY}px) rotate(${twist}deg) skew(${skew}deg) scale(${1 + force * 0.95})`;
+                        createBubble(char.x, char.y, char.bubbleSeed);
+                    } else if (distance < rippleRadius && distance > 0) {
+                        const force = Math.pow((rippleRadius - distance) / rippleRadius, 1.45);
+                        const pushX = (dx / distance) * force * 18;
+                        const pushY = (dy / distance) * force * 18;
+                        const twist = char.wobble * force * 12;
                         const skew = char.wobble * force * 8;
-                        
-                        // 不让蝴蝶压住字：字会向外退开，并带轻微旋转/拉伸，形成“绕开”的歪曲感
-                        char.el.style.transform = `translate(${pushX}px, ${pushY}px) rotate(${twist}deg) skew(${skew}deg) scale(${squeezeX}, ${squeezeY})`;
-                        char.el.style.color = '#7c3aed'; 
+
+                        // 外圈文字先产生柔和扭曲，等蝴蝶靠近后再泡沫化消失
+                        char.el.style.transform = `translate(${pushX}px, ${pushY}px) rotate(${twist}deg) skew(${skew}deg) scale(${1 + force * 0.12}, ${1 - force * 0.08})`;
+                        char.el.style.color = '#60a5fa';
                     } else {
                         char.el.style.transform = `translate(0px, 0px) rotate(0deg) skew(0deg) scale(1, 1)`;
                         char.el.style.color = '';
@@ -276,9 +417,9 @@
                 if (!isFinished) {
                     requestAnimationFrame(renderLoop);
                 } else {
-                    // 到达终点后，蝴蝶缓缓淡出
-                    butterfly.style.transition = 'opacity 2s ease';
-                    butterfly.style.opacity = '0';
+                    // 到达终点后，剩余没有碰到的文字也会向外飘散，随后蝴蝶停在纸张底部。
+                    disperseRemainingText();
+                    settleButterflyAtBottom();
                 }
             }
         }
