@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>洛克王国 - 专属工具箱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
+        
+        /* 彻底解除 Hexo/Volantis 主题的干扰 */
+        #l_main { background: transparent !important; box-shadow: none !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
+        .article-meta, .title, #l_footer { display: none !important; }
+        
+        /* 动态背景光效动画 */
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center relative overflow-hidden">
+
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-20%] left-[20%] w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+    </div>
+
+    <div class="max-w-5xl w-full px-6 py-12 z-10 relative">
+        
+        <div class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-black text-slate-800 mb-4 tracking-tight">
+                洛克王国 <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">专属工具箱</span>
+            </h1>
+            <p class="text-slate-500 text-lg font-medium">高效管理你的异色奇遇与全系精灵图鉴</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            
+            <a href="/rock/" class="group relative bg-white/60 backdrop-blur-xl border border-white/50 p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-300 overflow-hidden cursor-pointer flex flex-col h-full">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-amber-300 to-orange-400 rounded-full blur-3xl opacity-20 group-hover:opacity-50 transition-opacity duration-500"></div>
+                
+                <div class="text-5xl mb-6 drop-shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 origin-bottom-left">✨</div>
+                
+                <h2 class="text-2xl font-bold text-slate-800 mb-3 tracking-wide">异色抓捕记录</h2>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8 flex-1">
+                    记录 S2 赛季异色出货历史。包含各系保底监控面板、单只精灵捕捉计数，支持满80自动清零与 Supabase 云端多端同步。
+                </p>
+                
+                <div class="flex items-center text-amber-500 font-bold text-sm tracking-widest mt-auto group-hover:text-amber-600 transition-colors">
+                    进入工具 
+                    <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </div>
+            </a>
+
+            <a href="/Roco/handbook/" class="group relative bg-white/60 backdrop-blur-xl border border-white/50 p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-300 overflow-hidden cursor-pointer flex flex-col h-full">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-emerald-300 to-cyan-400 rounded-full blur-3xl opacity-20 group-hover:opacity-50 transition-opacity duration-500"></div>
+                
+                <div class="text-5xl mb-6 drop-shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6 origin-bottom-left">📖</div>
+                
+                <h2 class="text-2xl font-bold text-slate-800 mb-3 tracking-wide">全精灵图鉴库</h2>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8 flex-1">
+                    全网最全的繁衍组别图鉴。收录动物组、海洋组等 14 大阵营的所有精灵。支持左侧边栏无缝切换，数据实时过滤呈现。
+                </p>
+                
+                <div class="flex items-center text-emerald-500 font-bold text-sm tracking-widest mt-auto group-hover:text-emerald-600 transition-colors">
+                    进入工具 
+                    <svg class="w-5 h-5 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </div>
+            </a>
+
+        </div>
+
+        <div class="text-center mt-20">
+            <p class="text-slate-400 text-xs font-medium tracking-widest uppercase opacity-70">
+                Personal Web Tools Collection
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>
