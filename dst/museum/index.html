@@ -1,0 +1,1196 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+  <style>
+    :root {
+      --mu-bg: #f3eadf;
+      --mu-card: #fffaf3;
+      --mu-panel: #efe0cf;
+      --mu-text: #2f2117;
+      --mu-muted: #8f7965;
+      --mu-border: #ddc8b3;
+      --mu-accent: #bd7a3f;
+      --mu-accent-2: #6f472b;
+      --mu-soft: rgba(189, 122, 63, .12);
+      --mu-soft-2: rgba(189, 122, 63, .2);
+      --mu-danger: #bf5b50;
+      --mu-radius: 26px;
+      --mu-shadow: none;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background: var(--mu-bg);
+      color: var(--mu-text);
+      font-family: "Inter", "HarmonyOS Sans SC", "MiSans", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { border: 0; cursor: pointer; }
+
+    /* ====================================================================
+       🔒 锁屏界面样式
+       ==================================================================== */
+    .lock-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--mu-bg);
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.4s ease, visibility 0.4s;
+    }
+    .lock-card {
+      background: var(--mu-card); border: 1px solid var(--mu-border);
+      border-radius: 28px; padding: 40px; text-align: center;
+      box-shadow: 0 20px 40px rgba(189, 122, 63, 0.1); width: min(90vw, 400px);
+      animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes popIn { 0% { opacity: 0; transform: scale(0.9) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+    .lock-icon { font-size: 48px; color: var(--mu-accent); margin-bottom: 20px; }
+    .lock-card h2 { color: var(--mu-text); font-size: 24px; margin-bottom: 8px; font-weight: 850; }
+    .lock-card p.subtitle { color: var(--mu-muted); font-size: 14px; margin-bottom: 24px; }
+    .lock-card input {
+      width: 100%; padding: 14px 18px; border-radius: 18px; border: 1px solid var(--mu-border);
+      background: #f5e8d8; margin-bottom: 16px; outline: none; font-size: 16px;
+      text-align: center; color: var(--mu-text); transition: 0.2s; letter-spacing: 0.2em;
+    }
+    .lock-card input:focus { border-color: var(--mu-accent); background: #fffdf8; box-shadow: 0 0 0 4px var(--mu-soft); }
+    .lock-card button { width: 100%; min-height: 48px; font-size: 16px; border-radius: 16px; }
+    .lock-error { color: var(--mu-danger); font-size: 13px; font-weight: bold; margin-bottom: 16px; margin-top: -8px; display: none; animation: shake 0.4s; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    
+    /* 主内容默认隐藏 */
+    #appContent { display: none; width: 100%; min-height: 100vh; }
+
+    /* Sidebar Overlay (Mobile) */
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(47, 33, 23, .4); z-index: 90; opacity: 0; transition: opacity .3s ease; }
+    .sidebar-overlay.show { display: block; opacity: 1; }
+
+    /* Mobile Top Bar */
+    .mobile-top-bar { display: none; align-items: center; gap: 14px; margin-bottom: 16px; font-size: 18px; font-weight: 850; color: var(--mu-text); }
+    #hamburgerBtn { width: 42px; height: 42px; border-radius: 14px; background: #ead9c6; color: var(--mu-text); display: grid; place-items: center; font-size: 18px; }
+
+    .mu-sidebar {
+      width: 238px; min-height: 100vh; height: 100vh; position: sticky; top: 0;
+      padding: 28px 18px; background: #ead9c6; border-right: 1px solid #d3b79d;
+      overflow-y: auto; flex: 0 0 238px; z-index: 100;
+    }
+    .mu-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; letter-spacing: .04em; font-weight: 800; font-size: 15px; color: var(--mu-text); }
+    .mu-logo i { width: 34px; height: 34px; border-radius: 15px; display: grid; place-items: center; background: #d2a06f; color: #fffaf3; }
+    .nav-card { padding: 10px 8px; border: 0; border-radius: 20px; background: #f7ecdf; margin-bottom: 14px; }
+    .mu-nav-title { color: #9c8068; font-size: 10px; font-weight: 800; letter-spacing: .1em; margin: 8px 10px 10px; }
+    .mu-nav-list { list-style: none; display: grid; gap: 3px; }
+    .mu-nav-item {
+      width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      min-height: 40px; padding: 9px 10px; border-radius: 14px; color: #6d5847; font-size: 12px;
+      background: transparent; transition: .22s ease;
+    }
+    .mu-nav-item .nav-left { display: flex; align-items: center; gap: 9px; font-weight: 700; }
+    .mu-nav-item i { width: 18px; color: #a66f42; font-size: 13px; }
+    .mu-nav-item:hover, .mu-nav-item.active { background: #ead6c0; color: var(--mu-text); font-weight: 800; }
+    .mu-nav-item.home-item.active { background: var(--mu-accent); color: #fffaf3; }
+    .mu-nav-item.home-item.active i, .mu-nav-item.home-item.active .mu-count { color: #fffaf3; }
+    .mu-count { min-width: 26px; padding: 2px 7px; border-radius: 999px; text-align: center; font-size: 10px; background: #ead6c0; color: #8b6d55; font-weight: 700; }
+    .mu-nav-item.active:not(.home-item) .mu-count { background: #d2a06f; color: #fffaf3; }
+
+    .mu-main { flex: 1; max-width: 1220px; margin: 0 auto; overflow: visible; padding: 34px 34px 64px; }
+    .mu-header { display: grid; grid-template-columns: minmax(240px, 360px) minmax(220px, 1fr) auto; gap: 14px; align-items: center; margin-bottom: 18px; }
+    .mu-search { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 12px 16px; background: var(--mu-card); border: 1px solid var(--mu-border); border-radius: 22px; }
+    .mu-search i { color: var(--mu-muted); }
+    .mu-search input { width: 100%; background: transparent; border: 0; outline: 0; color: var(--mu-text); }
+    .mu-search input::placeholder { color: #aa927b; }
+    .header-controls { display: flex; justify-content: flex-end; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .view-switch { display: inline-flex; align-items: center; background: var(--mu-card); border: 1px solid var(--mu-border); border-radius: 22px; padding: 4px; }
+    .view-btn { min-width: 92px; padding: 10px 14px; border-radius: 16px; background: transparent; color: #8f7965; font-weight: 800; font-size: 12px; transition: .2s ease; }
+    .view-btn.active { background: #bd7a3f; color: #fffaf3; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 12px 17px; border-radius: 17px; font-weight: 800; font-size: 13px; transition: .22s ease; white-space: nowrap; }
+    .btn-ghost { color: var(--mu-text); background: var(--mu-card); border: 1px solid var(--mu-border); }
+    .btn-primary { background: var(--mu-accent); color: #fffaf3; }
+    .btn:hover { background: #ead6c0; color: var(--mu-text); }
+    .btn-primary:hover { background: #a86635; color: #fffaf3; }
+    
+    .toolbar-note { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-bottom: 16px; color: var(--mu-muted); font-size: 13px; flex-wrap: wrap; }
+    .toolbar-note strong { color: var(--mu-text); }
+    .active-filter { color: var(--mu-text); font-weight: 800; }
+    .section-title { display: flex; align-items: center; gap: 10px; margin: 18px 0 18px; font-size: 20px; color: var(--mu-text); font-weight: 850; }
+    .section-sub { color: var(--mu-muted); font-size: 13px; margin-top: -8px; margin-bottom: 20px; }
+    
+    .mu-grid { display: grid; gap: 16px; }
+    .mu-grid.view-cards { grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); align-items: start; }
+    
+    .exhibit-card, .list-row { background: var(--mu-card); border: 1px solid var(--mu-border); border-radius: 28px; transition: border-color .24s ease, background .24s ease; }
+    .exhibit-card:hover, .list-row:hover { background: #fffdf8; border-color: #c79d78; }
+    .exhibit-card { padding: 18px; display: flex; flex-direction: column; overflow: hidden; }
+    
+    .card-header, .list-title-wrap { margin-bottom: 14px; }
+    .card-header h3, .list-title-wrap h3 { font-size: 20px; line-height: 1.25; color: var(--mu-text); font-weight: 850; letter-spacing: 0; }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .btn-edit { width: 40px; height: 40px; border-radius: 15px; color: #8d6646; background: #f0dfcc; flex: 0 0 auto; transition: .2s ease; display: grid; place-items: center; }
+    .btn-edit:hover { color: #fffaf3; background: var(--mu-accent); }
+    .card-body { display: flex; gap: 18px; min-height: 0; flex: 1; align-items: stretch; }
+    .card-img-wrapper { position: relative; flex: 0 0 44%; min-height: 238px; border: 0; border-radius: 20px; overflow: hidden; background: #ead8c3; }
+    .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .empty-img { width: 100%; height: 100%; display: grid; place-items: center; color: var(--mu-muted); font-size: 34px; }
+    
+    .card-info { flex: 1; display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+    .meta-grid { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .meta-pill { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 0; border-radius: 18px; background: #f2e2cf; min-height: 66px; }
+    .exhibit-card .meta-pill.price-pill { grid-column: 1 / -1; }
+    .meta-pill:nth-child(1) { background: #f4d76a; color: #231a0f; }
+    .meta-pill:nth-child(2) { background: #f39a5d; color: #25130a; }
+    .meta-pill:nth-child(3) { background: #8ddd63; color: #12210d; }
+    .meta-pill:nth-child(4) { background: #7bd4e7; color: #0d1d22; }
+    .meta-pill i, .meta-pill .meta-label, .meta-pill .meta-value, .meta-pill.price-pill .meta-value { color: inherit; }
+    .meta-pill i { width: 18px; text-align: center; font-size: 15px; flex: 0 0 auto; }
+    .meta-content { min-width: 0; }
+    .meta-label { display: block; opacity: .72; font-size: 10px; letter-spacing: .04em; font-weight: 800; margin-bottom: 3px; }
+    .meta-value { display: block; font-size: 17px; font-weight: 900; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-footer { margin-top: 16px; padding-top: 14px; border-top: 1px solid #e0c9b2; color: var(--mu-muted); font-size: 13px; line-height: 1.7; }
+    
+    .mu-grid.view-list { grid-template-columns: 1fr; gap: 12px; }
+    .list-row { display: block; padding: 16px 18px; border-left: 0; }
+    .list-main-wrap { display: flex; gap: 18px; align-items: stretch; }
+    .list-left-img { width: 110px; flex-shrink: 0; border-radius: 16px; background: #ead8c3; border: 1px solid var(--mu-border); overflow: hidden; display: flex; flex-direction: column; }
+    .list-left-img img { width: 100%; height: 100%; object-fit: cover; }
+    .list-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+    .list-top { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 18px; }
+    .list-title-wrap h3 { margin-bottom: 0; }
+    .list-row .meta-grid { display: flex; flex-wrap: wrap; gap: 20px; border: 0; align-items: center; }
+    .list-row .meta-pill { min-height: auto; border: 0 !important; border-radius: 0; background: transparent !important; color: var(--mu-text) !important; padding: 0; gap: 6px; }
+    .list-row .meta-pill i { color: var(--mu-muted) !important; font-size: 14px; width: auto; }
+    .list-row .meta-content { display: flex; align-items: center; gap: 6px; }
+    .list-row .meta-label { display: none; }
+    .list-row .meta-value { font-size: 13px; font-weight: 700; color: var(--mu-text) !important; }
+    .list-note { font-size: 13px; color: var(--mu-muted); line-height: 1.65; padding-top: 10px; border-top: 1px solid #e0c9b2; }
+    .img-error-text { display: grid; place-items: center; text-align: center; gap: 8px; padding: 18px; color: var(--mu-muted); font-size: 12px; line-height: 1.5; }
+    .img-error-text i { font-size: 28px; color: var(--mu-danger); }
+    .empty-state { min-height: 340px; display: grid; place-items: center; text-align: center; background: var(--mu-card); color: var(--mu-muted); border: 1px solid var(--mu-border); border-radius: 22px; padding: 20px; }
+    .empty-state i { font-size: 42px; color: var(--mu-accent); margin-bottom: 14px; }
+    
+    .modal-overlay, .drawer-overlay { position: fixed; inset: 0; z-index: 200; display: none; background: rgba(47, 33, 23, .32); }
+    .modal-overlay.show, .drawer-overlay.show { display: flex; }
+    .modal-overlay { align-items: center; justify-content: center; padding: 20px; }
+    .modal-box { width: min(760px, 96vw); max-height: 92vh; overflow-y: auto; background: #fffaf3; border: 1px solid var(--mu-border); border-radius: 28px; color: var(--mu-text); padding: 28px; animation: pop .22s ease; }
+    @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+    .modal-header h2 { font-size: 22px; display: flex; align-items: center; gap: 10px; }
+    .btn-close { width: 38px; height: 38px; border-radius: 18px; background: #f5e8d8; border: 1px solid var(--mu-border); color: var(--mu-text); }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 7px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: 12px; color: var(--mu-muted); font-weight: 900; letter-spacing: .05em; }
+    .mu-input, .mu-select, .mu-textarea { width: 100%; border: 1px solid var(--mu-border); border-radius: 18px; background: #f5e8d8; padding: 12px 13px; outline: 0; color: var(--mu-text); transition: .2s ease; }
+    .mu-input:focus, .mu-select:focus, .mu-textarea:focus { background: #fffdf8; outline: 2px solid rgba(189, 122, 63, .24); border-color: var(--mu-accent); }
+    .mu-textarea { min-height: 90px; resize: vertical; }
+    .upload-box { position: relative; min-height: 170px; display: grid; place-items: center; gap: 6px; border: 2px dashed var(--mu-border); border-radius: 18px; background: #f2e2cf; color: var(--mu-text); cursor: pointer; overflow: hidden; }
+    .upload-box:hover { border-color: var(--mu-accent); color: var(--mu-accent-2); }
+    .upload-box input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-inner { text-align: center; pointer-events: none; }
+    .upload-inner i { font-size: 30px; margin-bottom: 8px; color: var(--mu-accent); }
+    .preview-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .form-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 22px; }
+    .form-actions-right { display: flex; gap: 12px; }
+    .btn-danger { background: #f8ded9; color: #9d3f37; }
+    
+    .drawer-overlay { justify-content: flex-end; }
+    .drawer { width: min(390px, 92vw); height: 100%; padding: 30px; background: #fffaf3; border-left: 1px solid var(--mu-border); border-radius: 28px 0 28px 0; color: var(--mu-text); animation: slide .22s ease; overflow-y: auto; }
+    @keyframes slide { from { transform: translateX(24px); opacity: .2; } to { transform: none; opacity: 1; } }
+    .filter-row { display: grid; gap: 8px; margin-bottom: 16px; }
+    
+    .bulk-toolbar { display: none; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 18px; padding: 13px 16px; border: 1px solid var(--mu-border); border-radius: 22px; background: var(--mu-card); color: var(--mu-muted); font-size: 13px; flex-wrap: wrap; }
+    .bulk-toolbar.show { display: flex; }
+    .bulk-left, .bulk-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .bulk-check { position: absolute; top: 14px; right: 14px; z-index: 5; width: 26px; height: 26px; accent-color: var(--mu-accent); cursor: pointer; }
+    .exhibit-card.bulk-mode, .list-row.bulk-mode { padding-top: 50px; }
+    .list-row .bulk-check { top: 16px; left: 16px; right: auto; }
+    .list-row.bulk-mode { position: relative; padding-left: 62px; }
+    .btn-danger-strong { background: var(--mu-danger); color: #fffaf3; }
+    .btn-danger-strong:hover { background: #7d3933; }
+    .btn[disabled] { opacity: .45; cursor: not-allowed; transform: none !important; }
+
+    .sub-totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .sub-total-card { border-radius: 24px; padding: 24px; color: #fffaf3; position: relative; overflow: hidden; border: 0; }
+    .sub-total-card i { position: absolute; right: -15px; bottom: -25px; font-size: 100px; opacity: 0.15; }
+    .sub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+    .sub-add-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; align-items: end; }
+    .btn-submit-group { display: flex; gap: 8px; grid-column: 1 / -1; justify-content: flex-end; }
+    
+    @media (max-width: 980px) {
+      .mu-sidebar { position: fixed; left: -300px; top: 0; z-index: 100; transition: left .3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 4px 0 24px rgba(0,0,0,0.1); }
+      .mu-sidebar.open { left: 0; }
+      .mobile-top-bar { display: flex; }
+      .mu-main { padding: 24px 18px 50px; }
+      .mu-header { display: flex; flex-direction: column; align-items: stretch; gap: 12px; }
+      .header-controls { justify-content: space-between; width: 100%; gap: 8px; }
+      .header-controls .btn { flex: 1; padding: 10px; font-size: 12px; }
+      #openAddBtn { flex: 1.2; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .view-switch { display: none !important; }
+      .list-row { padding: 12px; border-radius: 20px; }
+      .list-main-wrap { gap: 12px; align-items: center; }
+      .list-left-img { width: 72px; height: 72px; border-radius: 12px; }
+      .list-left-img .empty-img { font-size: 22px; }
+      .list-left-img .img-error-text { font-size: 10px; padding: 4px; }
+      .list-left-img .img-error-text i { font-size: 16px; }
+      .list-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+      .list-title-wrap h3 { font-size: 16px; margin-bottom: 2px; }
+      .list-note { display: none; }
+      .list-row .meta-grid { display: flex; gap: 12px; }
+      .list-row.bulk-mode { padding-left: 44px; }
+      .list-row .bulk-check { top: 38px; left: 12px; }
+      .bulk-toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+      .bulk-actions { justify-content: space-between; width: 100%; }
+      .bulk-actions .btn { flex: 1; padding: 8px; font-size: 11px; }
+      .form-actions { flex-direction: column; align-items: stretch; }
+      .form-actions-right { width: 100%; }
+      .form-actions-right .btn, .form-actions .btn { width: 100%; }
+      .btn-submit-group { flex-direction: column; width: 100%; }
+      .btn-submit-group .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="lockScreen" class="lock-screen">
+    <div class="lock-card">
+      <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+      <h2>输入密码以访问</h2>
+      <p class="subtitle">个人专属资源管理空间</p>
+      <input type="password" id="passwordInput" placeholder="请输入访问密码..." autocomplete="off" />
+      <p id="lockError" class="lock-error">密码错误，请重试</p>
+      <button id="unlockBtn" class="btn btn-primary"><i class="fa-solid fa-key"></i> 解锁系统</button>
+    </div>
+  </div>
+
+  <div id="appContent">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="mu-sidebar">
+      <div class="mu-logo"><i class="fa-solid fa-box-archive"></i><span>资源管理</span></div>
+      
+      <div class="nav-card">
+        <div class="mu-nav-title">模块 Modules</div>
+        <ul class="mu-nav-list" id="moduleNav">
+          <li><button class="mu-nav-item home-item active" id="navMuseumBtn">
+            <span class="nav-left"><i class="fa-solid fa-boxes-stacked"></i> 实体资源</span><span class="mu-count" id="navAllCount">0</span>
+          </button></li>
+          <li><button class="mu-nav-item" id="navSubsBtn">
+            <span class="nav-left"><i class="fa-solid fa-credit-card"></i> 订阅管理</span><span class="mu-count" id="navSubCount">0</span>
+          </button></li>
+        </ul>
+      </div>
+
+      <div id="museumFiltersSidebar">
+        <div class="nav-card">
+          <div class="mu-nav-title">类别 Category</div>
+          <ul class="mu-nav-list" id="categoryNav"></ul>
+        </div>
+        <div class="nav-card">
+          <div class="mu-nav-title">状态 Status</div>
+          <ul class="mu-nav-list" id="statusNav"></ul>
+        </div>
+      </div>
+    </aside>
+
+    <main class="mu-main">
+      <header class="mu-header">
+        <div class="mobile-top-bar">
+          <button id="hamburgerBtn"><i class="fa-solid fa-bars"></i></button>
+          <span class="mobile-title">资源管理</span>
+        </div>
+        
+        <div class="mu-search" id="muSearch">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="searchInput" type="search" placeholder="检索资源：名称 / 备注" />
+        </div>
+        
+        <div class="header-controls" id="headerControls">
+          <div class="view-switch" aria-label="视图切换">
+            <button class="view-btn active" id="cardViewBtn" type="button"><i class="fa-solid fa-table-cells-large"></i> 卡片</button>
+            <button class="view-btn" id="listViewBtn" type="button"><i class="fa-solid fa-list"></i> 清单</button>
+          </div>
+          <button class="btn btn-ghost" id="openFilterBtn"><i class="fa-solid fa-sliders"></i> 筛选</button>
+          <button class="btn btn-ghost" id="bulkModeBtn"><i class="fa-solid fa-list-check"></i> 批量管理</button>
+          <button class="btn btn-primary" id="openAddBtn"><i class="fa-solid fa-circle-plus"></i> 新增入库</button>
+        </div>
+      </header>
+      
+      <div id="museumContainer">
+        <div class="toolbar-note">
+          <div>当前：<span class="active-filter" id="activeFilterText">全部藏品</span></div>
+          <div>共 <strong id="totalCount">0</strong> 件，显示 <strong id="shownCount">0</strong> 件</div>
+        </div>
+        
+        <h2 class="section-title"><i class="fa-solid fa-box-archive" id="sectionTitleIcon"></i><span id="sectionTitleText">全部藏品</span></h2>
+        <div class="section-sub" id="sectionSubtitle">按入库时间倒序展示，所有资源在此整齐归档。</div>
+        
+        <div class="bulk-toolbar" id="bulkToolbar">
+          <div class="bulk-left">
+            <strong>批量管理</strong>
+            <span>已选择 <strong id="selectedCount">0</strong> 件藏品</span>
+          </div>
+          <div class="bulk-actions">
+            <button class="btn btn-ghost" type="button" id="selectAllVisibleBtn"><i class="fa-solid fa-check-double"></i> 全选显示</button>
+            <button class="btn btn-ghost" type="button" id="clearSelectedBtn"><i class="fa-solid fa-xmark"></i> 清空</button>
+            <button class="btn btn-danger-strong" type="button" id="deleteSelectedBtn" disabled><i class="fa-solid fa-trash-can"></i> 删除</button>
+          </div>
+        </div>
+        
+        <section class="mu-grid view-cards" id="exhibitGrid"></section>
+      </div>
+
+      <div id="subContainer" style="display: none;">
+        <h2 class="section-title" style="margin-top: 0;"><i class="fa-solid fa-file-invoice-dollar"></i><span>财务面板</span></h2>
+        
+        <div class="sub-totals">
+           <div class="exhibit-card sub-total-card" style="background: var(--mu-accent);">
+              <div style="opacity: 0.8; font-size: 13px; font-weight: 700; margin-bottom: 4px;">预计月度总支出 (包含历史)</div>
+              <div style="font-size: 34px; font-weight: 900;">¥ <span id="subMonthTotal">0.00</span></div>
+              <i class="fa-solid fa-calendar-days"></i>
+           </div>
+           <div class="exhibit-card sub-total-card" style="background: #a86635;">
+              <div style="opacity: 0.8; font-size: 13px; font-weight: 700; margin-bottom: 4px;">预计年度总支出 (包含历史)</div>
+              <div style="font-size: 34px; font-weight: 900;">¥ <span id="subYearTotal">0.00</span></div>
+              <i class="fa-solid fa-sack-dollar"></i>
+           </div>
+        </div>
+
+        <div class="exhibit-card" style="margin-bottom: 24px;">
+           <h3 id="subFormTitle" style="margin-bottom: 18px; font-size: 18px; font-weight: 800; color: var(--mu-text);"><i class="fa-solid fa-plus-circle" style="color:var(--mu-accent)"></i> 添加新订阅</h3>
+           <form id="subForm" class="sub-add-form">
+              <input type="hidden" id="subId" />
+              <div class="form-group">
+                 <label>服务名称</label>
+                 <input id="subName" class="mu-input" required placeholder="如: 视频会员 / 服务器" />
+              </div>
+              <div class="form-group">
+                 <label>单期金额 (¥)</label>
+                 <input id="subPrice" type="number" min="0" step="0.01" class="mu-input" required placeholder="0.00" />
+              </div>
+              <div class="form-group">
+                 <label>付费周期</label>
+                 <select id="subCycle" class="mu-select" onchange="window.toggleSubDate()">
+                    <option value="monthly">按月付费</option>
+                    <option value="quarterly">按季付费</option>
+                    <option value="yearly">按年付费</option>
+                    <option value="once">买断/单次</option>
+                 </select>
+              </div>
+              <div class="form-group">
+                 <label>期数 (0代表长期)</label>
+                 <input id="subDuration" type="number" min="0" class="mu-input" placeholder="0" value="0" />
+              </div>
+              <div class="form-group" id="subDateGroup">
+                 <label>下次到期日</label>
+                 <input id="subDate" type="date" class="mu-input" required />
+              </div>
+              <div class="btn-submit-group">
+                 <button type="button" class="btn btn-ghost" id="subCancelBtn" style="height: 48px; display: none;" onclick="window.cancelEditSub()">取消编辑</button>
+                 <button type="submit" class="btn btn-primary" style="height: 48px;">保存记录</button>
+              </div>
+           </form>
+        </div>
+
+        <h2 class="section-title"><i class="fa-solid fa-bolt"></i><span>生效中的服务</span></h2>
+        <div class="sub-grid" id="subGrid"></div>
+      </div>
+    </main>
+  </div> <div class="modal-overlay" id="itemModal" aria-hidden="true">
+    <section class="modal-box" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2 id="modalTitle"><i class="fa-solid fa-box-open" style="color:var(--mu-accent)"></i> 资源入库登记</h2>
+        <button class="btn-close" type="button" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="itemForm">
+        <input type="hidden" id="editingId" />
+        <div class="form-grid">
+          <label class="upload-box form-group full">
+            <input id="photoInput" type="file" accept="image/*" />
+            <img id="photoPreview" class="preview-img" alt="图片预览" style="display:none" />
+            <span class="upload-inner" id="uploadInner">
+              <i class="fa-solid fa-cloud-arrow-up"></i><br>
+              点击上传照片，选择后会立即预览
+            </span>
+          </label>
+          <div class="form-group">
+            <label for="nameInput">名称</label>
+            <input class="mu-input" id="nameInput" list="nameOptions" placeholder="例如：卡坦岛 / 骨瓷茶杯" required />
+            <datalist id="nameOptions"></datalist>
+          </div>
+          <div class="form-group">
+            <label for="categoryInput">类别</label>
+            <select class="mu-select" id="categoryInput" required></select>
+          </div>
+          <div class="form-group">
+            <label for="statusInput">状态</label>
+            <select class="mu-select" id="statusInput" required></select>
+          </div>
+          <div class="form-group">
+            <label for="dateInput">入库日期</label>
+            <input class="mu-input" id="dateInput" type="date" required />
+          </div>
+          <div class="form-group">
+            <label for="priceInput">价格</label>
+            <input class="mu-input" id="priceInput" type="number" min="0" step="0.01" list="priceOptions" placeholder="0.00" required />
+            <datalist id="priceOptions">
+              <option value="0"></option><option value="9.9"></option><option value="29.9"></option><option value="99"></option><option value="199"></option><option value="999"></option>
+            </datalist>
+          </div>
+          <div class="form-group full">
+            <label for="noteInput">备注</label>
+            <textarea class="mu-textarea" id="noteInput" placeholder="记录购买原因、使用感受、故事，或未来是否还值得保留……"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-danger" type="button" id="deleteBtn" style="visibility:hidden"><i class="fa-solid fa-trash-can"></i> 删除</button>
+          <div class="form-actions-right">
+            <button class="btn btn-ghost" type="button" id="cancelBtn">取消</button>
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> 保存入库</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div class="drawer-overlay" id="filterDrawer" aria-hidden="true">
+    <aside class="drawer">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-filter" style="color:var(--mu-accent)"></i> 高级筛选</h2>
+        <button class="btn-close" type="button" id="closeFilterBtn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="filter-row">
+        <label>类别</label>
+        <select class="mu-select" id="filterCategory"></select>
+      </div>
+      <div class="filter-row">
+        <label>状态</label>
+        <select class="mu-select" id="filterStatus"></select>
+      </div>
+      <div class="filter-row">
+        <label>入库日期从</label>
+        <input class="mu-input" type="date" id="filterFrom" />
+      </div>
+      <div class="filter-row">
+        <label>入库日期到</label>
+        <input class="mu-input" type="date" id="filterTo" />
+      </div>
+      <div class="filter-row">
+        <label>最低价格</label>
+        <input class="mu-input" type="number" min="0" id="filterMinPrice" placeholder="不限" />
+      </div>
+      <div class="filter-row">
+        <label>最高价格</label>
+        <input class="mu-input" type="number" min="0" id="filterMaxPrice" placeholder="不限" />
+      </div>
+      <div class="form-actions-right" style="margin-top:20px">
+        <button class="btn btn-ghost" id="resetFilterBtn"><i class="fa-solid fa-rotate-left"></i> 重置</button>
+        <button class="btn btn-primary" id="applyFilterBtn"><i class="fa-solid fa-check"></i> 应用筛选</button>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    // ==============================
+    // 🔐 密码验证系统
+    // ==============================
+    // 👉 在这里修改你的专属访问密码 
+    const PAGE_PASSWORD = "Dystate*Museum?2026";
+
+    function checkPassword() {
+      const input = document.getElementById("passwordInput").value;
+      if (input === PAGE_PASSWORD) {
+        // 密码正确，保存到 Session（刷新页面不用重输）
+        sessionStorage.setItem("resource_unlocked", "true");
+        unlockApp();
+      } else {
+        // 密码错误，震动提示
+        const errorMsg = document.getElementById("lockError");
+        errorMsg.style.display = "block";
+        errorMsg.style.animation = 'none';
+        errorMsg.offsetHeight; // trigger reflow
+        errorMsg.style.animation = null; 
+        document.getElementById("passwordInput").value = "";
+      }
+    }
+
+    function unlockApp() {
+      document.getElementById("lockScreen").style.opacity = "0";
+      setTimeout(() => {
+        document.getElementById("lockScreen").style.display = "none";
+        document.getElementById("appContent").style.display = "flex";
+        
+        // 只有解锁后，才真正开始加载数据和渲染图表
+        loadItems();
+        $("subDate").value = dayjs().add(1, 'month').format('YYYY-MM-DD');
+        renderSubs();
+      }, 400);
+    }
+
+    document.getElementById("unlockBtn").addEventListener("click", checkPassword);
+    document.getElementById("passwordInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") checkPassword();
+    });
+
+    // ==============================
+    // 0. Supabase 双端同步预留区 (Museum)
+    // ==============================
+    const USE_SUPABASE = true;
+    const SUPABASE_URL = "https://mqlctakdtjanshgsdwal.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_mLz7oSFvfPZDFxJgApI1JA_0oE4gla1";
+    const supabaseClient = USE_SUPABASE && window.supabase
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
+
+    async function fetchFromSupabase() {
+      if (!supabaseClient) return null;
+      const { data, error } = await supabaseClient
+        .from("museum_items")
+        .select("id,name,category,status,entry_date,price,note,photo_url")
+        .order("entry_date", { ascending: false });
+      if (error) {
+        console.warn("Supabase 读取失败：", error.message);
+        return null;
+      }
+      return (data || []).map(item => ({
+        id: item.id,
+        name: item.name,
+        category: item.category,
+        status: item.status,
+        entryDate: item.entry_date,
+        price: item.price,
+        note: item.note,
+        photo: normalizePhotoUrl(item.photo_url)
+      }));
+    }
+
+    async function uploadPhotoToSupabase(file, itemId, existingUrl = "") {
+      if (!file) return existingUrl || photoBuffer || "";
+      if (!supabaseClient) return existingUrl || photoBuffer || "";
+      const fileExt = file.name.split(".").pop();
+      const filePath = `${itemId}/${Date.now()}.${fileExt}`;
+      const { error } = await supabaseClient.storage
+          .from("museum-photos")
+          .upload(filePath, file, { cacheControl: "3600", upsert: true });
+      if (error) {
+          alert("图片上传失败：" + error.message);
+          return existingUrl || photoBuffer || "";
+      }
+      const { data } = supabaseClient.storage.from("museum-photos").getPublicUrl(filePath);
+      return data.publicUrl;
+    }
+
+    async function saveToSupabase(item) {
+      if (!supabaseClient) return false;
+      const payload = {
+        id: item.id, name: item.name, category: item.category, status: item.status,
+        entry_date: item.entryDate, price: item.price, note: item.note, photo_url: item.photo
+      };
+      const { error } = await supabaseClient.from("museum_items").upsert(payload);
+      if (error) { alert("Supabase 保存失败：" + error.message); return false; }
+      return true;
+    }
+
+    async function deleteFromSupabase(id) {
+      if (!supabaseClient) return true;
+      const { error } = await supabaseClient.from("museum_items").delete().eq("id", id);
+      if (error) { alert("Supabase 删除失败：" + error.message); return false; }
+      return true;
+    }
+
+    async function deleteManyFromSupabase(ids) {
+      if (!supabaseClient || !ids.length) return true;
+      const { error } = await supabaseClient.from("museum_items").delete().in("id", ids);
+      if (error) { alert("Supabase 批量删除失败：" + error.message); return false; }
+      return true;
+    }
+
+    // ==============================
+    // 1. 资源管理逻辑 (Museum)
+    // ==============================
+    const CATEGORIES = [
+      ["桌游", "fa-dice"], ["餐具", "fa-utensils"], ["寝具", "fa-bed"],
+      ["摆件", "fa-gem"], ["穿戴", "fa-shirt"], ["电子", "fa-laptop"], ["文具", "fa-book-open"]
+    ];
+    const STATUSES = [["在用", "fa-play"], ["闲置", "fa-pause"], ["已用", "fa-check-double"], ["丢弃", "fa-trash-can"]];
+    const STORAGE_KEY = "life_museum_items_v2";
+    const VIEW_KEY = "life_museum_view_mode";
+    const today = new Date().toISOString().slice(0, 10);
+    
+    let museumItems = [];
+    let photoBuffer = "";
+    let selectedPhotoFile = null;
+    let bulkMode = false;
+    let selectedIds = new Set();
+    let currentView = localStorage.getItem(VIEW_KEY) || "cards";
+    let filters = { category: "全部", status: "全部", from: "", to: "", minPrice: "", maxPrice: "", navType: "all", navValue: "全部" };
+
+    const seedItems = [
+      { id: crypto.randomUUID(), name: "任天堂 Switch OLED", category: "电子", status: "在用", entryDate: today, price: 2299, note: "用来玩《塞尔达传说》的设备。长期主义视角下，它可以提供稳定的娱乐体验，暂不更换。", photo: "https://images.unsplash.com/photo-1578308422634-1c50e1811a43?auto=format&fit=crop&q=80&w=900" },
+      { id: crypto.randomUUID(), name: "卡坦岛 Catan", category: "桌游", status: "闲置", entryDate: today, price: 198, note: "经典桌游，需要聚会才能开局。", photo: "https://images.unsplash.com/photo-1611891487122-207579d67d98?auto=format&fit=crop&q=80&w=900" },
+      { id: crypto.randomUUID(), name: "骨瓷茶杯", category: "餐具", status: "在用", entryDate: today, price: 45, note: "每天喝水用，手感轻，清洗方便。", photo: "https://images.unsplash.com/photo-1576408221840-02c3bbcbddff?auto=format&fit=crop&q=80&w=900" }
+    ];
+
+    const $ = (id) => document.getElementById(id);
+
+    function normalizePhotoUrl(url) {
+      if (!url) return "";
+      let fixed = String(url).trim();
+      fixed = fixed.replace(".supabase.co/rest/v1/storage/v1/", ".supabase.co/storage/v1/");
+      fixed = fixed.replace(".supabase.co/rest/v1//storage/v1/", ".supabase.co/storage/v1/");
+      if (!fixed.startsWith("http") && fixed.includes("museum-photos")) {
+        fixed = `${SUPABASE_URL}/storage/v1/object/public/${fixed.replace(/^\/+/, "")}`;
+      }
+      return fixed;
+    }
+
+    function formatMoney(value) { return `¥ ${Number(value || 0).toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`; }
+    function saveLocal() { localStorage.setItem(STORAGE_KEY, JSON.stringify(museumItems)); }
+    function saveViewMode() { localStorage.setItem(VIEW_KEY, currentView); }
+    function getCategoryIcon(name) { return (CATEGORIES.find(([label]) => label === name) || [null, "fa-layer-group"])[1]; }
+    function getStatusIcon(name) { return (STATUSES.find(([label]) => label === name) || [null, "fa-circle"])[1]; }
+
+    async function loadItems() {
+      const cloudData = await fetchFromSupabase();
+      const localData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      museumItems = (cloudData || localData || seedItems).map(item => ({ ...item, photo: normalizePhotoUrl(item.photo) }));
+      if (!localData && !cloudData) saveLocal();
+      renderAll();
+    }
+
+    function renderOptions() {
+      $("categoryInput").innerHTML = CATEGORIES.map(([name]) => `<option value="${name}">${name}</option>`).join("");
+      $("statusInput").innerHTML = STATUSES.map(([name]) => `<option value="${name}">${name}</option>`).join("");
+      $("filterCategory").innerHTML = `<option>全部</option>` + CATEGORIES.map(([name]) => `<option>${name}</option>`).join("");
+      $("filterStatus").innerHTML = `<option>全部</option>` + STATUSES.map(([name]) => `<option>${name}</option>`).join("");
+      $("nameOptions").innerHTML = [...new Set(museumItems.map(i => i.name))].map(name => `<option value="${name}"></option>`).join("");
+    }
+
+    function countBy(key, value) { return museumItems.filter(item => item[key] === value).length; }
+
+    function renderNav() {
+      const navClass = (type, value) => filters.navType === type && filters.navValue === value ? "active" : "";
+
+      $("categoryNav").innerHTML = CATEGORIES.map(([name, icon]) => `
+        <li><button class="mu-nav-item ${navClass("category", name)}" onclick="applyNavFilter('category', '${name}')">
+          <span class="nav-left"><i class="fa-solid ${icon}"></i>${name}</span><span class="mu-count">${countBy("category", name)}</span>
+        </button></li>
+      `).join("");
+
+      $("statusNav").innerHTML = STATUSES.map(([name, icon]) => `
+        <li><button class="mu-nav-item ${navClass("status", name)}" onclick="applyNavFilter('status', '${name}')">
+          <span class="nav-left"><i class="fa-solid ${icon}"></i>${name}</span><span class="mu-count">${countBy("status", name)}</span>
+        </button></li>
+      `).join("");
+      
+      $("navAllCount").textContent = museumItems.length;
+    }
+
+    let currentModule = "museum";
+    function switchModule(mod) {
+       currentModule = mod;
+       $("navMuseumBtn").classList.toggle("active", mod === "museum");
+       $("navSubsBtn").classList.toggle("active", mod === "subs");
+       $("navSubsBtn").classList.toggle("home-item", mod === "subs");
+       
+       $("museumContainer").style.display = mod === "museum" ? "block" : "none";
+       $("museumFiltersSidebar").style.display = mod === "museum" ? "block" : "none";
+       $("muSearch").style.display = mod === "museum" ? "flex" : "none";
+       $("headerControls").style.display = mod === "museum" ? "flex" : "none";
+       $("subContainer").style.display = mod === "subs" ? "block" : "none";
+       
+       if(window.innerWidth <= 980) {
+           document.querySelector(".mu-sidebar").classList.remove("open");
+           $("sidebarOverlay").classList.remove("show");
+       }
+    }
+    
+    $("navMuseumBtn").addEventListener("click", () => {
+       filters.navType = "all"; filters.navValue = "全部";
+       renderAll(); switchModule("museum");
+    });
+    $("navSubsBtn").addEventListener("click", () => switchModule("subs"));
+
+    window.applyNavFilter = function(type, value) {
+        switchModule("museum");
+        const same = filters.navType === type && filters.navValue === value;
+        filters.navType = same ? "all" : type;
+        filters.navValue = same ? "全部" : value;
+        if(window.innerWidth <= 980) {
+           document.querySelector(".mu-sidebar").classList.remove("open");
+           $("sidebarOverlay").classList.remove("show");
+        }
+        renderAll();
+    }
+
+    function getFilteredItems() {
+      const q = $("searchInput").value.trim().toLowerCase();
+      return museumItems.filter(item => {
+        const hitSearch = !q || [item.name, item.note, item.category, item.status].some(v => String(v || "").toLowerCase().includes(q));
+        const hitNav = filters.navType === "all" || item[filters.navType] === filters.navValue;
+        const hitCategory = filters.category === "全部" || item.category === filters.category;
+        const hitStatus = filters.status === "全部" || item.status === filters.status;
+        const hitFrom = !filters.from || item.entryDate >= filters.from;
+        const hitTo = !filters.to || item.entryDate <= filters.to;
+        const hitMin = filters.minPrice === "" || Number(item.price) >= Number(filters.minPrice);
+        const hitMax = filters.maxPrice === "" || Number(item.price) <= Number(filters.maxPrice);
+        return hitSearch && hitNav && hitCategory && hitStatus && hitFrom && hitTo && hitMin && hitMax;
+      }).sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate));
+    }
+
+    function updateBulkToolbar() {
+      const count = selectedIds.size;
+      $("bulkToolbar").classList.toggle("show", bulkMode);
+      $("selectedCount").textContent = count;
+      $("deleteSelectedBtn").disabled = count === 0;
+      $("bulkModeBtn").innerHTML = bulkMode ? '<i class="fa-solid fa-xmark"></i> 退出批量' : '<i class="fa-solid fa-list-check"></i> 批量管理';
+    }
+
+    function renderCollectionHeader() {
+      let title = "全部藏品";
+      let subtitle = "按入库时间倒序展示，所有资源在此整齐归档。";
+      let icon = "fa-box-archive";
+
+      if (filters.navType === "category") {
+        title = `${filters.navValue} 资源`; subtitle = `当前按类别查看：${filters.navValue}`; icon = getCategoryIcon(filters.navValue);
+      } else if (filters.navType === "status") {
+        title = `${filters.navValue} 资源`; subtitle = `当前按状态查看：${filters.navValue}`; icon = getStatusIcon(filters.navValue);
+      }
+      $("sectionTitleText").textContent = title;
+      $("sectionSubtitle").textContent = subtitle;
+      $("sectionTitleIcon").className = `fa-solid ${icon}`;
+      $("activeFilterText").textContent = filters.navType === "all" ? "全部藏品" : `${filters.navType === "category" ? "类别" : "状态"}：${filters.navValue}`;
+    }
+
+    function imageHtml(item) {
+      const photo = normalizePhotoUrl(item.photo);
+      if (!photo) return `<div class="empty-img"><i class="fa-solid fa-image"></i></div>`;
+      return `
+        <img src="${photo}" alt="${item.name}" referrerpolicy="no-referrer"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';">
+        <div class="empty-img img-error-text" style="display:none">
+          <i class="fa-solid fa-triangle-exclamation"></i><span>加载失败</span>
+        </div>
+      `;
+    }
+    
+    function createMetaPills(item) {
+      return `
+        <div class="meta-grid">
+          <div class="meta-pill pill-category"><i class="fa-solid fa-layer-group"></i><div class="meta-content"><span class="meta-label">类别</span><span class="meta-value">${item.category}</span></div></div>
+          <div class="meta-pill pill-status"><i class="fa-solid fa-toggle-on"></i><div class="meta-content"><span class="meta-label">状态</span><span class="meta-value">${item.status}</span></div></div>
+          <div class="meta-pill pill-date"><i class="fa-solid fa-calendar-day"></i><div class="meta-content"><span class="meta-label">入库日期</span><span class="meta-value">${item.entryDate}</span></div></div>
+          <div class="meta-pill price-pill pill-price"><i class="fa-solid fa-yen-sign"></i><div class="meta-content"><span class="meta-label">价格</span><span class="meta-value">${formatMoney(item.price)}</span></div></div>
+        </div>
+      `;
+    }
+
+    function createCard(item) {
+      return `
+        <article class="exhibit-card ${bulkMode ? 'bulk-mode' : ''}">
+          ${bulkMode ? `<input class="bulk-check" type="checkbox" data-select-id="${item.id}" ${selectedIds.has(item.id) ? "checked" : ""}>` : ""}
+          <div class="card-header">
+            <h3>${item.name}</h3>
+            <button class="btn-edit" data-edit="${item.id}" title="编辑"><i class="fa-solid fa-pen-to-square"></i></button>
+          </div>
+          <div class="card-body">
+            <div class="card-img-wrapper">${imageHtml(item)}</div>
+            <div class="card-info">${createMetaPills(item)}</div>
+          </div>
+          <div class="card-footer"><strong>备注：</strong>${item.note || "暂无备注。"}</div>
+        </article>
+      `;
+    }
+
+    function createListRow(item) {
+      return `
+        <article class="list-row ${bulkMode ? 'bulk-mode' : ''}">
+          ${bulkMode ? `<input class="bulk-check" type="checkbox" data-select-id="${item.id}" ${selectedIds.has(item.id) ? "checked" : ""}>` : ""}
+          <div class="list-main-wrap">
+            <div class="list-left-img">
+               ${imageHtml(item)}
+            </div>
+            <div class="list-main">
+              <div class="list-top">
+                <div class="list-title-wrap"><h3>${item.name}</h3></div>
+                <button class="btn-edit" data-edit="${item.id}" title="编辑"><i class="fa-solid fa-pen-to-square"></i></button>
+              </div>
+              ${createMetaPills(item)}
+              <div class="list-note"><strong>备注：</strong>${item.note || "暂无备注。"}</div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderCollection() {
+      const items = getFilteredItems();
+      $("totalCount").textContent = museumItems.length;
+      $("shownCount").textContent = items.length;
+      
+      const isMobile = window.innerWidth <= 768;
+      const actualView = isMobile ? "list" : currentView;
+
+      $("cardViewBtn").classList.toggle("active", actualView === "cards");
+      $("listViewBtn").classList.toggle("active", actualView === "list");
+      $("exhibitGrid").className = `mu-grid ${actualView === "cards" ? "view-cards" : "view-list"}`;
+      
+      renderCollectionHeader();
+      selectedIds = new Set([...selectedIds].filter(id => items.some(item => item.id === id)));
+      updateBulkToolbar();
+
+      if (!items.length) {
+        $("exhibitGrid").innerHTML = `<div class="empty-state"><div><i class="fa-solid fa-box-open"></i><h3>还没有符合条件的资源</h3><p>点击右上角“新增入库”，把第一件物品放进你的资源管理系统。</p></div></div>`;
+        return;
+      }
+
+      $("exhibitGrid").innerHTML = actualView === "cards"
+        ? items.map(item => createCard(item)).join("")
+        : items.map(item => createListRow(item)).join("");
+
+      document.querySelectorAll("[data-edit]").forEach(btn => btn.addEventListener("click", () => openEditModal(btn.dataset.edit)));
+      document.querySelectorAll("[data-select-id]").forEach(input => {
+        input.addEventListener("change", () => {
+          if (input.checked) selectedIds.add(input.dataset.selectId);
+          else selectedIds.delete(input.dataset.selectId);
+          updateBulkToolbar();
+        });
+      });
+    }
+
+    function renderAll() {
+      renderOptions();
+      renderNav();
+      renderCollection();
+    }
+    
+    let lastIsMobile = window.innerWidth <= 768;
+    window.addEventListener("resize", () => {
+       const isMobile = window.innerWidth <= 768;
+       if(isMobile !== lastIsMobile) {
+          lastIsMobile = isMobile;
+          renderCollection();
+       }
+    });
+
+    $("hamburgerBtn").addEventListener("click", () => {
+       document.querySelector(".mu-sidebar").classList.add("open");
+       $("sidebarOverlay").classList.add("show");
+    });
+    $("sidebarOverlay").addEventListener("click", () => {
+       document.querySelector(".mu-sidebar").classList.remove("open");
+       $("sidebarOverlay").classList.remove("show");
+    });
+
+    function openAddModal() {
+      photoBuffer = ""; selectedPhotoFile = null;
+      $("itemForm").reset(); $("photoInput").value = ""; $("editingId").value = "";
+      $("dateInput").value = today;
+      $("photoPreview").style.display = "none"; $("uploadInner").style.display = "block";
+      $("modalTitle").innerHTML = `<i class="fa-solid fa-box-open" style="color:var(--mu-accent)"></i> 资源入库登记`;
+      $("deleteBtn").style.visibility = "hidden";
+      $("itemModal").classList.add("show");
+    }
+
+    function openEditModal(id) {
+      const item = museumItems.find(i => i.id === id);
+      if (!item) return;
+      photoBuffer = item.photo || ""; selectedPhotoFile = null;
+      $("photoInput").value = ""; $("editingId").value = item.id;
+      $("nameInput").value = item.name;
+      $("categoryInput").value = item.category; $("statusInput").value = item.status;
+      $("dateInput").value = item.entryDate; $("priceInput").value = item.price;
+      $("noteInput").value = item.note || "";
+      $("modalTitle").innerHTML = `<i class="fa-solid fa-pen-to-square" style="color:var(--mu-accent)"></i> 编辑资源档案`;
+      $("deleteBtn").style.visibility = "visible";
+      
+      if (photoBuffer) {
+        $("photoPreview").src = photoBuffer; $("photoPreview").style.display = "block"; $("uploadInner").style.display = "none";
+      } else {
+        $("photoPreview").style.display = "none"; $("uploadInner").style.display = "block";
+      }
+      $("itemModal").classList.add("show");
+    }
+
+    function closeModal() { $("itemModal").classList.remove("show"); }
+
+    $("photoInput").addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      selectedPhotoFile = file;
+      $("photoPreview").src = URL.createObjectURL(file);
+      $("photoPreview").style.display = "block";
+      $("uploadInner").style.display = "none";
+    });
+
+    $("itemForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const id = $("editingId").value || crypto.randomUUID();
+      const oldItem = museumItems.find(i => i.id === id);
+      const photoUrl = await uploadPhotoToSupabase(selectedPhotoFile, id, oldItem?.photo || "");
+      const item = {
+        id, name: $("nameInput").value.trim(), category: $("categoryInput").value, status: $("statusInput").value,
+        entryDate: $("dateInput").value, price: Number($("priceInput").value || 0),
+        note: $("noteInput").value.trim(), photo: normalizePhotoUrl(photoUrl)
+      };
+      const index = museumItems.findIndex(i => i.id === id);
+      if (index >= 0) museumItems[index] = item; else museumItems.unshift(item);
+      saveLocal();
+      const ok = await saveToSupabase(item);
+      if (USE_SUPABASE && !ok) return;
+      selectedPhotoFile = null;
+      closeModal();
+      renderAll();
+    });
+
+    $("deleteBtn").addEventListener("click", async () => {
+      const id = $("editingId").value;
+      if (!id) return;
+      if (!confirm("确认将这件物品从系统中移除吗？")) return;
+      const ok = await deleteFromSupabase(id);
+      if (USE_SUPABASE && !ok) return;
+      museumItems = museumItems.filter(item => item.id !== id);
+      saveLocal();
+      closeModal();
+      renderAll();
+    });
+
+    $("searchInput").addEventListener("input", renderCollection);
+    $("openAddBtn").addEventListener("click", openAddModal);
+    $("closeModalBtn").addEventListener("click", closeModal);
+    $("cancelBtn").addEventListener("click", closeModal);
+    $("itemModal").addEventListener("click", (e) => { if (e.target === $("itemModal")) closeModal(); });
+
+    $("cardViewBtn").addEventListener("click", () => { currentView = "cards"; saveViewMode(); renderCollection(); });
+    $("listViewBtn").addEventListener("click", () => { currentView = "list"; saveViewMode(); renderCollection(); });
+
+    $("openFilterBtn").addEventListener("click", () => {
+      $("filterCategory").value = filters.category; $("filterStatus").value = filters.status;
+      $("filterFrom").value = filters.from; $("filterTo").value = filters.to;
+      $("filterMinPrice").value = filters.minPrice; $("filterMaxPrice").value = filters.maxPrice;
+      $("filterDrawer").classList.add("show");
+    });
+    $("closeFilterBtn").addEventListener("click", () => $("filterDrawer").classList.remove("show"));
+    $("filterDrawer").addEventListener("click", (e) => { if (e.target === $("filterDrawer")) $("filterDrawer").classList.remove("show"); });
+    
+    $("applyFilterBtn").addEventListener("click", () => {
+      filters.category = $("filterCategory").value; filters.status = $("filterStatus").value;
+      filters.from = $("filterFrom").value; filters.to = $("filterTo").value;
+      filters.minPrice = $("filterMinPrice").value; filters.maxPrice = $("filterMaxPrice").value;
+      $("filterDrawer").classList.remove("show");
+      renderCollection();
+    });
+    $("resetFilterBtn").addEventListener("click", () => {
+      filters = { category: "全部", status: "全部", from: "", to: "", minPrice: "", maxPrice: "", navType: "all", navValue: "全部" };
+      $("filterDrawer").classList.remove("show");
+      renderAll();
+    });
+
+    $("bulkModeBtn").addEventListener("click", () => { bulkMode = !bulkMode; if (!bulkMode) selectedIds.clear(); renderCollection(); });
+    $("selectAllVisibleBtn").addEventListener("click", () => { getFilteredItems().forEach(item => selectedIds.add(item.id)); renderCollection(); });
+    $("clearSelectedBtn").addEventListener("click", () => { selectedIds.clear(); renderCollection(); });
+    $("deleteSelectedBtn").addEventListener("click", async () => {
+      const ids = [...selectedIds];
+      if (!ids.length) return;
+      if (!confirm(`确认批量删除选中的 ${ids.length} 个资源吗？此操作不可撤销。`)) return;
+      const ok = await deleteManyFromSupabase(ids);
+      if (USE_SUPABASE && !ok) return;
+      museumItems = museumItems.filter(item => !selectedIds.has(item.id));
+      selectedIds.clear();
+      saveLocal();
+      renderAll();
+    });
+
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeModal(); $("filterDrawer").classList.remove("show"); } });
+
+    // ==============================
+    // 2. 订阅管理逻辑 (Subscriptions)
+    // ==============================
+    let subs = JSON.parse(localStorage.getItem("life_museum_subs") || "[]");
+    
+    window.toggleSubDate = function() {
+       const cycle = $("subCycle").value;
+       const dateGroup = $("subDateGroup");
+       const dateInput = $("subDate");
+       if(cycle === 'once') {
+           dateGroup.style.display = 'none';
+           dateInput.removeAttribute('required');
+       } else {
+           dateGroup.style.display = 'flex';
+           dateInput.setAttribute('required', 'required');
+       }
+    }
+
+    function saveSubs() {
+       localStorage.setItem("life_museum_subs", JSON.stringify(subs));
+       renderSubs();
+    }
+    
+    function renderSubs() {
+       const now = dayjs().startOf('day');
+       const processed = subs.map(sub => {
+          const target = dayjs(sub.expireDate).startOf('day');
+          return { ...sub, daysLeft: target.diff(now, 'day') };
+       });
+
+       let monthSum = 0, yearSum = 0;
+       
+       processed.forEach(s => {
+          let p = Number(s.price);
+          let d = Number(s.duration) || 0; 
+          
+          if(s.cycle === 'monthly') { 
+              monthSum += p / (d === 0 ? 1 : 2); 
+              yearSum += d === 0 ? p * 12 : p * d; 
+          }
+          if(s.cycle === 'quarterly') { 
+              monthSum += p / 3; 
+              yearSum += d === 0 ? p * 4 : p * d; 
+          }
+          if(s.cycle === 'yearly') { 
+              monthSum += p / 12; 
+              yearSum += d === 0 ? p : p * d; 
+          }
+          if(s.cycle === 'once') {
+              yearSum += p;
+          }
+       });
+
+       $("subMonthTotal").textContent = monthSum.toFixed(2);
+       $("subYearTotal").textContent = yearSum.toFixed(2);
+       
+       const activeSubs = processed.filter(s => !s.deleted).sort((a,b) => a.daysLeft - b.daysLeft);
+       $("navSubCount").textContent = activeSubs.length;
+
+       $("subGrid").innerHTML = activeSubs.map(s => {
+          let color = s.daysLeft <= 7 ? '#bf5b50' : (s.daysLeft <= 30 ? '#d2a06f' : '#8ddd63');
+          let cycleText = s.cycle === 'monthly' ? '按月付费' : (s.cycle === 'quarterly' ? '按季付费' : (s.cycle === 'yearly' ? '按年付费' : '单次买断'));
+          let durationText = (s.duration && Number(s.duration) > 0) ? `(共${s.duration}期)` : '(长期)';
+          if (s.cycle === 'once') durationText = '';
+
+          let expireHtml = '';
+          if (s.cycle === 'once') {
+              expireHtml = `
+                <div>
+                   <div style="font-size:11px; font-weight:800; color:var(--mu-muted); margin-bottom:3px; opacity:0.8;">类型</div>
+                   <div style="font-size:14px; font-weight:800; color: var(--mu-text);">永久拥有</div>
+                </div>
+              `;
+          } else {
+              expireHtml = `
+                <div>
+                   <div style="font-size:11px; font-weight:800; color:var(--mu-muted); margin-bottom:3px; opacity:0.8;">下次扣费 / 到期</div>
+                   <div style="font-size:14px; font-weight:800; color: var(--mu-text); font-family: monospace;">${s.expireDate}</div>
+                </div>
+                <div style="text-align:right; color:${color}">
+                   <div style="font-size:11px; font-weight:800; opacity:0.8; margin-bottom:2px;">剩余</div>
+                   <div style="font-size:24px; font-weight:900">${s.daysLeft < 0 ? '已过期' : s.daysLeft + ' <span style="font-size:12px;">天</span>'}</div>
+                </div>
+              `;
+          }
+
+          return `
+            <div class="exhibit-card" style="border-top: 4px solid ${s.cycle === 'once' ? '#d2a06f' : color}; padding-top: 20px; min-height: 140px;">
+               <div style="display:flex; justify-content:space-between; align-items: flex-start;">
+                  <div>
+                    <h3 style="font-size:18px; font-weight:800; margin-bottom:4px; color: var(--mu-text); letter-spacing:0">${s.name}</h3>
+                    <div style="font-size:12px; font-weight:700; color:var(--mu-muted)">${cycleText} ${durationText} · ¥${Number(s.price).toFixed(2)}</div>
+                  </div>
+                  <div style="display:flex;">
+                    <button onclick="window.editSub(${s.id})" title="编辑" style="background:transparent; color:#8d6646; width:32px; height:32px; border-radius:10px; transition:.2s; display:grid; place-items:center; margin-right:6px;" onmouseover="this.style.background='#f0dfcc'" onmouseout="this.style.background='transparent'">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button onclick="window.deleteSub(${s.id})" title="删除" style="background:transparent; color:#cda49e; width:32px; height:32px; border-radius:10px; transition:.2s; display:grid; place-items:center;" onmouseover="this.style.background='#f8ded9'; this.style.color='#bf5b50'" onmouseout="this.style.background='transparent'; this.style.color='#cda49e'">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </div>
+               </div>
+               <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:24px;">
+                  ${expireHtml}
+               </div>
+            </div>
+          `;
+       }).join("") || `<div class="empty-state" style="grid-column: 1/-1;"><div><i class="fa-solid fa-file-invoice-dollar"></i><h3 style="margin-top:10px; color:var(--mu-text);">暂无订阅记录</h3><p style="margin-top:4px;">在上方添加你的第一项周期性支出</p></div></div>`;
+    }
+    
+    $("subForm").addEventListener("submit", (e) => {
+       e.preventDefault();
+       const id = $("subId").value;
+       const newSub = {
+          id: id ? Number(id) : Date.now(), 
+          name: $("subName").value, 
+          price: $("subPrice").value,
+          cycle: $("subCycle").value, 
+          duration: $("subDuration").value || 0,
+          expireDate: $("subCycle").value === 'once' ? '' : $("subDate").value,
+          deleted: false
+       };
+
+       if(id) {
+           const idx = subs.findIndex(x => x.id === Number(id));
+           newSub.deleted = subs[idx].deleted;
+           subs[idx] = newSub;
+       } else {
+           subs.push(newSub);
+       }
+
+       $("subForm").reset();
+       $("subId").value = "";
+       $("subCancelBtn").style.display = "none";
+       $("subFormTitle").innerHTML = `<i class="fa-solid fa-plus-circle" style="color:var(--mu-accent)"></i> 添加新订阅`;
+       $("subDate").value = dayjs().add(1, 'month').format('YYYY-MM-DD');
+       window.toggleSubDate();
+       saveSubs();
+    });
+
+    window.editSub = function(id) {
+       const s = subs.find(x => x.id === id);
+       if(!s) return;
+       $("subId").value = s.id;
+       $("subName").value = s.name;
+       $("subPrice").value = s.price;
+       $("subCycle").value = s.cycle;
+       $("subDuration").value = s.duration || 0;
+       if(s.cycle !== 'once') $("subDate").value = s.expireDate;
+       
+       $("subFormTitle").innerHTML = `<i class="fa-solid fa-pen-to-square" style="color:var(--mu-accent)"></i> 编辑记录`;
+       $("subCancelBtn").style.display = "inline-flex";
+       window.toggleSubDate();
+       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.cancelEditSub = function() {
+       $("subForm").reset();
+       $("subId").value = "";
+       $("subCancelBtn").style.display = "none";
+       $("subFormTitle").innerHTML = `<i class="fa-solid fa-plus-circle" style="color:var(--mu-accent)"></i> 添加新订阅`;
+       $("subDate").value = dayjs().add(1, 'month').format('YYYY-MM-DD');
+       window.toggleSubDate();
+    }
+    
+    window.deleteSub = function(id) {
+       if(confirm("确认删除这项记录吗？（为确保账单精确，该记录产生的费用仍会永久保留在总支出中）")) {
+          const idx = subs.findIndex(s => s.id === id);
+          if(idx > -1) {
+             subs[idx].deleted = true;
+             saveSubs();
+          }
+       }
+    }
+
+    // 初始化时如果锁定了则不加载数据（防止被抓包），等待输入密码
+    if (sessionStorage.getItem("resource_unlocked") === "true") {
+      unlockApp();
+    }
+  </script>
+</body>
+</html>
+
