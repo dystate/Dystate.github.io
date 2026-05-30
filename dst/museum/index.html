@@ -528,10 +528,9 @@
         document.getElementById("lockScreen").style.display = "none";
         document.getElementById("appContent").style.display = "flex";
         
-        // 只有解锁后，才真正开始加载数据和渲染图表
+        // 只有解锁后，才真正开始加载数据
         loadItems();
-        $("subDate").value = dayjs().add(1, 'month').format('YYYY-MM-DD');
-        renderSubs();
+        loadSubs(); // 👈 现在也会去拉取云端订阅数据
       }, 400);
     }
 
@@ -541,7 +540,7 @@
     });
 
     // ==============================
-    // 0. Supabase 双端同步预留区 (Museum)
+    // 0. Supabase 双端同步预留区
     // ==============================
     const USE_SUPABASE = true;
     const SUPABASE_URL = "https://mqlctakdtjanshgsdwal.supabase.co";
@@ -550,6 +549,7 @@
       ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
       : null;
 
+    // --- 实体资源 (Museum) 云端方法 ---
     async function fetchFromSupabase() {
       if (!supabaseClient) return null;
       const { data, error } = await supabaseClient
@@ -591,7 +591,9 @@
     async function saveToSupabase(item) {
       if (!supabaseClient) return false;
       const payload = {
-        id: item.id, name: item.name, category: item.category, status: item.status,
+        id: item.id, 
+        number: Date.now().toString(), // 伪装编号，防止之前有 not-null 报错
+        name: item.name, category: item.category, status: item.status,
         entry_date: item.entryDate, price: item.price, note: item.note, photo_url: item.photo
       };
       const { error } = await supabaseClient.from("museum_items").upsert(payload);
@@ -613,12 +615,50 @@
       return true;
     }
 
+    // --- 🌟 订阅管理 (Subscriptions) 云端方法 ---
+    async function fetchSubsFromSupabase() {
+      if (!supabaseClient) return null;
+      const { data, error } = await supabaseClient
+        .from("museum_subs")
+        .select("*");
+      if (error) {
+        console.warn("Supabase 读取订阅失败：", error.message);
+        return null;
+      }
+      return (data || []).map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        cycle: item.cycle,
+        duration: item.duration,
+        expireDate: item.expire_date,
+        deleted: item.deleted
+      }));
+    }
+
+    async function saveSubToSupabase(sub) {
+      if (!supabaseClient) return false;
+      const payload = {
+        id: sub.id, 
+        name: sub.name, 
+        price: sub.price, 
+        cycle: sub.cycle, 
+        duration: sub.duration,
+        expire_date: sub.expireDate || null, // 防止买断制无日期报错
+        deleted: sub.deleted
+      };
+      const { error } = await supabaseClient.from("museum_subs").upsert(payload);
+      if (error) { console.warn("Supabase 订阅同步失败：" + error.message); return false; }
+      return true;
+    }
+
     // ==============================
     // 1. 资源管理逻辑 (Museum)
     // ==============================
     const CATEGORIES = [
       ["桌游", "fa-dice"], ["餐具", "fa-utensils"], ["寝具", "fa-bed"],
-      ["摆件", "fa-gem"], ["穿戴", "fa-shirt"], ["电子", "fa-laptop"], ["文具", "fa-book-open"], ["药品", "fa-prescription-bottle-medical"]
+      ["摆件", "fa-gem"], ["穿戴", "fa-shirt"], ["电子", "fa-laptop"], ["文具", "fa-book-open"],
+      ["药品", "fa-prescription-bottle-medical"]
     ];
     const STATUSES = [["在用", "fa-play"], ["闲置", "fa-pause"], ["已用", "fa-check-double"], ["丢弃", "fa-trash-can"]];
     const STORAGE_KEY = "life_museum_items_v2";
@@ -1014,7 +1054,7 @@
     // ==============================
     // 2. 订阅管理逻辑 (Subscriptions)
     // ==============================
-    let subs = JSON.parse(localStorage.getItem("life_museum_subs") || "[]");
+    let subs = [];
     
     window.toggleSubDate = function() {
        const cycle = $("subCycle").value;
@@ -1034,6 +1074,19 @@
        renderSubs();
     }
     
+    async function loadSubs() {
+      const cloudData = await fetchSubsFromSupabase();
+      const localData = JSON.parse(localStorage.getItem("life_museum_subs") || "null");
+      
+      subs = cloudData || localData || [];
+      if (cloudData) {
+         localStorage.setItem("life_museum_subs", JSON.stringify(subs));
+      }
+      
+      $("subDate").value = dayjs().add(1, 'month').format('YYYY-MM-DD');
+      renderSubs();
+    }
+
     function renderSubs() {
        const now = dayjs().startOf('day');
        const processed = subs.map(sub => {
@@ -1121,7 +1174,7 @@
        }).join("") || `<div class="empty-state" style="grid-column: 1/-1;"><div><i class="fa-solid fa-file-invoice-dollar"></i><h3 style="margin-top:10px; color:var(--mu-text);">暂无订阅记录</h3><p style="margin-top:4px;">在上方添加你的第一项周期性支出</p></div></div>`;
     }
     
-    $("subForm").addEventListener("submit", (e) => {
+    $("subForm").addEventListener("submit", async (e) => {
        e.preventDefault();
        const id = $("subId").value;
        const newSub = {
@@ -1148,7 +1201,9 @@
        $("subFormTitle").innerHTML = `<i class="fa-solid fa-plus-circle" style="color:var(--mu-accent)"></i> 添加新订阅`;
        $("subDate").value = dayjs().add(1, 'month').format('YYYY-MM-DD');
        window.toggleSubDate();
+       
        saveSubs();
+       await saveSubToSupabase(newSub); // 同步到云端
     });
 
     window.editSub = function(id) {
@@ -1161,7 +1216,7 @@
        $("subDuration").value = s.duration || 0;
        if(s.cycle !== 'once') $("subDate").value = s.expireDate;
        
-       $("subFormTitle").innerHTML = `<i class="fa-solid fa-pen-to-square" style="color:var(--mu-accent)"></i> 编辑记录`;
+       $("subFormTitle").innerHTML = `<i class=\"fa-solid fa-pen-to-square\" style=\"color:var(--mu-accent)\"></i> 编辑记录`;
        $("subCancelBtn").style.display = "inline-flex";
        window.toggleSubDate();
        window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1171,22 +1226,23 @@
        $("subForm").reset();
        $("subId").value = "";
        $("subCancelBtn").style.display = "none";
-       $("subFormTitle").innerHTML = `<i class="fa-solid fa-plus-circle" style="color:var(--mu-accent)"></i> 添加新订阅`;
+       $("subFormTitle").innerHTML = `<i class=\"fa-solid fa-plus-circle\" style=\"color:var(--mu-accent)\"></i> 添加新订阅`;
        $("subDate").value = dayjs().add(1, 'month').format('YYYY-MM-DD');
        window.toggleSubDate();
     }
     
-    window.deleteSub = function(id) {
+    window.deleteSub = async function(id) {
        if(confirm("确认删除这项记录吗？（为确保账单精确，该记录产生的费用仍会永久保留在总支出中）")) {
           const idx = subs.findIndex(s => s.id === id);
           if(idx > -1) {
              subs[idx].deleted = true;
              saveSubs();
+             await saveSubToSupabase(subs[idx]); // 同步删除标记到云端
           }
        }
     }
 
-    // 初始化时如果锁定了则不加载数据（防止被抓包），等待输入密码
+    // 锁屏初始化
     if (sessionStorage.getItem("resource_unlocked") === "true") {
       unlockApp();
     }
